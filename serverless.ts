@@ -1,6 +1,6 @@
 import type { AWS } from '@serverless/typescript';
 
-import hello from '@functions/hello';
+// import hello from '@functions/hello';
 
 const serverlessConfiguration: AWS = {
   org: 'theilman',
@@ -22,7 +22,7 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { hello },
+  // functions: { hello }, // SCOR-12 no functions needed in ch4.01
   package: { individually: true },
   custom: {
     esbuild: {
