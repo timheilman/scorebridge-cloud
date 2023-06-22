@@ -1,9 +1,11 @@
 import type { AWS } from '@serverless/typescript';
 
 // import hello from '@functions/hello';
-import appSync from './serverless.appsync-api';
+import {appsyncApi} from './serverless.appsync-api';
 
-const serverlessConfiguration: AWS = {
+const serverlessConfiguration: AWS & {
+    appSync: unknown;
+  } = {
   org: 'theilman',
   app: 'scorebridge-backend-app',
   service: 'scorebridge-backend-service',
@@ -30,6 +32,18 @@ const serverlessConfiguration: AWS = {
       'package-lock.json',
       'package.json'
     ]
+  },
+  custom: {
+    esbuild: {
+      bundle: true,
+      minify: false,
+      sourcemap: true,
+      exclude: ['aws-sdk'],
+      target: 'node18',
+      define: { 'require.resolve': undefined },
+      platform: 'node',
+      concurrency: 10,
+    },
   },
   resources: {
     Resources: {
@@ -61,7 +75,7 @@ const serverlessConfiguration: AWS = {
         Type: 'AWS::Cognito::UserPoolClient',
         Properties: {
           UserPoolId: {
-            'Fn::Ref': 'CognitoUserPool'
+            Ref: 'CognitoUserPool'
           },
           ClientName: 'web',
           ExplicitAuthFlows: [
@@ -76,24 +90,12 @@ const serverlessConfiguration: AWS = {
     Outputs: {
       CognitoUserPoolId: {
         Value: {
-          'Fn::Ref': 'CognitoUserPool'
+          Ref: 'CognitoUserPool'
         }
       }
     }
   },
-  custom: {
-    esbuild: {
-      bundle: true,
-      minify: false,
-      sourcemap: true,
-      exclude: ['aws-sdk'],
-      target: 'node18',
-      define: { 'require.resolve': undefined },
-      platform: 'node',
-      concurrency: 10,
-    },
-    appSync
-  },
+  appSync: appsyncApi,
 };
 
 module.exports = serverlessConfiguration;

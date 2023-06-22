@@ -5,15 +5,21 @@ import { AWS } from "@serverless/typescript";
 // at the time of writing, they seem to be defined here:
 // https://github.com/sid88in/serverless-appsync-plugin/blob/05164d8847a554d56bb73590fdc35bf0bda5198e/src/types/plugin.ts#L3
 
-const appsyncApi: AWS['custom']['appSync'] /* : AppSyncConfig */ = {
+export const appsyncApi: AWS['custom']['appSync'] /* : AppSyncConfig */ = {
   name: 'ScoreBridge-backend',
   schema: 'schema.api.graphql',
-  authenticationType: 'AMAZON_COGNITO_USER_POOLS',
-  userPoolConfig: {
-    awsRegion: 'us-west-2',
-    userPoolId: {
-      'Fn::Ref': 'CognitoUserPool'
+  authentication: {
+    type: 'AMAZON_COGNITO_USER_POOLS',
+    config: {
+      awsRegion: 'us-west-2',
+      userPoolId: {
+        Ref: 'CognitoUserPool'
+      },
+      defaultAction: 'ALLOW'
     }
-  }
-}
-export default appsyncApi;
+  },
+  additionalAuthentications: [],
+  dataSources: {},
+  resolvers: {},
+  pipelineFunctions: {}
+};
