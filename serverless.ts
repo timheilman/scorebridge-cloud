@@ -31,6 +31,56 @@ const serverlessConfiguration: AWS = {
       'package.json'
     ]
   },
+  resources: {
+    Resources: {
+      CognitoUserPool: {
+        Type: 'AWS::Cognito::UserPool',
+        Properties: {
+          AutoVerifiedAttributes: ['email'],
+          Policies: {
+            PasswordPolicy: {
+              MinimumLength: 8,
+              RequireLowercase: true,
+              RequireNumbers: true,
+              RequireUppercase: true,
+              RequireSymbols: true,
+            }
+          },
+          UsernameAttributes: ['email'],
+          Schema: [
+            {
+              AttributeDataType: 'String',
+              Name: 'name',
+              Required: false,
+              Mutable: true
+            }
+          ]
+        },
+      },
+      WebUserPoolClient: {
+        Type: 'AWS::Cognito::UserPoolClient',
+        Properties: {
+          UserPoolId: {
+            'Fn::Ref': 'CognitoUserPool'
+          },
+          ClientName: 'web',
+          ExplicitAuthFlows: [
+            'ALLOW_USER_SRP_AUTH',
+            'ALLOW_USER_PASSWORD_AUTH',
+            'ALLOW_REFRESH_TOKEN_AUTH'
+          ],
+          PreventUserExistenceErrors: 'ENABLED'
+        }
+      }
+    },
+    Outputs: {
+      CognitoUserPoolId: {
+        Value: {
+          'Fn::Ref': 'CognitoUserPool'
+        }
+      }
+    }
+  },
   custom: {
     esbuild: {
       bundle: true,

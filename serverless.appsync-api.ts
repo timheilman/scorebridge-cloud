@@ -7,6 +7,13 @@ import { AWS } from "@serverless/typescript";
 
 const appsyncApi: AWS['custom']['appSync'] /* : AppSyncConfig */ = {
   name: 'ScoreBridge-backend',
-  schema: 'schema.api.graphql'
+  schema: 'schema.api.graphql',
+  authenticationType: 'AMAZON_COGNITO_USER_POOLS',
+  userPoolConfig: {
+    awsRegion: 'us-west-2',
+    userPoolId: {
+      'Fn::Ref': 'CognitoUserPool'
+    }
+  }
 }
 export default appsyncApi;
