@@ -1,0 +1,26 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  getTracerBulletData(tracerBulletQueryInput: TracerBulletQueryInput): TracerBulletOutput!
+}
+
+type Mutation {
+  doTracerBulletMutation(tracerBulletMutationInput: TracerBulletMutationInput): TracerBulletOutput!
+}
+
+input TracerBulletQueryInput {
+  tracerBulletQueryInputString: String!
+}
+
+input TracerBulletMutationInput {
+  tracerBulletMutationInputString: String!
+}
+
+type TracerBulletOutput {
+  tracerBulletOutputString: String!
+}
+
+
