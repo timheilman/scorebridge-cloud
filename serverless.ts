@@ -44,6 +44,9 @@ const serverlessConfiguration: AWS & {
       platform: 'node',
       concurrency: 10,
     },
+    settings: {
+      COGNITO_USER_POOL_NAME: `ScoreBridgeCognitoUserPool-\${sls:stage}`
+    }
   },
   resources: {
     Resources: {
@@ -68,7 +71,8 @@ const serverlessConfiguration: AWS & {
               Required: false,
               Mutable: true
             }
-          ]
+          ],
+          UserPoolName: `\${self:custom.settings.COGNITO_USER_POOL_NAME}`,
         },
       },
       WebUserPoolClient: {
