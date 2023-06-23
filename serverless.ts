@@ -75,6 +75,11 @@ const serverlessConfiguration: AWS & {
               Mutable: true,
             },
           ],
+          LambdaConfig: {
+            PostConfirmation: {
+              "Fn::GetAtt": ["ConfirmUserSignupLambdaFunction", "Arn"],
+            },
+          },
           UserPoolName: `\${self:custom.settings.COGNITO_USER_POOL_NAME}`,
         },
       },
