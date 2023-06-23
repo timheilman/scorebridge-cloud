@@ -1,84 +1,62 @@
-import type { AWS } from '@serverless/typescript';
+import type { AWS } from "@serverless/typescript";
 
 // import hello from '@functions/hello';
-import {appsyncApi} from './serverless.appsync-api';
+import confirmUserSignup from "@functions/confirm-user-signup";
+import { appsyncApi } from "./serverless.appsync-api";
 
 const serverlessConfiguration: AWS & {
-    appSync: unknown;
-  } = {
-  org: 'theilman',
-  app: 'scorebridge-backend-app',
-  service: 'scorebridge-backend-service',
-  frameworkVersion: '3',
+  appSync: unknown;
+} = {
+  org: "theilman",
+  app: "scorebridge-backend-app",
+  service: "scorebridge-backend-service",
+  frameworkVersion: "3",
   plugins: [
-    'serverless-esbuild',
-    'serverless-appsync-plugin',
-    'serverless-iam-roles-per-function'
+    "serverless-esbuild",
+    "serverless-appsync-plugin",
+    "serverless-iam-roles-per-function",
   ],
   provider: {
-    name: 'aws',
-    region: 'us-west-2',
-    runtime: 'nodejs18.x',
+    name: "aws",
+    region: "us-west-2",
+    runtime: "nodejs18.x",
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
     },
     environment: {
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-      NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      STAGE: `\${sls:stage}`
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
+      NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      STAGE: `\${sls:stage}`,
     },
   },
   // import the function via paths
-  // functions: { hello }, // SCOR-12 no functions needed in ch4.01
+  functions: { confirmUserSignup },
   package: {
     individually: true,
-    exclude: [
-      'package-lock.json',
-      'package.json'
-    ]
-  },
-  functions: {
-    confirmUserSignup: {
-      handler: 'functions/confirm-user-signup.handler',
-      environment: {
-        USERS_TABLE: {
-          Ref: 'UsersTable'
-        }
-      },
-      // @ts-expect-error provided by non-ts serverless-iam-roles-per-function plugin
-      iamRoleStatements: [
-        {
-          Effect: 'Allow',
-          Action: 'dynamodb:PutItem',
-          Resource: {
-            'Fn::GetAtt': 'UsersTable.Arn'
-          }
-        }
-      ]
-    }
+    exclude: ["package-lock.json", "package.json"],
   },
   custom: {
     esbuild: {
       bundle: true,
       minify: false,
       sourcemap: true,
-      exclude: ['aws-sdk'],
-      target: 'node18',
-      define: { 'require.resolve': undefined },
-      platform: 'node',
+      exclude: ["aws-sdk"],
+      target: "node18",
+      define: { "require.resolve": undefined },
+      platform: "node",
       concurrency: 10,
     },
     settings: {
-      COGNITO_USER_POOL_NAME: `ScoreBridgeCognitoUserPool-\${sls:stage}`
-    }
+      COGNITO_USER_POOL_NAME: `ScoreBridgeCognitoUserPool-\${sls:stage}`,
+    },
   },
   resources: {
     Resources: {
       CognitoUserPool: {
-        Type: 'AWS::Cognito::UserPool',
+        Type: "AWS::Cognito::UserPool",
         Properties: {
-          AutoVerifiedAttributes: ['email'],
+          AutoVerifiedAttributes: ["email"],
           Policies: {
             PasswordPolicy: {
               MinimumLength: 8,
@@ -86,71 +64,71 @@ const serverlessConfiguration: AWS & {
               RequireNumbers: true,
               RequireUppercase: true,
               RequireSymbols: true,
-            }
+            },
           },
-          UsernameAttributes: ['email'],
+          UsernameAttributes: ["email"],
           Schema: [
             {
-              AttributeDataType: 'String',
-              Name: 'name',
+              AttributeDataType: "String",
+              Name: "name",
               Required: false,
-              Mutable: true
-            }
+              Mutable: true,
+            },
           ],
           UserPoolName: `\${self:custom.settings.COGNITO_USER_POOL_NAME}`,
         },
       },
       WebUserPoolClient: {
-        Type: 'AWS::Cognito::UserPoolClient',
+        Type: "AWS::Cognito::UserPoolClient",
         Properties: {
           UserPoolId: {
-            Ref: 'CognitoUserPool'
+            Ref: "CognitoUserPool",
           },
-          ClientName: 'web',
+          ClientName: "web",
           ExplicitAuthFlows: [
-            'ALLOW_USER_SRP_AUTH',
-            'ALLOW_USER_PASSWORD_AUTH',
-            'ALLOW_REFRESH_TOKEN_AUTH'
+            "ALLOW_USER_SRP_AUTH",
+            "ALLOW_USER_PASSWORD_AUTH",
+            "ALLOW_REFRESH_TOKEN_AUTH",
           ],
-          PreventUserExistenceErrors: 'ENABLED'
-        }
+          PreventUserExistenceErrors: "ENABLED",
+        },
       },
       UsersTable: {
-        Type: 'AWS::DynamoDB::Table',
+        Type: "AWS::DynamoDB::Table",
         Properties: {
-          BillingMode: 'PAY_PER_REQUEST',
+          BillingMode: "PAY_PER_REQUEST",
           KeySchema: [
             {
-              AttributeName: 'id',
-              KeyType: 'HASH'
-            }
+              AttributeName: "id",
+              KeyType: "HASH",
+            },
           ],
           AttributeDefinitions: [
             {
-              AttributeName: 'id',
-              AttributeType: 'S'
-            }
+              AttributeName: "id",
+              AttributeType: "S",
+            },
           ],
           Tags: [
             {
-              Key: 'Environment',
-              Value: `\${sls:stage}`
+              Key: "Environment",
+              Value: `\${sls:stage}`,
             },
             {
-              Key: 'Name',
-              Value: 'users-table'
-            }
-          ]
-        }
-      }
+              Key: "Name",
+              Value: "users-table",
+            },
+          ],
+        },
+      },
     },
     Outputs: {
       CognitoUserPoolId: {
         Value: {
-          Ref: 'CognitoUserPool'
-        }
-      }
-    }
+          Ref: "CognitoUserPool",
+        },
+      },
+    },
   },
   appSync: appsyncApi,
 };
