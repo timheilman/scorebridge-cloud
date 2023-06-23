@@ -10,7 +10,11 @@ const serverlessConfiguration: AWS & {
   app: 'scorebridge-backend-app',
   service: 'scorebridge-backend-service',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild', 'serverless-appsync-plugin'],
+  plugins: [
+    'serverless-esbuild',
+    'serverless-appsync-plugin',
+    'serverless-iam-roles-per-function'
+  ],
   provider: {
     name: 'aws',
     region: 'us-west-2',
@@ -22,6 +26,7 @@ const serverlessConfiguration: AWS & {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      STAGE: `\${sls:stage}`
     },
   },
   // import the function via paths
@@ -32,6 +37,26 @@ const serverlessConfiguration: AWS & {
       'package-lock.json',
       'package.json'
     ]
+  },
+  functions: {
+    confirmUserSignup: {
+      handler: 'functions/confirm-user-signup.handler',
+      environment: {
+        USERS_TABLE: {
+          Ref: 'UsersTable'
+        }
+      },
+      // @ts-expect-error provided by non-ts serverless-iam-roles-per-function plugin
+      iamRoleStatements: [
+        {
+          Effect: 'Allow',
+          Action: 'dynamodb:PutItem',
+          Resource: {
+            'Fn::GetAtt': 'UsersTable.Arn'
+          }
+        }
+      ]
+    }
   },
   custom: {
     esbuild: {
@@ -88,6 +113,34 @@ const serverlessConfiguration: AWS & {
             'ALLOW_REFRESH_TOKEN_AUTH'
           ],
           PreventUserExistenceErrors: 'ENABLED'
+        }
+      },
+      UsersTable: {
+        Type: 'AWS::DynamoDB::Table',
+        Properties: {
+          BillingMode: 'PAY_PER_REQUEST',
+          KeySchema: [
+            {
+              AttributeName: 'id',
+              KeyType: 'HASH'
+            }
+          ],
+          AttributeDefinitions: [
+            {
+              AttributeName: 'id',
+              AttributeType: 'S'
+            }
+          ],
+          Tags: [
+            {
+              Key: 'Environment',
+              Value: `\${sls:stage}`
+            },
+            {
+              Key: 'Name',
+              Value: 'users-table'
+            }
+          ]
         }
       }
     },
