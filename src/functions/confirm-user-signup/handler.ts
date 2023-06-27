@@ -1,7 +1,10 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
-import { PostConfirmationTriggerEvent } from "aws-lambda/trigger/cognito-user-pool-trigger";
 import Chance from "chance";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { fromEnv } from "@aws-sdk/credential-providers";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { PostConfirmationTriggerEvent } from "aws-lambda";
 
 const chance = new Chance();
 const { USERS_TABLE } = process.env;
