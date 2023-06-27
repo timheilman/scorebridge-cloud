@@ -39,6 +39,7 @@
     "serverless": "^3.0.0",
     "serverless-appsync-plugin": "^2.2.1",
     "serverless-esbuild": "^1.23.3",
+    "serverless-export-env": "^2.2.0",
     "serverless-iam-roles-per-function": "^3.2.0",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.4.0",
