@@ -126,6 +126,19 @@ const serverlessConfiguration: AWS & {
           ],
         },
       },
+      UserPoolInvokeConfirmUserSignupLambdaPermission: {
+        Type: "AWS::Lambda::Permission",
+        Properties: {
+          Action: "lambda:invokeFunction",
+          FunctionName: {
+            "Fn::Ref": "ConfirmUserSignupLambdaFunction",
+          },
+          Principal: "cognito-idp.amazonaws.com",
+          SourceArn: {
+            "Fn::GetAtt": ["CognitoUserPool", "Arn"],
+          },
+        },
+      },
     },
     Outputs: {
       CognitoUserPoolId: {
