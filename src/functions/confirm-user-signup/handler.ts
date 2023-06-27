@@ -2,7 +2,7 @@
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import Chance from "chance";
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { fromEnv } from "@aws-sdk/credential-providers";
+import { fromEnv, fromSSO } from "@aws-sdk/credential-providers";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { PostConfirmationTriggerEvent } from "aws-lambda";
 
@@ -30,7 +30,7 @@ export const main = async (event: PostConfirmationTriggerEvent) => {
   };
   const client = new DynamoDBClient({
     region: process.env.AWS_REGION || "NO_REGION_FOUND_IN_ENV",
-    credentials: fromEnv(),
+    credentials: process.env.NODE_ENV === "test" ? fromSSO() : fromEnv(),
   });
   const command = new PutItemCommand({
     TableName: USERS_TABLE,
