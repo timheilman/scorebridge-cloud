@@ -147,6 +147,7 @@ const serverlessConfiguration: AWS & {
           Ref: "CognitoUserPool",
         },
       },
+      AwsRegion: { Value: `\${aws:region}` },
     },
   },
   appSync: appsyncApi,
