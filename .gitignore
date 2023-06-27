@@ -7,3 +7,6 @@ jspm_packages
 
 # esbuild directories
 .esbuild
+
+# dotenv mechanism to provide AWS-defined values to integration tests
+.env
