@@ -15,6 +15,7 @@ const serverlessConfiguration: AWS & {
     "serverless-esbuild",
     "serverless-appsync-plugin",
     "serverless-iam-roles-per-function",
+    "serverless-export-env",
   ],
   provider: {
     name: "aws",
