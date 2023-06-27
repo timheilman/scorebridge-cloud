@@ -7,10 +7,10 @@ import { fromEnv, fromSSO } from "@aws-sdk/credential-providers";
 import { PostConfirmationTriggerEvent } from "aws-lambda";
 
 const chance = new Chance();
-const { USERS_TABLE } = process.env;
 
 // eslint-disable-next-line import/prefer-default-export
 export const main = async (event: PostConfirmationTriggerEvent) => {
+  const { USERS_TABLE } = process.env;
   if (event.triggerSource !== "PostConfirmation_ConfirmSignUp") {
     return event;
   }
