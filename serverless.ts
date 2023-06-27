@@ -131,7 +131,7 @@ const serverlessConfiguration: AWS & {
         Properties: {
           Action: "lambda:invokeFunction",
           FunctionName: {
-            "Fn::Ref": "ConfirmUserSignupLambdaFunction",
+            Ref: "ConfirmUserSignupLambdaFunction",
           },
           Principal: "cognito-idp.amazonaws.com",
           SourceArn: {
