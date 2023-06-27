@@ -30,7 +30,10 @@ export const main = async (event: PostConfirmationTriggerEvent) => {
   };
   const client = new DynamoDBClient({
     region: process.env.AWS_REGION || "NO_REGION_FOUND_IN_ENV",
-    credentials: process.env.NODE_ENV === "test" ? fromSSO() : fromEnv(),
+    credentials:
+      process.env.NODE_ENV === "test"
+        ? fromSSO({ profile: "PowerUserAccess-437893194722" })
+        : fromEnv(),
   });
   const command = new PutItemCommand({
     TableName: USERS_TABLE,
