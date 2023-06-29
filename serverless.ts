@@ -147,7 +147,14 @@ const serverlessConfiguration: AWS & {
           Ref: "CognitoUserPool",
         },
       },
+
       AwsRegion: { Value: `\${aws:region}` },
+
+      WebCognitoUserPoolClientId: {
+        Value: {
+          Ref: "WebUserPoolClient",
+        },
+      },
     },
   },
   appSync: appsyncApi,
