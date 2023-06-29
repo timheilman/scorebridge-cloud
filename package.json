@@ -6,7 +6,7 @@
   "main": "serverless.ts",
   "scripts": {
     "sls": "sls",
-    "exportEnvDev": "sls export-env --all --overwrite && sls info --verbose | grep AwsRegion | awk -F' ' '{ printf(\"\\n\\n# dotenv variables for integration testing slurped from npx sls info --verbose\\nAWS_REGION=%s\\n\", $2) }' >> .env",
+    "exportEnvDev": "sls export-env --all --overwrite && mv .env .env.from.export.env && sls export-outputs",
     "test": "echo \"Error: no test specified\" && exit 1",
     "integration-test": "jest --verbose ./__tests__/test_cases/integration"
   },
