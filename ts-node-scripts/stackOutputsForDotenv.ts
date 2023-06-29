@@ -31,7 +31,7 @@ exec("npx sls info --verbose", (error, stdout /* , stderr */) => {
       .map((stackOutputLine) => {
         const colonSpace = ": ";
         const keyAndRest = stackOutputLine.split(colonSpace);
-        return `${camelToScreamingSnake(keyAndRest[0])}="${keyAndRest
+        return `${camelToScreamingSnake(keyAndRest[0].trim())}="${keyAndRest
           .slice(1)
           .join(colonSpace)}"`;
       })

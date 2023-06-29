@@ -6,7 +6,7 @@
   "main": "serverless.ts",
   "scripts": {
     "sls": "sls",
-    "exportEnvDev": "sls export-env --all --overwrite && mv .env .env.from.export.env && sls export-outputs",
+    "exportEnvDev": "sls export-env --all --overwrite && ts-node ts-node-scripts/stackOutputsForDotenv.ts >> .env",
     "test": "echo \"Error: no test specified\" && exit 1",
     "integration-test": "jest --verbose ./__tests__/test_cases/integration"
   },
