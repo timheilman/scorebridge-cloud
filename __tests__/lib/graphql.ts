@@ -1,5 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import axios from "axios";
-import _ from "lodash";
 
 const throwOnErrors = ({ query, variables, errors }) => {
   if (errors) {
@@ -38,6 +38,7 @@ const graphQl = async (url, query, variables = {}, auth = null) => {
   } catch (err) {
     console.log("Did I throwOnErrors?");
     console.log(err);
+    throw err;
   }
 };
 

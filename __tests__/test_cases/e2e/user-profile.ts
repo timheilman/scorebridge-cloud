@@ -1,4 +1,6 @@
+// eslint-disable-next-line import/extensions,import/no-unresolved
 import { anAuthenticatedUser } from "../../steps/given";
+// eslint-disable-next-line import/extensions,import/no-unresolved
 import { aUserCallsGetMyProfile } from "../../steps/when";
 
 // eslint-disable-next-line no-undef
@@ -23,6 +25,7 @@ describe("Given an authenticated user", () => {
       location: null,
       website: null,
       birthdate: null,
+      // eslint-disable-next-line no-undef
       createdAt: expect.stringMatching(
         /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g
       ),
