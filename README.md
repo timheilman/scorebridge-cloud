@@ -6,6 +6,8 @@ This project was generated using the `aws-nodejs-typescript` template from the [
 
 For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).  To view this README at its origin as created by that template, use `git checkout SLS_CREATE_RESULT`.
 
+[Jira](https://theilman.atlassian.net/jira/software/projects/SCOR/boards/1) is the project-tracking software.
+
 ### Yan Cui AppSync MasterClass
 
 See Yan Cui's excellent instruction for [GraphQL in the serverless paradigm](https://appsyncmasterclass.com); this repo is an updated-to-summer-2023 follow-along to his video course on AWS AppSync.
