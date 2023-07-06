@@ -5,21 +5,34 @@ import { AWS } from "@serverless/typescript";
 // at the time of writing, they seem to be defined here:
 // https://github.com/sid88in/serverless-appsync-plugin/blob/05164d8847a554d56bb73590fdc35bf0bda5198e/src/types/plugin.ts#L3
 
-export const appsyncApi: AWS['custom']['appSync'] /* : AppSyncConfig */ = {
-  name: 'ScoreBridge-backend',
-  schema: 'schema.api.graphql',
+export const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
+  name: "ScoreBridge-backend",
+  schema: "schema.api.graphql",
   authentication: {
-    type: 'AMAZON_COGNITO_USER_POOLS',
+    type: "AMAZON_COGNITO_USER_POOLS",
     config: {
-      awsRegion: 'us-west-2',
+      awsRegion: "us-west-2",
       userPoolId: {
-        Ref: 'CognitoUserPool'
+        Ref: "CognitoUserPool",
       },
-      defaultAction: 'ALLOW'
-    }
+      defaultAction: "ALLOW",
+    },
   },
   additionalAuthentications: [],
-  dataSources: {},
-  resolvers: {},
-  pipelineFunctions: {}
+  dataSources: {
+    usersTable: {
+      type: "AMAZON_DYNAMODB",
+      config: {
+        tableName: { Ref: "UsersTable" },
+      },
+    },
+  },
+  resolvers: {
+    "Query.user": {
+      dataSource: "usersTable",
+      request: "src/mapping-templates/Query.getTracerBulletData.request.vtl",
+      response: "src/mapping-templates/Query.getTracerBulletData.response.vtl",
+    },
+  },
+  pipelineFunctions: {},
 };
