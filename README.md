@@ -14,6 +14,12 @@ See Yan Cui's excellent instruction for [GraphQL in the serverless paradigm](htt
 
 > **Requirements**: NodeJS `lts/fermium (v.14.15.0)`. If you're using [nvm](https://github.com/nvm-sh/nvm), run `nvm use` to ensure you're using the same Node version in local and in your lambda's runtime.
 
+TODO: fix that this profile name is hardcoded.  Ultimately whatever is pased to `npx sls` on its `--stage` flag must correspond to an sso-based profile for that stage's AWS account.
+
+```
+aws sso login --profile ScoreBridge-dev-PowerUserAccess-437893194722
+```
+
 ### Using NPM
 
 - Run `npm i` to install the project dependencies

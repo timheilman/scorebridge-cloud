@@ -32,7 +32,7 @@ export const main = async (event: PostConfirmationTriggerEvent) => {
     region: process.env.AWS_REGION || "NO_REGION_FOUND_IN_ENV",
     credentials:
       process.env.NODE_ENV === "test"
-        ? fromSSO({ profile: "PowerUserAccess-437893194722" })
+        ? fromSSO({ profile: "ScoreBridge-dev-PowerUserAccess-437893194722" })
         : fromEnv(),
   });
   const command = new PutItemCommand({

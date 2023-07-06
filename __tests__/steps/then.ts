@@ -8,7 +8,9 @@ dotenvConfig();
 const userExistsInUsersTable = async (id: string) => {
   const client = new DynamoDBClient({
     region: process.env.AWS_REGION || "NO_REGION_FOUND_IN_ENV",
-    credentials: fromSSO({ profile: "PowerUserAccess-437893194722" }),
+    credentials: fromSSO({
+      profile: "ScoreBridge-dev-PowerUserAccess-437893194722",
+    }),
   });
 
   console.log(`looking for user [${id}] in table [${process.env.USERS_TABLE}]`);
