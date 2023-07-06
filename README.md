@@ -33,11 +33,16 @@ For now, only the dev environment is enabled.  First, establish a `.env` file at
 npm run -- exportEnvDev
 ```
 
-That file will point at appropriate services for the stage or "env".  Then run integration tests with:
+That file will point at appropriate services for the stage or "env".  Then run integration and/or e2e tests with:
 
 ```
 npm run -- integration-test
+npm run -- e2e-test
 ```
+
+Integration tests System-Under-Test is everything behind an artificial invocation of lambda code.  Thus NODE_ENV is inspected in production code, and SSO credentials rather than env-provided ones are used when NODE_ENV is test, but otherwise all execution beyond the lambda is real.
+
+E2E tests are as close to acceptance tests as we can get, although user sign up is simulated with cognito idp admin commands.
 
 ## Template features
 

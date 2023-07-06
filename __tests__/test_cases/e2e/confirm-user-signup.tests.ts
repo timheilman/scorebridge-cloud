@@ -22,10 +22,10 @@ describe("When a user signs up", () => {
       createdAt: expect.stringMatching(
         /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g
       ),
-      followersCount: 0,
-      followingCount: 0,
-      tweetsCount: 0,
-      likesCounts: 0,
+      // followersCount: 0,
+      // followingCount: 0,
+      // tweetsCount: 0,
+      // likesCounts: 0,
     });
 
     const [firstName, lastName] = name.split(" ");

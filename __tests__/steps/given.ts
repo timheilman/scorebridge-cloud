@@ -8,7 +8,7 @@ const aRandomUser = (): { name: string; password: string; email: string } => {
     pool: "abcdefghijklmnopqrstuvwxyz",
   });
   const name = `${firstName} ${lastName} ${suffix}`;
-  const password = chance().string({ length: 8 });
+  const password = `${chance().string({ length: 8 })}a1A!`;
   const email = `${firstName}-${lastName}-${suffix}@appsyncmasterclass.com`;
 
   return {
