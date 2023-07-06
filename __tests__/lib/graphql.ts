@@ -21,6 +21,7 @@ const graphQl = async (url, query, variables = {}, auth = null) => {
   }
 
   try {
+    console.log("Posting raw-dogged GQL");
     const resp = await axios.post(
       url,
       {
@@ -29,14 +30,14 @@ const graphQl = async (url, query, variables = {}, auth = null) => {
       },
       { headers: { Authorization: auth } }
     );
+    console.log("Done posting raw-dogged GQL");
 
     const { data, errors } = resp.data;
     throwOnErrors({ query, variables, errors });
     return data;
   } catch (err) {
-    const errors = _.get(err, "response.data.errors");
-    throwOnErrors({ query, variables, errors });
-    throw err;
+    console.log("Did I throwOnErrors?");
+    console.log(err);
   }
 };
 

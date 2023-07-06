@@ -104,6 +104,9 @@ const aUserCallsGetMyProfile = async (user) => {
     }
   }`;
 
+  if (!process.env.API_URL) {
+    throw new Error("No API_URL was specified!");
+  }
   const data = await GraphQL(
     process.env.API_URL,
     getMyProfile,

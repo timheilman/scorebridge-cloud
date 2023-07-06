@@ -85,10 +85,10 @@ type MyProfile implements IProfile {
   birthdate: AWSDate
   createdAt: AWSDateTime!
   tweets: TweetsPage!
-  followersCount: Int!
-  followingCount: Int!
-  tweetsCount: Int!
-  likesCounts: Int!
+  followersCount: Int
+  followingCount: Int
+  tweetsCount: Int
+  likesCounts: Int
 }
 
 type OtherProfile implements IProfile {
@@ -103,10 +103,10 @@ type OtherProfile implements IProfile {
   birthdate: AWSDate
   createdAt: AWSDateTime!
   tweets: TweetsPage!
-  followersCount: Int!
-  followingCount: Int!
-  tweetsCount: Int!
-  likesCounts: Int!
+  followersCount: Int
+  followingCount: Int
+  tweetsCount: Int
+  likesCounts: Int
   following: Boolean!
   followedBy: Boolean!
 }
