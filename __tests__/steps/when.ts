@@ -10,6 +10,8 @@ import {
 import { main as confirmUserSignup } from "../../src/functions/confirm-user-signup/handler";
 // eslint-disable-next-line import/extensions,import/no-unresolved
 import { fromSsoUsingProfileFromEnv } from "../../src/libs/from-sso-using-profile-from-env";
+// eslint-disable-next-line import/extensions,import/no-unresolved
+import GraphQL from "../lib/graphql";
 
 dotenvConfig();
 
@@ -82,5 +84,38 @@ const aUserSignsUp = async (password: string, name: string, email: string) => {
   };
 };
 
+const aUserCallsGetMyProfile = async (user) => {
+  const getMyProfile = `query getMyProfile {
+    getMyProfile {
+      backgroundImageUrl
+      bio
+      birthdate
+      createdAt
+      followersCount
+      followingCount
+      id
+      imageUrl
+      likesCounts
+      location
+      name
+      screenName
+      tweetsCount
+      website
+    }
+  }`;
+
+  const data = await GraphQL(
+    process.env.API_URL,
+    getMyProfile,
+    {},
+    user.accessToken
+  );
+  const profile = data.getMyProfile;
+
+  console.log(`[${user.username}] - fetched profile`);
+
+  return profile;
+};
+
 // eslint-disable-next-line import/prefer-default-export
-export { weInvokeConfirmUserSignup, aUserSignsUp };
+export { weInvokeConfirmUserSignup, aUserSignsUp, aUserCallsGetMyProfile };
