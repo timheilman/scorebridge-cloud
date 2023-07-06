@@ -28,10 +28,11 @@ export const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
     },
   },
   resolvers: {
-    "Query.user": {
+    "Query.getMyProfile": {
+      kind: "UNIT",
       dataSource: "usersTable",
-      request: "src/mapping-templates/Query.getTracerBulletData.request.vtl",
-      response: "src/mapping-templates/Query.getTracerBulletData.response.vtl",
+      request: "src/mapping-templates/Query.getMyProfile.request.vtl",
+      response: "src/mapping-templates/Query.getMyProfile.response.vtl",
     },
   },
   pipelineFunctions: {},
