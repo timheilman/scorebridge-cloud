@@ -7,8 +7,9 @@
   "scripts": {
     "sls": "sls",
     "exportEnvDev": "sls export-env --all --overwrite && echo >> .env && ts-node ts-node-scripts/stackOutputsForDotenv.ts >> .env",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "integration-test": "jest --verbose ./__tests__/test_cases/integration"
+    "test": "echo \"TODO: make this run integration-test and e2e-test\" && exit 1",
+    "integration-test": "jest --verbose ./__tests__/test_cases/integration",
+    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e"
   },
   "engines": {
     "node": ">=14.15.0"

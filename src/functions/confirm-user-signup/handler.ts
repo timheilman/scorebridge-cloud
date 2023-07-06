@@ -2,9 +2,11 @@
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import Chance from "chance";
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { fromEnv, fromSSO } from "@aws-sdk/credential-providers";
+import { fromEnv } from "@aws-sdk/credential-providers";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { PostConfirmationTriggerEvent } from "aws-lambda";
+// eslint-disable-next-line import/no-unresolved,import/extensions
+import { fromSsoUsingProfileFromEnv } from "../../libs/from-sso-using-profile-from-env";
 
 const chance = new Chance();
 
@@ -32,7 +34,7 @@ export const main = async (event: PostConfirmationTriggerEvent) => {
     region: process.env.AWS_REGION || "NO_REGION_FOUND_IN_ENV",
     credentials:
       process.env.NODE_ENV === "test"
-        ? fromSSO({ profile: "ScoreBridge-dev-PowerUserAccess-437893194722" })
+        ? fromSsoUsingProfileFromEnv()
         : fromEnv(),
   });
   const command = new PutItemCommand({

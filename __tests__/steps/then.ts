@@ -1,16 +1,15 @@
 import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { config as dotenvConfig } from "dotenv";
-import { fromSSO } from "@aws-sdk/credential-providers";
+// eslint-disable-next-line import/extensions,import/no-unresolved
+import { fromSsoUsingProfileFromEnv } from "../../src/libs/from-sso-using-profile-from-env";
 
 dotenvConfig();
 
 const userExistsInUsersTable = async (id: string) => {
   const client = new DynamoDBClient({
     region: process.env.AWS_REGION || "NO_REGION_FOUND_IN_ENV",
-    credentials: fromSSO({
-      profile: "ScoreBridge-dev-PowerUserAccess-437893194722",
-    }),
+    credentials: fromSsoUsingProfileFromEnv(),
   });
 
   console.log(`looking for user [${id}] in table [${process.env.USERS_TABLE}]`);

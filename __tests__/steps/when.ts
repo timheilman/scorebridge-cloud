@@ -1,7 +1,5 @@
 import { config as dotenvConfig } from "dotenv";
 import { PostConfirmationTriggerEvent } from "aws-lambda";
-// eslint-disable-next-line import/no-unresolved,import/extensions
-import { fromSSO } from "@aws-sdk/credential-providers";
 import {
   CognitoIdentityProviderClient,
   SignUpCommand,
@@ -10,6 +8,8 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 // eslint-disable-next-line import/extensions,import/no-unresolved
 import { main as confirmUserSignup } from "../../src/functions/confirm-user-signup/handler";
+// eslint-disable-next-line import/extensions,import/no-unresolved
+import { fromSsoUsingProfileFromEnv } from "../../src/libs/from-sso-using-profile-from-env";
 
 dotenvConfig();
 
@@ -47,8 +47,8 @@ const weInvokeConfirmUserSignup = async (
 
 const aUserSignsUp = async (password: string, name: string, email: string) => {
   const cognito = new CognitoIdentityProviderClient({
-    region: "YOUR_REGION",
-    credentials: await fromSSO(),
+    region: process.env.AWS_REGION,
+    credentials: fromSsoUsingProfileFromEnv(),
   });
 
   const userPoolId = process.env.COGNITO_USER_POOL_ID;
