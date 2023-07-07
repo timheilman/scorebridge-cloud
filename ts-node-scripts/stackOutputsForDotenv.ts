@@ -18,14 +18,17 @@ function stackOutputsPromptIndex(slsInfoLines) {
   return i;
 }
 
-function firstBlankIndexAfterPrompt(slsInfoLines: string[], startIndex) {
+function firstNonblankStartAfterPromptIndex(
+  slsInfoLines: string[],
+  startIndex
+) {
   const blankLineIndexes = findIndexes(slsInfoLines, (l) => l.match(/^[^ ]/));
   return blankLineIndexes.find((n) => n >= startIndex);
 }
 
 function linesBetweenPromptAndEmptyLine(slsInfoLines: string[]) {
   const startIndex = stackOutputsPromptIndex(slsInfoLines) + 1;
-  const endIndex = firstBlankIndexAfterPrompt(slsInfoLines, startIndex);
+  const endIndex = firstNonblankStartAfterPromptIndex(slsInfoLines, startIndex);
   if (endIndex === -1) {
     return slsInfoLines.slice(startIndex);
   }
