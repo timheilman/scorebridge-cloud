@@ -1,11 +1,17 @@
 // eslint-disable-next-line import/extensions,import/no-unresolved
-import { anAuthenticatedUser } from "../../steps/given";
+import chance from "chance";
 // eslint-disable-next-line import/extensions,import/no-unresolved
-import { aUserCallsGetMyProfile } from "../../steps/when";
+import { anAuthenticatedUser } from "../../steps/given";
+import {
+  aUserCallsGetMyProfile,
+  aUserCallsEditMyProfile,
+  // eslint-disable-next-line import/extensions,import/no-unresolved
+} from "../../steps/when";
 
 // eslint-disable-next-line no-undef
 describe("Given an authenticated user", () => {
   let user;
+  let profile;
   // eslint-disable-next-line no-undef
   beforeAll(async () => {
     user = await anAuthenticatedUser();
@@ -13,7 +19,8 @@ describe("Given an authenticated user", () => {
 
   // eslint-disable-next-line no-undef
   it("The user can fetch his profile with getMyProfile", async () => {
-    const profile = await aUserCallsGetMyProfile(user);
+    // TODO: fix test FIRST violation of I: Independence; this setting of profile is referenced in next test
+    profile = await aUserCallsGetMyProfile(user);
 
     // eslint-disable-next-line no-undef
     expect(profile).toMatchObject({
@@ -41,5 +48,19 @@ describe("Given an authenticated user", () => {
     expect(profile.screenName).toContain(firstName);
     // eslint-disable-next-line no-undef
     expect(profile.screenName).toContain(lastName);
+  });
+  // eslint-disable-next-line no-undef
+  it("The user can edit his profile with editMyProfile", async () => {
+    const newName = chance().first({ nationality: "en" });
+    const input = {
+      name: newName,
+    };
+    const newProfile = await aUserCallsEditMyProfile(user, input);
+
+    // eslint-disable-next-line no-undef
+    expect(newProfile).toMatchObject({
+      ...profile,
+      name: newName,
+    });
   });
 });

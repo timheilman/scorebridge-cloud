@@ -120,5 +120,48 @@ const aUserCallsGetMyProfile = async (user) => {
   return profile;
 };
 
+const aUserCallsEditMyProfile = async (user, input) => {
+  const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
+    editMyProfile(newProfile: $input) {
+      backgroundImageUrl
+      bio
+      birthdate
+      createdAt
+      followersCount
+      followingCount
+      id
+      imageUrl
+      likesCounts
+      location
+      name
+      screenName
+      tweetsCount
+      website
+    }
+  }`;
+  const variables = {
+    input,
+  };
+
+  if (!process.env.API_URL) {
+    throw new Error("No API_URL was specified!");
+  }
+  const data = await GraphQL(
+    process.env.API_URL,
+    editMyProfile,
+    variables,
+    user.accessToken
+  );
+  const profile = data.editMyProfile;
+
+  console.log(`[${user.username}] - fetched profile`);
+
+  return profile;
+};
 // eslint-disable-next-line import/prefer-default-export
-export { weInvokeConfirmUserSignup, aUserSignsUp, aUserCallsGetMyProfile };
+export {
+  weInvokeConfirmUserSignup,
+  aUserSignsUp,
+  aUserCallsGetMyProfile,
+  aUserCallsEditMyProfile,
+};
