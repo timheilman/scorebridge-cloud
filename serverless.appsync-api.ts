@@ -34,6 +34,12 @@ export const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
       request: "src/mapping-templates/Query.getMyProfile.request.vtl",
       response: "src/mapping-templates/Query.getMyProfile.response.vtl",
     },
+    "Mutation.editMyProfile": {
+      kind: "UNIT",
+      dataSource: "usersTable",
+      request: "src/mapping-templates/Mutation.editMyProfile.request.vtl",
+      response: "src/mapping-templates/Mutation.editMyProfile.response.vtl",
+    },
   },
   pipelineFunctions: {},
 };
