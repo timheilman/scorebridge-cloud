@@ -75,6 +75,12 @@ const serverlessConfiguration: AWS & {
               Required: false,
               Mutable: true,
             },
+            {
+              AttributeDataType: "String",
+              Name: "role",
+              Required: false,
+              Mutable: false,
+            },
           ],
           LambdaConfig: {
             PostConfirmation: {

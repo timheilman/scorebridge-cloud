@@ -6,5 +6,5 @@ export const fromSsoUsingProfileFromEnv = () =>
   fromSSO({
     profile:
       process.env.SB_TEST_AWS_CLI_PROFILE ||
-      "No ScoreBridge test AWS cli profile name found",
+      "Please_set_SB_TEST_AWS_CLI_PROFILE_in_env_and_use_aws_sso_login",
   });

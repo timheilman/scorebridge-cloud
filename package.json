@@ -6,7 +6,9 @@
   "main": "serverless.ts",
   "scripts": {
     "sls": "sls",
+    "help": "echo try: \"\nexportEnvDev\ncreateFirstCognitoAdminSuperForEnv\nintegration-test\ne2e-test\"",
     "exportEnvDev": "sls export-env --all --overwrite && echo >> .env && ts-node ts-node-scripts/stackOutputsForDotenv.ts >> .env",
+    "createFirstCognitoAdminSuperForEnv": "ts-node ts-node-scripts/createFirstCognitoAdminSuperForEnv.ts",
     "test": "echo \"TODO: make this run integration-test and e2e-test\" && exit 1",
     "integration-test": "jest --verbose ./__tests__/test_cases/integration",
     "e2e-test": "jest --verbose ./__tests__/test_cases/e2e"
