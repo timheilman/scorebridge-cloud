@@ -77,7 +77,7 @@ const serverlessConfiguration: AWS & {
             },
             {
               AttributeDataType: "String",
-              Name: "role",
+              Name: "custom:role",
               Required: false,
               Mutable: false,
             },
