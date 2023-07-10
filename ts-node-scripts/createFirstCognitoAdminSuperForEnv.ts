@@ -1,10 +1,6 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { AdminCreateUserCommand } from "@aws-sdk/client-cognito-identity-provider";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { config as dotenvConfig } from "dotenv";
-// eslint-disable-next-line import/no-unresolved,import/extensions
 import createCognitoIdentityProviderClient from "./createCognitoIdentityProviderClient";
-// eslint-disable-next-line import/no-unresolved,import/extensions
 import requiredEnvVar from "./requiredEnvVar";
 
 dotenvConfig();

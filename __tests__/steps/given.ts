@@ -6,7 +6,6 @@ import {
   InitiateAuthCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { config as dotenvConfig } from "dotenv";
-// eslint-disable-next-line import/extensions,import/no-unresolved
 import { fromSsoUsingProfileFromEnv } from "../../src/libs/from-sso-using-profile-from-env";
 
 dotenvConfig();
@@ -83,5 +82,4 @@ const anAuthenticatedUser = async () => {
   };
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export { aRandomUser, anAuthenticatedUser };

@@ -4,13 +4,9 @@ import {
   CognitoIdentityProviderClient,
   SignUpCommand,
   AdminConfirmSignUpCommand,
-  // eslint-disable-next-line import/no-unresolved
 } from "@aws-sdk/client-cognito-identity-provider";
-// eslint-disable-next-line import/extensions,import/no-unresolved
 import { main as confirmUserSignup } from "../../src/functions/confirm-user-signup/handler";
-// eslint-disable-next-line import/extensions,import/no-unresolved
 import { fromSsoUsingProfileFromEnv } from "../../src/libs/from-sso-using-profile-from-env";
-// eslint-disable-next-line import/extensions,import/no-unresolved
 import GraphQL from "../lib/graphql";
 
 dotenvConfig();
@@ -158,7 +154,6 @@ const aUserCallsEditMyProfile = async (user, input) => {
 
   return profile;
 };
-// eslint-disable-next-line import/prefer-default-export
 export {
   weInvokeConfirmUserSignup,
   aUserSignsUp,

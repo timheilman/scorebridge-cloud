@@ -1,7 +1,6 @@
 import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { config as dotenvConfig } from "dotenv";
-// eslint-disable-next-line import/extensions,import/no-unresolved
 import { fromSsoUsingProfileFromEnv } from "../../src/libs/from-sso-using-profile-from-env";
 
 dotenvConfig();
