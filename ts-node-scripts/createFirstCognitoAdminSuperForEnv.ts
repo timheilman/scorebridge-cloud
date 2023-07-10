@@ -1,9 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {
-  AdminCreateUserCommand,
-  AdminUpdateUserAttributesCommand,
-  CognitoIdentityProviderClient,
-} from "@aws-sdk/client-cognito-identity-provider";
+import { AdminCreateUserCommand } from "@aws-sdk/client-cognito-identity-provider";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { config as dotenvConfig } from "dotenv";
 // eslint-disable-next-line import/no-unresolved,import/extensions
@@ -13,56 +9,26 @@ import requiredEnvVar from "./requiredEnvVar";
 
 dotenvConfig();
 
-async function adminCreateUser(
-  email: string,
-  client: CognitoIdentityProviderClient
-) {
-  const createUserParams = {
-    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-    Username: email,
-    UserAttributes: [{ Name: "email", Value: email }],
-  };
-
-  const createUserCommand = new AdminCreateUserCommand(createUserParams);
-  await client.send(createUserCommand);
-}
-
-async function updateUserCustomAttr(
-  email: string,
-  attr: string,
-  val: string,
-  client: CognitoIdentityProviderClient
-) {
-  const updateAttributesParams = {
-    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"), // Use the COGNITO_USER_POOL_ID environment variable
-    Username: email,
-    UserAttributes: [
-      { Name: `custom:${attr}`, Value: val },
-      // Add any additional custom attributes here if needed
-    ],
-  };
-
-  const updateAttributesCommand = new AdminUpdateUserAttributesCommand(
-    updateAttributesParams
-  );
-  await client.send(updateAttributesCommand);
-}
-
 async function createFirstCognitoAdminSuperForEnv(
   email: string
 ): Promise<void> {
   const client = createCognitoIdentityProviderClient();
 
   try {
-    await adminCreateUser(email, client);
+    const createUserParams = {
+      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+      Username: email,
+      UserAttributes: [
+        { Name: "email", Value: email },
+        { Name: "custom:role", Value: "adminSuper" },
+      ],
+    };
+
+    const createUserCommand = new AdminCreateUserCommand(createUserParams);
+    await client.send(createUserCommand);
   } catch (error) {
     console.error("Error creating user:", error);
-    return;
-  }
-  try {
-    await updateUserCustomAttr(email, "role", "adminSuper", client);
-  } catch (error) {
-    console.error("Error creating user:", error);
+    throw error;
   }
   console.log("User with role adminSuper created successfully.");
 }
