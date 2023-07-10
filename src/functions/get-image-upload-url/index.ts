@@ -10,11 +10,9 @@ export default {
       Effect: "Allow",
       Action: ["s3:PutObject", "s3:PutObjectAcl"],
       Resource: {
-        "Fn::Sub": [
-          `\${AssetsBucket.Arn}/*`,
-          // `\${ABA}/*`,
-          // { ABA: { "Fn::GetAtt": ["AssetsBucket", "Arn"] } },
-        ],
+        "Fn::Sub": `\${AssetsBucket.Arn}/*`,
+        // `\${ABA}/*`,
+        // { ABA: { "Fn::GetAtt": ["AssetsBucket", "Arn"] } },
       },
     },
   ],
