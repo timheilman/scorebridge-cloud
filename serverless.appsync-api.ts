@@ -26,6 +26,12 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
         tableName: { Ref: "UsersTable" },
       },
     },
+    getImageUploadUrlFunction: {
+      type: "AWS_LAMBDA",
+      config: {
+        functionName: "getImageUploadUrl",
+      },
+    },
   },
   resolvers: {
     "Query.getMyProfile": {
@@ -33,6 +39,12 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
       dataSource: "usersTable",
       request: "src/mapping-templates/Query.getMyProfile.request.vtl",
       response: "src/mapping-templates/Query.getMyProfile.response.vtl",
+    },
+    "Query.getImageUploadUrl": {
+      kind: "UNIT",
+      dataSource: "getImageUploadUrlFunction",
+      request: false,
+      response: false,
     },
     "Mutation.editMyProfile": {
       kind: "UNIT",

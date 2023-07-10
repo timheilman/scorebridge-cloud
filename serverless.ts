@@ -2,6 +2,7 @@ import type { AWS } from "@serverless/typescript";
 
 // import hello from '@functions/hello';
 import confirmUserSignup from "@functions/confirm-user-signup";
+import getImageUploadUrl from "@functions/get-image-upload-url";
 import appsyncApi from "./serverless.appsync-api";
 
 const serverlessConfiguration: AWS & {
@@ -32,7 +33,7 @@ const serverlessConfiguration: AWS & {
     },
   },
   // import the function via paths
-  functions: { confirmUserSignup },
+  functions: { confirmUserSignup, getImageUploadUrl },
   package: {
     individually: true,
     exclude: ["package-lock.json", "package.json"],
@@ -143,6 +144,23 @@ const serverlessConfiguration: AWS & {
           Principal: "cognito-idp.amazonaws.com",
           SourceArn: {
             "Fn::GetAtt": ["CognitoUserPool", "Arn"],
+          },
+        },
+      },
+      AssetsBucket: {
+        Type: "AWS::S3::Bucket",
+        Properties: {
+          AccelerateConfiguration: {
+            AccelerationStatus: "Enabled",
+          },
+          CorsConfiguration: {
+            CorsRules: [
+              {
+                AllowedMethods: ["GET", "PUT"],
+                AllowedOrigins: ["*"], // TODO: SCOR-57
+                AllowedHeaders: ["*"],
+              },
+            ],
           },
         },
       },
