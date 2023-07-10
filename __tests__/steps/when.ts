@@ -6,7 +6,7 @@ import {
   AdminConfirmSignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { main as confirmUserSignup } from "../../src/functions/confirm-user-signup/handler";
-import { fromSsoUsingProfileFromEnv } from "../../src/libs/from-sso-using-profile-from-env";
+import fromSsoUsingProfileFromEnv from "../../src/libs/from-sso-using-profile-from-env";
 import GraphQL from "../lib/graphql";
 
 dotenvConfig();

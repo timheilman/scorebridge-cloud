@@ -2,7 +2,7 @@ import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import Chance from "chance";
 import { fromEnv } from "@aws-sdk/credential-providers";
 import { PostConfirmationTriggerEvent } from "aws-lambda";
-import { fromSsoUsingProfileFromEnv } from "../../libs/from-sso-using-profile-from-env";
+import fromSsoUsingProfileFromEnv from "../../libs/from-sso-using-profile-from-env";
 
 const chance = new Chance();
 

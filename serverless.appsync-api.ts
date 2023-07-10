@@ -5,8 +5,7 @@ import { AWS } from "@serverless/typescript";
 // at the time of writing, they seem to be defined here:
 // https://github.com/sid88in/serverless-appsync-plugin/blob/05164d8847a554d56bb73590fdc35bf0bda5198e/src/types/plugin.ts#L3
 
-// eslint-disable-next-line import/prefer-default-export
-export const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
+const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   name: "ScoreBridge-backend",
   schema: "schema.api.graphql",
   authentication: {
@@ -44,3 +43,5 @@ export const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   },
   pipelineFunctions: {},
 };
+
+export default appsyncApi;

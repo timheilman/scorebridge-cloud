@@ -6,7 +6,7 @@ import {
   InitiateAuthCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { config as dotenvConfig } from "dotenv";
-import { fromSsoUsingProfileFromEnv } from "../../src/libs/from-sso-using-profile-from-env";
+import fromSsoUsingProfileFromEnv from "../../src/libs/from-sso-using-profile-from-env";
 
 dotenvConfig();
 
