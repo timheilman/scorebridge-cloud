@@ -1,8 +1,8 @@
 import { config as dotenvConfig } from "dotenv";
-import chance from "chance";
+import chanceLib from "chance";
 import { weInvokeGetImageUploadUrl } from "../../steps/when";
 /* eslint-disable no-undef */
-
+const chance = chanceLib.Chance();
 dotenvConfig();
 describe("When getImageUploadUrl runs", () => {
   it.each([
