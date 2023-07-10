@@ -6,6 +6,7 @@ import {
   AdminConfirmSignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { main as confirmUserSignup } from "../../src/functions/confirm-user-signup/handler";
+import { main as getImageUploadUrl } from "../../src/functions/get-image-upload-url/handler";
 import fromSsoUsingProfileFromEnv from "../../src/libs/from-sso-using-profile-from-env";
 import GraphQL from "../lib/graphql";
 
@@ -41,6 +42,24 @@ const weInvokeConfirmUserSignup = async (
   };
 
   await confirmUserSignup(event /* , context */);
+};
+
+const weInvokeGetImageUploadUrl = async (
+  username: string,
+  extension: string,
+  contentType: string
+) => {
+  const event = {
+    identity: {
+      username,
+    },
+    arguments: {
+      extension,
+      contentType,
+    },
+  };
+
+  return getImageUploadUrl(event);
 };
 
 const aUserSignsUp = async (password: string, name: string, email: string) => {
@@ -156,6 +175,7 @@ const aUserCallsEditMyProfile = async (user, input) => {
 };
 export {
   weInvokeConfirmUserSignup,
+  weInvokeGetImageUploadUrl,
   aUserSignsUp,
   aUserCallsGetMyProfile,
   aUserCallsEditMyProfile,
