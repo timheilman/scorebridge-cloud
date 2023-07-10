@@ -61,10 +61,10 @@ const serverlessConfiguration: AWS & {
           Policies: {
             PasswordPolicy: {
               MinimumLength: 8,
-              RequireLowercase: true,
-              RequireNumbers: true,
-              RequireUppercase: true,
-              RequireSymbols: true,
+              RequireLowercase: false,
+              RequireNumbers: false,
+              RequireUppercase: false,
+              RequireSymbols: false,
             },
           },
           UsernameAttributes: ["email"],
