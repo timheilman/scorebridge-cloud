@@ -131,6 +131,14 @@ const serverlessConfiguration: AWS & {
       },
       UsersTable,
       ClubsTable,
+      AddClubApiKey: {
+        Type: "AWS::AppSync::ApiKey",
+        Properties: {
+          ApiId: {
+            "Fn::GetAtt": ["GraphQlApi", "ApiId"],
+          },
+        },
+      },
     },
     Outputs: {
       CognitoUserPoolId: {
