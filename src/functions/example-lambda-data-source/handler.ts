@@ -9,7 +9,9 @@ import {
 export const main: AppSyncResolverHandler<
   QueryExampleLambdaDataSourceArgs,
   ExampleLambdaDataSourceOutput
-> = async (event: AppSyncResolverEvent<QueryExampleLambdaDataSourceArgs>) => {
+> = async (
+  event: AppSyncResolverEvent<QueryExampleLambdaDataSourceArgs>
+): Promise<ExampleLambdaDataSourceOutput> => {
   const ct = event.arguments.input.contentType;
   const ext = event.arguments.input.extension;
   console.log(

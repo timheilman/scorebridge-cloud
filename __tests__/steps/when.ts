@@ -6,7 +6,7 @@ import {
   AdminConfirmSignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { main as confirmUserSignup } from "../../src/functions/confirm-user-signup/handler";
-import { main as exampleLambdaDatasource } from "../../src/functions/example-lambda-datasource/handler";
+import { main as exampleLambdaDatasource } from "../../src/functions/example-lambda-data-source/handler";
 import fromSsoUsingProfileFromEnv from "../../src/libs/from-sso-using-profile-from-env";
 import GraphQL from "../lib/graphql";
 

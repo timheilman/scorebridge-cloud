@@ -2,7 +2,7 @@ import type { AWS } from "@serverless/typescript";
 
 // import hello from '@functions/hello';
 import confirmUserSignup from "@functions/confirm-user-signup";
-import exampleLambdaDatasource from "@functions/example-lambda-datasource";
+import exampleLambdaDatasource from "@functions/example-lambda-data-source";
 import appsyncApi from "./serverless.appsync-api";
 
 const serverlessConfiguration: AWS & {
