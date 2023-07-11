@@ -1,5 +1,5 @@
 import { config as dotenvConfig } from "dotenv";
-import { weInvokeExampleLambdaDatasource } from "../../steps/when";
+import { weInvokeExampleLambdaDataSource } from "../../steps/when";
 /* eslint-disable no-undef */
 dotenvConfig();
 describe("When exampleLambdaDataSource runs", () => {
@@ -12,10 +12,10 @@ describe("When exampleLambdaDataSource runs", () => {
   ])(
     "Returns an arg list for extension %s and content type %s",
     async (extension, contentType) => {
-      const result = await weInvokeExampleLambdaDatasource(
+      const result: string = (await weInvokeExampleLambdaDataSource(
         extension,
         contentType
-      );
+      )) as string;
 
       expect(result).toMatch(/^Hello World!/);
       expect(result).toMatch(/region: us-west-2/);
