@@ -1,5 +1,6 @@
 import { config as dotenvConfig } from "dotenv";
 import { weInvokeExampleLambdaDataSource } from "../../steps/when";
+import { ExampleLambdaDataSourceOutput } from "../../../appsync";
 /* eslint-disable no-undef */
 dotenvConfig();
 describe("When exampleLambdaDataSource runs", () => {
@@ -12,17 +13,17 @@ describe("When exampleLambdaDataSource runs", () => {
   ])(
     "Returns an arg list for extension %s and content type %s",
     async (extension, contentType) => {
-      const result: string = (await weInvokeExampleLambdaDataSource(
-        extension,
-        contentType
-      )) as string;
-
-      expect(result).toMatch(/^Hello World!/);
-      expect(result).toMatch(/region: us-west-2/);
-      expect(JSON.parse(result.split("args: ")[1]).extension).toBe(extension);
-      expect(JSON.parse(result.split("args: ")[1]).contentType).toBe(
-        contentType
-      );
+      const result: ExampleLambdaDataSourceOutput =
+        (await weInvokeExampleLambdaDataSource(
+          extension,
+          contentType
+        )) as ExampleLambdaDataSourceOutput;
+      expect(
+        JSON.parse(result.exampleOutputField).arguments.input.extension
+      ).toBe(extension);
+      expect(
+        JSON.parse(result.exampleOutputField).arguments.input.contentType
+      ).toBe(contentType);
     }
   );
 });
