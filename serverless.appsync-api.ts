@@ -5,6 +5,12 @@ import { AWS } from "@serverless/typescript";
 // at the time of writing, they seem to be defined here:
 // https://github.com/sid88in/serverless-appsync-plugin/blob/05164d8847a554d56bb73590fdc35bf0bda5198e/src/types/plugin.ts#L3
 
+const withTemplateFiles = (endpointType, endpointName, otherRecords) => ({
+  request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
+  response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
+  ...otherRecords,
+});
+
 const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   name: "ScoreBridge-backend",
   schema: "schema.api.graphql",
@@ -34,24 +40,27 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
     },
   },
   resolvers: {
-    "Query.getMyProfile": {
+    // [['Query', 'getMyProfile']].reduce((typeName) => {
+    //   const type = typeName[0];
+    //   const name = typeName[1];
+    //   `${typeName[0]}.${typeName[1]}`
+    // })
+    "Query.getMyProfile": withTemplateFiles("Query", "getMyProfile", {
       kind: "UNIT",
       dataSource: "usersTable",
-      request: "src/mapping-templates/Query.getMyProfile.request.vtl",
-      response: "src/mapping-templates/Query.getMyProfile.response.vtl",
-    },
-    "Query.exampleLambdaDatasource": {
-      kind: "UNIT",
-      dataSource: "exampleLambdaDatasource",
-      request: false, // TODO: use from https://docs.aws.amazon.com/appsync/latest/devguide/resolver-mapping-template-reference-lambda.html
-      response: false, // TODO: use from https://docs.aws.amazon.com/appsync/latest/devguide/resolver-mapping-template-reference-lambda.html
-    },
-    "Mutation.editMyProfile": {
+    }),
+    "Query.exampleLambdaDatasource": withTemplateFiles(
+      "Query",
+      "exampleLambdaDataSource",
+      {
+        kind: "UNIT",
+        dataSource: "exampleLambdaDatasource",
+      }
+    ),
+    "Mutation.editMyProfile": withTemplateFiles("Mutation", "editMyProfile", {
       kind: "UNIT",
       dataSource: "usersTable",
-      request: "src/mapping-templates/Mutation.editMyProfile.request.vtl",
-      response: "src/mapping-templates/Mutation.editMyProfile.response.vtl",
-    },
+    }),
   },
   pipelineFunctions: {},
 };
