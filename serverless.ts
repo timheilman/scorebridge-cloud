@@ -156,23 +156,6 @@ const serverlessConfiguration: AWS & {
           },
         },
       },
-      AssetsBucket: {
-        Type: "AWS::S3::Bucket",
-        Properties: {
-          AccelerateConfiguration: {
-            AccelerationStatus: "Enabled",
-          },
-          CorsConfiguration: {
-            CorsRules: [
-              {
-                AllowedMethods: ["GET", "PUT"],
-                AllowedOrigins: ["*"], // TODO: SCOR-57
-                AllowedHeaders: ["*"],
-              },
-            ],
-          },
-        },
-      },
     },
     Outputs: {
       CognitoUserPoolId: {
