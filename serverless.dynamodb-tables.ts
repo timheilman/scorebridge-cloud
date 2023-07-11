@@ -1,4 +1,4 @@
-export const UsersTable = {
+const buildSyntheticHashNoSortTable = (tagTableName) => ({
   Type: "AWS::DynamoDB::Table",
   Properties: {
     BillingMode: "PAY_PER_REQUEST",
@@ -21,8 +21,13 @@ export const UsersTable = {
       },
       {
         Key: "Name",
-        Value: "users-table",
+        Value: tagTableName,
       },
     ],
   },
-};
+});
+
+export const UsersTable = buildSyntheticHashNoSortTable("users-table");
+export const PendingSignUpsTable = buildSyntheticHashNoSortTable(
+  "pending-sign-ups-table"
+);
