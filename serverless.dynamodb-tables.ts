@@ -1,4 +1,4 @@
-const buildSyntheticHashNoSortTable = (tagTableName) => ({
+const buildSyntheticHashNoSortTable = (tableNameHyphens) => ({
   Type: "AWS::DynamoDB::Table",
   Properties: {
     BillingMode: "PAY_PER_REQUEST",
@@ -21,13 +21,11 @@ const buildSyntheticHashNoSortTable = (tagTableName) => ({
       },
       {
         Key: "Name",
-        Value: tagTableName,
+        Value: tableNameHyphens,
       },
     ],
   },
 });
 
 export const UsersTable = buildSyntheticHashNoSortTable("users-table");
-export const PendingSignUpsTable = buildSyntheticHashNoSortTable(
-  "pending-sign-ups-table"
-);
+export const ClubsTable = buildSyntheticHashNoSortTable("clubs-table");

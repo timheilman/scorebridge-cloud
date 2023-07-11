@@ -4,7 +4,6 @@ schema {
 }
 
 type Query {
-  # TODO: expand to custom input/output types
   exampleLambdaDataSource(input: ExampleLambdaDataSourceInput): ExampleLambdaDataSourceOutput!
 
   getMyTimeline(limit: Int!, nextToken: String): TweetsPage!
@@ -36,6 +35,10 @@ type ExampleLambdaDataSourceOutput {
 type Mutation {
   editMyProfile(newProfile: ProfileInput!): MyProfile!
 
+  addClub(input: AddClubInput!): AddClubResponse!
+  @aws_api_key
+  # @aws_auth(cognito_groups: ["adminClub"])
+
   tweet(text: String!): Tweet!
 
   like(tweetId: ID!): Boolean!
@@ -53,6 +56,15 @@ type Mutation {
   unfollow(userId: ID!): Boolean!
 
   doTracerBulletMutation(tracerBulletMutationInput: TracerBulletMutationInput): TracerBulletOutput!
+}
+
+input AddClubInput {
+  newAdminEmail: AWSEmail!
+  newClubName: String!
+}
+
+type AddClubResponse {
+  newClubId: String!
 }
 
 input ProfileInput {

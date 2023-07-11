@@ -24,7 +24,7 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
       defaultAction: "ALLOW",
     },
   },
-  additionalAuthentications: [],
+  additionalAuthentications: [{ type: "API_KEY" }],
   dataSources: {
     usersTable: {
       type: "AMAZON_DYNAMODB",

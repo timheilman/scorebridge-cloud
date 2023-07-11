@@ -4,7 +4,7 @@ import type { AWS } from "@serverless/typescript";
 import confirmUserSignup from "@functions/confirm-user-signup";
 import exampleLambdaDataSource from "@functions/example-lambda-data-source";
 import appsyncApi from "./serverless.appsync-api";
-import { UsersTable, PendingSignUpsTable } from "./serverless.dynamodb-tables";
+import { UsersTable, ClubsTable } from "./serverless.dynamodb-tables";
 
 const serverlessConfiguration: AWS & {
   appSync: unknown;
@@ -130,7 +130,7 @@ const serverlessConfiguration: AWS & {
         },
       },
       UsersTable,
-      PendingSignUpsTable,
+      ClubsTable,
     },
     Outputs: {
       CognitoUserPoolId: {
