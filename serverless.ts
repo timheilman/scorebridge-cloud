@@ -82,6 +82,12 @@ const serverlessConfiguration: AWS & {
               Required: false,
               Mutable: false,
             },
+            {
+              AttributeDataType: "String",
+              Name: "tenantId",
+              Required: false,
+              Mutable: false,
+            },
           ],
           LambdaConfig: {
             PostConfirmation: {
