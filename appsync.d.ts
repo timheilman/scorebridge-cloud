@@ -180,7 +180,7 @@ export type ProfilesPage = {
 
 export type Query = {
   __typename?: 'Query';
-  exampleLambdaDataSource: Scalars['String']['output'];
+  exampleLambdaDataSource: ExampleLambdaDataSourceOutput;
   getFollowers: ProfilesPage;
   getFollowing: ProfilesPage;
   getLikes: TweetsPage;
