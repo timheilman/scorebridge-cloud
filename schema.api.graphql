@@ -5,7 +5,7 @@ schema {
 
 type Query {
   # TODO: expand to custom input/output types
-  exampleLambdaDataSource(input: ExampleLambdaDataSourceInput): ExampleLambdaDataSourceOutput!
+  exampleLambdaDataSource(input: ExampleLambdaDataSourceInput): String!
 
   getMyTimeline(limit: Int!, nextToken: String): TweetsPage!
 
