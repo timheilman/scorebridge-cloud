@@ -1,14 +1,19 @@
 import { config as dotenvConfig } from "dotenv";
-import { PostConfirmationTriggerEvent } from "aws-lambda";
 import {
+  AppSyncResolverEvent,
+  PostConfirmationTriggerEvent,
+  Context as AwsLambdaContext,
+} from "aws-lambda";
+import {
+  AdminConfirmSignUpCommand,
   CognitoIdentityProviderClient,
   SignUpCommand,
-  AdminConfirmSignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { main as confirmUserSignup } from "../../src/functions/confirm-user-signup/handler";
-import { main as exampleLambdaDatasource } from "../../src/functions/example-lambda-data-source/handler";
+import { main as exampleLambdaDataSource } from "../../src/functions/example-lambda-data-source/handler";
 import fromSsoUsingProfileFromEnv from "../../src/libs/from-sso-using-profile-from-env";
 import GraphQL from "../lib/graphql";
+import { QueryExampleLambdaDataSourceArgs } from "../../appsync";
 
 dotenvConfig();
 
@@ -44,18 +49,60 @@ const weInvokeConfirmUserSignup = async (
   await confirmUserSignup(event /* , context */);
 };
 
-const weInvokeExampleLambdaDatasource = async (
+const weInvokeExampleLambdaDataSource = async (
   extension: string,
   contentType: string
 ) => {
-  const event = {
+  const minimalEvent: AppSyncResolverEvent<QueryExampleLambdaDataSourceArgs> = {
     arguments: {
-      extension,
-      contentType,
+      input: {
+        extension,
+        contentType,
+      },
+    },
+    source: undefined,
+    request: {
+      headers: undefined,
+      domainName: "",
+    },
+    info: {
+      selectionSetList: [],
+      selectionSetGraphQL: "",
+      parentTypeName: "",
+      fieldName: "",
+      variables: {},
+    },
+    prev: {
+      result: {},
+    },
+    stash: {},
+  };
+  const minimalContext: AwsLambdaContext = {
+    callbackWaitsForEmptyEventLoop: false,
+    functionName: "",
+    functionVersion: "",
+    invokedFunctionArn: "",
+    memoryLimitInMB: "",
+    awsRequestId: "",
+    logGroupName: "",
+    logStreamName: "",
+    getRemainingTimeInMillis(): number {
+      throw new Error("Function not implemented.");
+    },
+    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+    done(_error?: Error, _result?: any): void {
+      throw new Error("Function not implemented.");
+    },
+    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+    fail(_error: string | Error): void {
+      throw new Error("Function not implemented.");
+    },
+    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+    succeed(_messageOrObject: any): void {
+      throw new Error("Function not implemented.");
     },
   };
-
-  return exampleLambdaDatasource(event);
+  return exampleLambdaDataSource(minimalEvent, minimalContext, null);
 };
 
 const aUserSignsUp = async (password: string, name: string, email: string) => {
@@ -171,7 +218,7 @@ const aUserCallsEditMyProfile = async (user, input) => {
 };
 export {
   weInvokeConfirmUserSignup,
-  weInvokeExampleLambdaDatasource,
+  weInvokeExampleLambdaDataSource,
   aUserSignsUp,
   aUserCallsGetMyProfile,
   aUserCallsEditMyProfile,

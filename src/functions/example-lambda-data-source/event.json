@@ -71,7 +71,7 @@
   "info": {
     "selectionSetList": [],
     "selectionSetGraphQL": "",
-    "fieldName": "exampleLambdaDatasource",
+    "fieldName": "exampleLambdaDataSource",
     "parentTypeName": "Query",
     "variables": {}
   },

@@ -2,7 +2,7 @@ import { config as dotenvConfig } from "dotenv";
 import { weInvokeExampleLambdaDatasource } from "../../steps/when";
 /* eslint-disable no-undef */
 dotenvConfig();
-describe("When exampleLambdaDatasource runs", () => {
+describe("When exampleLambdaDataSource runs", () => {
   it.each([
     [".png", "image/png"],
     [".jpeg", "image/jpeg"],

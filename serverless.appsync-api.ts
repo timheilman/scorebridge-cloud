@@ -32,10 +32,10 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
         tableName: { Ref: "UsersTable" },
       },
     },
-    exampleLambdaDatasource: {
+    exampleLambdaDataSource: {
       type: "AWS_LAMBDA",
       config: {
-        functionName: "exampleLambdaDatasource",
+        functionName: "exampleLambdaDataSource",
       },
     },
   },
@@ -49,12 +49,12 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
       kind: "UNIT",
       dataSource: "usersTable",
     }),
-    "Query.exampleLambdaDatasource": withTemplateFiles(
+    "Query.exampleLambdaDataSource": withTemplateFiles(
       "Query",
       "exampleLambdaDataSource",
       {
         kind: "UNIT",
-        dataSource: "exampleLambdaDatasource",
+        dataSource: "exampleLambdaDataSource",
       }
     ),
     "Mutation.editMyProfile": withTemplateFiles("Mutation", "editMyProfile", {
