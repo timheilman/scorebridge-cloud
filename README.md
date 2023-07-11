@@ -27,6 +27,12 @@ aws sso login --profile <that_profile_name>
 - Run `npm i` to install the project dependencies
 - Run `npx sls deploy` to deploy this stack to AWS
 
+### Updating graphql-based typescript types
+
+Although it is checked in, `appsync.d.ts` is a generated file.
+
+Use `npm run gql-types-codegen` to generate typescript types from the gql schema.
+
 ## Testing
 
 For now, only the dev environment is enabled.  First, establish a `.env` file at project root using:

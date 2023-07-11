@@ -6,12 +6,13 @@
   "main": "serverless.ts",
   "scripts": {
     "sls": "sls",
-    "help": "echo try: \"\nexportEnvDev\ncreateFirstCognitoAdminSuperForEnv\nintegration-test\ne2e-test\"",
+    "help": "echo try: \"\nexportEnvDev\ncreateFirstCognitoAdminSuperForEnv\nintegration-test\ne2e-test\ngql-types-codegen\"",
     "exportEnvDev": "sls export-env --all --overwrite && echo >> .env && ts-node ts-node-scripts/stackOutputsForDotenv.ts >> .env",
     "createFirstCognitoAdminSuperForEnv": "ts-node ts-node-scripts/createFirstCognitoAdminSuperForEnv.ts",
     "test": "jest --verbose ./__tests__/test_cases/unit",
     "integration-test": "jest --verbose ./__tests__/test_cases/integration",
-    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e"
+    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e",
+    "gql-types-codegen": "graphql-codegen"
   },
   "engines": {
     "node": ">=14.15.0"
@@ -31,6 +32,8 @@
     "@aws-sdk/s3-request-presigner": "^3.367.0",
     "@aws-sdk/util-dynamodb": "^3.360.0",
     "@aws-sdk/util-format-url": "^3.363.0",
+    "@graphql-codegen/cli": "^4.0.1",
+    "@graphql-codegen/typescript": "^4.0.1",
     "@serverless/typescript": "^3.0.0",
     "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^29.5.2",
