@@ -2,7 +2,7 @@ import type { AWS } from "@serverless/typescript";
 
 // import hello from '@functions/hello';
 import confirmUserSignup from "@functions/confirm-user-signup";
-import getImageUploadUrl from "@functions/get-image-upload-url";
+import exampleLambdaDatasource from "@functions/example-lambda-datasource";
 import appsyncApi from "./serverless.appsync-api";
 
 const serverlessConfiguration: AWS & {
@@ -33,7 +33,7 @@ const serverlessConfiguration: AWS & {
     },
   },
   // import the function via paths
-  functions: { confirmUserSignup, getImageUploadUrl },
+  functions: { confirmUserSignup, exampleLambdaDatasource },
   package: {
     individually: true,
     exclude: ["package-lock.json", "package.json"],

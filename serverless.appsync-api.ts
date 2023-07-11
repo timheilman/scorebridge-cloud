@@ -26,10 +26,10 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
         tableName: { Ref: "UsersTable" },
       },
     },
-    getImageUploadUrlFunction: {
+    exampleLambdaDatasource: {
       type: "AWS_LAMBDA",
       config: {
-        functionName: "getImageUploadUrl",
+        functionName: "exampleLambdaDatasource",
       },
     },
   },
@@ -40,11 +40,11 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
       request: "src/mapping-templates/Query.getMyProfile.request.vtl",
       response: "src/mapping-templates/Query.getMyProfile.response.vtl",
     },
-    "Query.getImageUploadUrl": {
+    "Query.exampleLambdaDatasource": {
       kind: "UNIT",
-      dataSource: "getImageUploadUrlFunction",
-      request: false,
-      response: false,
+      dataSource: "exampleLambdaDatasource",
+      request: false, // TODO: use from https://docs.aws.amazon.com/appsync/latest/devguide/resolver-mapping-template-reference-lambda.html
+      response: false, // TODO: use from https://docs.aws.amazon.com/appsync/latest/devguide/resolver-mapping-template-reference-lambda.html
     },
     "Mutation.editMyProfile": {
       kind: "UNIT",

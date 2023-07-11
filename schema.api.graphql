@@ -4,7 +4,8 @@ schema {
 }
 
 type Query {
-  getImageUploadUrl(extension: String, contentType: String): AWSURL!
+  # TODO: expand to custom input/output types
+  exampleLambdaDatasource(extension: String, contentType: String): String!
 
   getMyTimeline(limit: Int!, nextToken: String): TweetsPage!
 
