@@ -1,4 +1,8 @@
-import { AdminCreateUserCommand } from "@aws-sdk/client-cognito-identity-provider";
+import {
+  AdminCreateUserCommand,
+  AdminUpdateUserAttributesCommand,
+  AdminUpdateUserAttributesCommandInput,
+} from "@aws-sdk/client-cognito-identity-provider";
 import { config as dotenvConfig } from "dotenv";
 import createCognitoIdentityProviderClient from "./createCognitoIdentityProviderClient";
 import requiredEnvVar from "../src/libs/requiredEnvVar";
@@ -14,16 +18,27 @@ async function createFirstCognitoAdminSuperForEnv(
     const createUserParams = {
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
       Username: email,
-      UserAttributes: [
-        { Name: "email", Value: email },
-        { Name: "custom:role", Value: "adminSuper" },
-      ],
+      UserAttributes: [{ Name: "email", Value: email }],
     };
 
     const createUserCommand = new AdminCreateUserCommand(createUserParams);
     await client.send(createUserCommand);
   } catch (error) {
     console.error("Error creating user:", error);
+    throw error;
+  }
+  try {
+    const updateUserParams: AdminUpdateUserAttributesCommandInput = {
+      UserAttributes: [{ Name: "custom:role", Value: "adminSuper" }],
+      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+      Username: email,
+    };
+    const updateUserCommand = new AdminUpdateUserAttributesCommand(
+      updateUserParams
+    );
+    await client.send(updateUserCommand);
+  } catch (error) {
+    console.error("Error updating user to adminSuper role:", error);
     throw error;
   }
   console.log("User with role adminSuper created successfully.");

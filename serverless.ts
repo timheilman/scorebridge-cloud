@@ -80,13 +80,13 @@ const serverlessConfiguration: AWS & {
               AttributeDataType: "String",
               Name: "role",
               Required: false, // true is not yet supported
-              Mutable: false,
+              Mutable: true, // setting at creation causes failure during password reset, so trying mutable
             },
             {
               AttributeDataType: "String",
               Name: "tenantId",
               Required: false,
-              Mutable: false,
+              Mutable: true,
             },
           ],
           LambdaConfig: {
