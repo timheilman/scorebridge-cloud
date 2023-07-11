@@ -89,6 +89,9 @@ const serverlessConfiguration: AWS & {
             },
           },
           UserPoolName: `\${self:custom.settings.COGNITO_USER_POOL_NAME}`,
+          AdminCreateUserConfig: {
+            AllowAdminCreateUserOnly: true,
+          },
         },
       },
       WebUserPoolClient: {
