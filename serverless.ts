@@ -137,6 +137,7 @@ const serverlessConfiguration: AWS & {
           ApiId: {
             "Fn::GetAtt": ["GraphQlApi", "ApiId"],
           },
+          Description: `AppSync API key for stage \${sls:stage} for adding new clubs`,
         },
       },
     },
@@ -152,6 +153,11 @@ const serverlessConfiguration: AWS & {
       WebCognitoUserPoolClientId: {
         Value: {
           Ref: "WebUserPoolClient",
+        },
+      },
+      AddClubApiKey: {
+        Value: {
+          "Fn::GetAtt": ["AddClubApiKey", "ApiKey"],
         },
       },
     },
