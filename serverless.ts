@@ -123,7 +123,10 @@ const serverlessConfiguration: AWS & {
             Ref: "CognitoUserPool",
           },
           ClientName: "web",
-          ExplicitAuthFlows: ["ALLOW_USER_SRP_AUTH"],
+          ExplicitAuthFlows: [
+            "ALLOW_REFRESH_TOKEN_AUTH",
+            "ALLOW_USER_SRP_AUTH",
+          ],
           PreventUserExistenceErrors: "ENABLED",
         },
       },
