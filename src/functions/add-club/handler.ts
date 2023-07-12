@@ -21,7 +21,9 @@ import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
 export const main: AppSyncResolverHandler<
   MutationAddClubArgs,
   AddClubResponse
-> = async (event: AppSyncResolverEvent<MutationAddClubArgs>) => {
+> = async (
+  event: AppSyncResolverEvent<MutationAddClubArgs>
+): Promise<AddClubResponse> => {
   // generate the synthetic id for the club
   // create the club record w/provided description
   // ddb: create the user

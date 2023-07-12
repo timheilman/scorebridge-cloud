@@ -9,6 +9,7 @@ const resolvers = [
   "Query.getMyProfile.usersTable",
   "Query.exampleLambdaDataSource.exampleLambdaDataSource",
   "Mutation.editMyProfile.usersTable",
+  "Mutation.addClub.addClub",
 ];
 
 const lambdaDataSources = ["exampleLambdaDataSource", "addClub"];
