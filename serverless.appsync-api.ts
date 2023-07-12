@@ -5,19 +5,21 @@ import { AWS } from "@serverless/typescript";
 // at the time of writing, they seem to be defined here:
 // https://github.com/sid88in/serverless-appsync-plugin/blob/05164d8847a554d56bb73590fdc35bf0bda5198e/src/types/plugin.ts#L3
 
-// TODO: make this ddbResolvers and lambdaResolvers; treat separately
-// in order to dry the dataSource name and lambda fn name: always the same
 const ddbResolvers = [
-  "Query.getMyProfile.usersTable",
-  "Mutation.editMyProfile.usersTable",
+  ["Query", "getMyProfile", "usersTable"],
+  ["Mutation", "editMyProfile", "usersTable"],
 ];
 
+// Unlike DynamoDb resolvers, lambdas always have a datasource named the same
 const lambdaResolvers = [
-  // "Query.exampleLambdaDataSource", // see below, just verifying old format
-  "Mutation.addClub",
+  ["Query", "exampleLambdaDataSource"],
+  ["Mutation", "addClub"],
 ];
 
-const withTemplateFiles = (endpointType, endpointName, dataSource) => ({
+// Derived:
+const ddbDataSources = [...new Set(ddbResolvers.map((v) => v[2]))];
+
+const resolverDefinition = (endpointType, endpointName, dataSource) => ({
   request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
   response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
   kind: "UNIT",
@@ -27,18 +29,15 @@ const withTemplateFiles = (endpointType, endpointName, dataSource) => ({
 function customAppSyncResolvers() {
   return {
     ...ddbResolvers.reduce((acc, val) => {
-      const s = val.split(".");
-      const type = s[0];
-      const name = s[1];
-      const dataSource = s[2];
-      acc[`${type}.${name}`] = withTemplateFiles(type, name, dataSource);
+      acc[`${val[0]}.${val[1]}`] = resolverDefinition(val[0], val[1], val[2]);
       return acc;
     }, {}),
     ...lambdaResolvers.reduce((acc, val) => {
-      const s = val.split(".");
-      const type = s[0];
-      const name = s[1];
-      acc[`${type}.${name}`] = withTemplateFiles(type, name, name);
+      acc[`${val[0]}.${val[1]}`] = resolverDefinition(
+        val[0],
+        val[1],
+        val[1] /* lambdas always get their own same-named datasource */
+      );
       return acc;
     }, {}),
   };
@@ -46,14 +45,34 @@ function customAppSyncResolvers() {
 
 function customAppSyncLambdaDataSources() {
   return lambdaResolvers.reduce((acc, val) => {
-    const s = val.split(".");
-    const name = s[1];
-    acc[name] = {
+    acc[val[1]] = {
       type: "AWS_LAMBDA",
-      config: { functionName: name },
+      config: { functionName: val[1] },
     };
     return acc;
   }, {});
+}
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// patches appSync data sources through to ddb tables of same name
+function customAppSyncDdbDataSources() {
+  return ddbDataSources.reduce((acc, val) => {
+    acc[val] = {
+      type: "AMAZON_DYNAMODB",
+      config: { tableName: { Ref: capitalizeFirstLetter(val) } },
+    };
+    return acc;
+  }, {});
+}
+
+function customAppSyncDataSources() {
+  return {
+    ...customAppSyncDdbDataSources(),
+    ...customAppSyncLambdaDataSources(),
+  };
 }
 
 const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
@@ -70,29 +89,8 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
     },
   },
   additionalAuthentications: [{ type: "API_KEY" }],
-  dataSources: {
-    // TODO: oops, refactor out this part: need clubsTable here too!
-    usersTable: {
-      type: "AMAZON_DYNAMODB",
-      config: { tableName: { Ref: "UsersTable" } },
-    },
-    ...customAppSyncLambdaDataSources(),
-    // just verifying old event w/false request/response... see above
-    exampleLambdaDataSource: {
-      type: "AWS_LAMBDA",
-      config: { functionName: "exampleLambdaDataSource" },
-    },
-  },
-  resolvers: {
-    ...customAppSyncResolvers(),
-    // just verifying old event w/false request/response... see above
-    "Query.exampleLambdaDataSource": {
-      kind: "UNIT",
-      dataSource: "exampleLambdaDataSource",
-      request: false,
-      response: false,
-    },
-  },
+  dataSources: customAppSyncDataSources(),
+  resolvers: customAppSyncResolvers(),
   pipelineFunctions: {},
 };
 
