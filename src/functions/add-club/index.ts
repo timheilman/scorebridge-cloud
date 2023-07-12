@@ -6,10 +6,13 @@ export default {
     USERS_TABLE: {
       Ref: "UsersTable",
     },
+    CLUBS_TABLE: {
+      Ref: "ClubsTable",
+    },
     COGNITO_USER_POOL_ID: {
       Ref: "CognitoUserPool",
     },
-    WEB_COGNITO_USER_POOL_CLIENT_ID: {
+    SELF_SIGN_UP_COGNITO_USER_POOL_CLIENT_ID: {
       Ref: "SelfSignUpUserPoolClient",
     },
   },

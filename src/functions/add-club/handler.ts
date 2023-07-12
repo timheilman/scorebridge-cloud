@@ -34,14 +34,14 @@ export const main: AppSyncResolverHandler<
     USERS_TABLE,
     CLUBS_TABLE,
     COGNITO_USER_POOL_ID,
-    WEB_COGNITO_USER_POOL_CLIENT_ID,
+    SELF_SIGN_UP_COGNITO_USER_POOL_CLIENT_ID,
   } = process.env;
 
   [
     USERS_TABLE,
     CLUBS_TABLE,
     COGNITO_USER_POOL_ID,
-    WEB_COGNITO_USER_POOL_CLIENT_ID,
+    SELF_SIGN_UP_COGNITO_USER_POOL_CLIENT_ID,
   ].forEach((val) => console.log(val));
   console.log("and the event:");
   console.log(JSON.stringify(event, null, 2));
