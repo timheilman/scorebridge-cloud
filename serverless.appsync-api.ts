@@ -8,6 +8,7 @@ import { AWS } from "@serverless/typescript";
 const withTemplateFiles = (endpointType, endpointName, otherRecords) => ({
   request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
   response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
+  kind: "UNIT",
   ...otherRecords,
 });
 
@@ -46,19 +47,16 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
     //   `${typeName[0]}.${typeName[1]}`
     // })
     "Query.getMyProfile": withTemplateFiles("Query", "getMyProfile", {
-      kind: "UNIT",
       dataSource: "usersTable",
     }),
     "Query.exampleLambdaDataSource": withTemplateFiles(
       "Query",
       "exampleLambdaDataSource",
       {
-        kind: "UNIT",
         dataSource: "exampleLambdaDataSource",
       }
     ),
     "Mutation.editMyProfile": withTemplateFiles("Mutation", "editMyProfile", {
-      kind: "UNIT",
       dataSource: "usersTable",
     }),
   },
