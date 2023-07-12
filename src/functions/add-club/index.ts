@@ -6,6 +6,16 @@ export default {
     USERS_TABLE: {
       Ref: "UsersTable",
     },
+    COGNITO_USER_POOL_ID: {
+      Value: {
+        Ref: "CognitoUserPool",
+      },
+    },
+    WEB_COGNITO_USER_POOL_CLIENT_ID: {
+      Value: {
+        Ref: "SelfSignUpUserPoolClient",
+      },
+    },
   },
   iamRoleStatements: [
     {
