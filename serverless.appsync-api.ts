@@ -74,16 +74,13 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
     // TODO: oops, refactor out this part: need clubsTable here too!
     usersTable: {
       type: "AMAZON_DYNAMODB",
-      config: {
-        tableName: { Ref: "UsersTable" },
-      },
+      config: { tableName: { Ref: "UsersTable" } },
     },
     ...customAppSyncLambdaDataSources(),
+    // just verifying old event w/false request/response... see above
     exampleLambdaDataSource: {
       type: "AWS_LAMBDA",
-      config: {
-        functionName: { Ref: "exampleLambdaDataSource" },
-      },
+      config: { functionName: "exampleLambdaDataSource" },
     },
   },
   resolvers: {
