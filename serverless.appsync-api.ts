@@ -5,12 +5,41 @@ import { AWS } from "@serverless/typescript";
 // at the time of writing, they seem to be defined here:
 // https://github.com/sid88in/serverless-appsync-plugin/blob/05164d8847a554d56bb73590fdc35bf0bda5198e/src/types/plugin.ts#L3
 
-const withTemplateFiles = (endpointType, endpointName, otherRecords) => ({
+const resolvers = [
+  "Query.getMyProfile.usersTable",
+  "Query.exampleLambdaDataSource.exampleLambdaDataSource",
+  "Mutation.editMyProfile.usersTable",
+];
+
+const lambdaDataSources = ["exampleLambdaDataSource", "addClub"];
+
+const withTemplateFiles = (endpointType, endpointName, dataSource) => ({
   request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
   response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
   kind: "UNIT",
-  ...otherRecords,
+  dataSource,
 });
+
+function customAppSyncResolvers() {
+  return resolvers.reduce((acc, val) => {
+    const s = val.split(".");
+    const type = s[0];
+    const name = s[1];
+    const dataSource = s[2];
+    acc[`${type}.${name}`] = withTemplateFiles(type, name, dataSource);
+    return acc;
+  }, {});
+}
+
+function customAppSyncLambdaDataSources() {
+  return lambdaDataSources.reduce((acc, val) => {
+    acc[val] = {
+      type: "AWS_LAMBDA",
+      config: { functionName: val },
+    };
+    return acc;
+  }, {});
+}
 
 const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   name: "ScoreBridge-backend",
@@ -33,33 +62,9 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
         tableName: { Ref: "UsersTable" },
       },
     },
-    exampleLambdaDataSource: {
-      type: "AWS_LAMBDA",
-      config: {
-        functionName: "exampleLambdaDataSource",
-      },
-    },
+    ...customAppSyncLambdaDataSources(),
   },
-  resolvers: {
-    // [['Query', 'getMyProfile']].reduce((typeName) => {
-    //   const type = typeName[0];
-    //   const name = typeName[1];
-    //   `${typeName[0]}.${typeName[1]}`
-    // })
-    "Query.getMyProfile": withTemplateFiles("Query", "getMyProfile", {
-      dataSource: "usersTable",
-    }),
-    "Query.exampleLambdaDataSource": withTemplateFiles(
-      "Query",
-      "exampleLambdaDataSource",
-      {
-        dataSource: "exampleLambdaDataSource",
-      }
-    ),
-    "Mutation.editMyProfile": withTemplateFiles("Mutation", "editMyProfile", {
-      dataSource: "usersTable",
-    }),
-  },
+  resolvers: customAppSyncResolvers(),
   pipelineFunctions: {},
 };
 
