@@ -3,6 +3,7 @@ import type { AWS } from "@serverless/typescript";
 // import hello from '@functions/hello';
 import confirmUserSignup from "@functions/confirm-user-signup";
 import exampleLambdaDataSource from "@functions/example-lambda-data-source";
+import addClub from "@functions/add-club";
 import appsyncApi from "./serverless.appsync-api";
 import { UsersTable, ClubsTable } from "./serverless.dynamodb-tables";
 
@@ -34,7 +35,7 @@ const serverlessConfiguration: AWS & {
     },
   },
   // import the function via paths
-  functions: { confirmUserSignup, exampleLambdaDataSource },
+  functions: { confirmUserSignup, exampleLambdaDataSource, addClub },
   package: {
     individually: true,
     exclude: ["package-lock.json", "package.json"],

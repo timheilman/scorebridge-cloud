@@ -15,5 +15,22 @@ export default {
         "Fn::GetAtt": ["UsersTable", "Arn"],
       },
     },
+    {
+      Effect: "Allow",
+      Action: "dynamodb:PutItem",
+      Resource: {
+        "Fn::GetAtt": ["ClubsTable", "Arn"],
+      },
+    },
+    {
+      Effect: "Allow",
+      Action: [
+        "cognito-idp:AdminCreateUser",
+        "cognito-idp:AdminUpdateUserAttributes",
+      ],
+      Resource: {
+        "Fn::GetAtt": ["CognitoUserPool", "Arn"],
+      },
+    },
   ],
 };

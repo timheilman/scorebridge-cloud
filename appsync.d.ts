@@ -23,6 +23,16 @@ export type Scalars = {
   AWSURL: { input: string; output: string; }
 };
 
+export type AddClubInput = {
+  newAdminEmail: Scalars['AWSEmail']['input'];
+  newClubName: Scalars['String']['input'];
+};
+
+export type AddClubResponse = {
+  __typename?: 'AddClubResponse';
+  newClubId: Scalars['String']['output'];
+};
+
 export type ExampleLambdaDataSourceInput = {
   contentType?: InputMaybe<Scalars['String']['input']>;
   extension: Scalars['String']['input'];
@@ -59,6 +69,7 @@ export type ITweet = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addClub: AddClubResponse;
   doTracerBulletMutation: TracerBulletOutput;
   editMyProfile: MyProfile;
   follow: Scalars['Boolean']['output'];
@@ -69,6 +80,11 @@ export type Mutation = {
   unfollow: Scalars['Boolean']['output'];
   unlike: Scalars['Boolean']['output'];
   unretweet: Scalars['Boolean']['output'];
+};
+
+
+export type MutationAddClubArgs = {
+  input: AddClubInput;
 };
 
 
