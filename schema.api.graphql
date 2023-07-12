@@ -64,7 +64,7 @@ input AddClubInput {
 }
 
 type AddClubResponse {
-  newClubId: String!
+  newClubId: String! @aws_api_key
 }
 
 input ProfileInput {

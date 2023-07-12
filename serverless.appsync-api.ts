@@ -5,6 +5,8 @@ import { AWS } from "@serverless/typescript";
 // at the time of writing, they seem to be defined here:
 // https://github.com/sid88in/serverless-appsync-plugin/blob/05164d8847a554d56bb73590fdc35bf0bda5198e/src/types/plugin.ts#L3
 
+// TODO: make this ddbResolvers and lambdaResolvers; treat separately
+// in order to dry the dataSource name and lambda fn name: always the same
 const resolvers = [
   "Query.getMyProfile.usersTable",
   "Query.exampleLambdaDataSource.exampleLambdaDataSource",
