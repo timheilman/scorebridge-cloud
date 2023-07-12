@@ -41,7 +41,7 @@ async function createFirstCognitoAdminSuperForEnv(
     console.error("Error updating user to adminSuper role:", error);
     throw error;
   }
-  console.log("User with role adminSuper created successfully.");
+  console.log("Cognito user created successfully.");
 }
 
 // Retrieve the email and club slug from command-line arguments

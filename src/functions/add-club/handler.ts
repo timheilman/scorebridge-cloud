@@ -85,31 +85,44 @@ export const main: AppSyncResolverHandler<
     console.error("Error updating user to adminClub role:", error);
     throw error;
   }
-  console.log("Cognito user with role adminClub created successfully.");
+  console.log("Cognito user created successfully.");
 
-  const user = {
-    id: { S: userId },
-    email: { S: email },
-    createdAt: { S: new Date().toJSON() },
-  };
-  const createUserDdbCommand = new PutItemCommand({
-    TableName: requiredEnvVar("USERS_TABLE"),
-    Item: user,
-    ConditionExpression: "attribute_not_exists(id)",
-  });
-  await cachedDdbClient().send(createUserDdbCommand);
+  try {
+    const user = {
+      id: { S: userId },
+      email: { S: email },
+      createdAt: { S: new Date().toJSON() },
+    };
 
-  const club = {
-    id: { S: clubId },
-    name: { S: clubName },
-    createdAt: { S: new Date().toJSON() },
-  };
-  const createClubDdbCommand = new PutItemCommand({
-    TableName: requiredEnvVar("CLUBS_TABLE"),
-    Item: club,
-    ConditionExpression: "attribute_not_exists(id)",
-  });
-  await cachedDdbClient().send(createClubDdbCommand);
+    const createUserDdbCommand = new PutItemCommand({
+      TableName: requiredEnvVar("USERS_TABLE"),
+      Item: user,
+      ConditionExpression: "attribute_not_exists(id)",
+    });
+    await cachedDdbClient().send(createUserDdbCommand);
+  } catch (error) {
+    console.error("Error creating ddb user", error);
+    throw error;
+  }
+  console.log("Ddb user created successfully.");
+
+  try {
+    const club = {
+      id: { S: clubId },
+      name: { S: clubName },
+      createdAt: { S: new Date().toJSON() },
+    };
+    const createClubDdbCommand = new PutItemCommand({
+      TableName: requiredEnvVar("CLUBS_TABLE"),
+      Item: club,
+      ConditionExpression: "attribute_not_exists(id)",
+    });
+    await cachedDdbClient().send(createClubDdbCommand);
+  } catch (error) {
+    console.error("Error creating ddb club", error);
+    throw error;
+  }
+  console.log("Ddb club created successfully.");
 
   return {
     newUserId: userId,
