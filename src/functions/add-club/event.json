@@ -4,5 +4,55 @@
       "newAdminEmail": "tdh+testing-api-key@stanfordalumni.org",
       "newClubName": "testing api key club name"
     }
-  }
+  },
+  "identity": null,
+  "source": null,
+  "result": null,
+  "request": {
+    "headers": {
+      "x-forwarded-for": "97.120.74.51, 130.176.100.71",
+      "sec-ch-ua-mobile": "?0",
+      "cloudfront-viewer-country": "US",
+      "cloudfront-is-tablet-viewer": "false",
+      "x-amzn-requestid": "6f4e2b86-74b9-4409-a7c4-de4702899e20",
+      "via": "2.0 a8dfbcfd2b9a376324907969cf0f5cdc.cloudfront.net (CloudFront)",
+      "cloudfront-forwarded-proto": "https",
+      "origin": "https://us-west-2.console.aws.amazon.com",
+      "content-length": "357",
+      "x-forwarded-proto": "https",
+      "accept-language": "en-US,en;q=0.6",
+      "host": "3v23wzqqqvgq5njljmxdj5tqia.appsync-api.us-west-2.amazonaws.com",
+      "sec-gpc": "1",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+      "cloudfront-is-mobile-viewer": "false",
+      "accept": "application/json, text/plain, */*",
+      "cloudfront-viewer-asn": "209",
+      "cloudfront-is-smarttv-viewer": "false",
+      "x-amzn-appsync-is-vpce-request": "false",
+      "accept-encoding": "gzip, deflate, br",
+      "referer": "https://us-west-2.console.aws.amazon.com/",
+      "x-api-key": "da2-hvor5uqc4fdxnb47cdrf4dweye",
+      "content-type": "application/json",
+      "sec-fetch-mode": "cors",
+      "x-amzn-trace-id": "Root=1-64af1547-47fe699417b726b90f8348f1",
+      "x-amz-cf-id": "eq770wrN_C0gK8bHH8tUZ5m_R7OHfV5f0GgsN9zrM7rEloH20OYzmg==",
+      "sec-fetch-dest": "empty",
+      "x-amz-user-agent": "AWS-Console-AppSync/",
+      "sec-ch-ua-platform": "\"macOS\"",
+      "cloudfront-is-desktop-viewer": "true",
+      "sec-fetch-site": "cross-site",
+      "sec-ch-ua": "\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Brave\";v=\"114\"",
+      "x-forwarded-port": "443"
+    },
+    "domainName": null
+  },
+  "info": {
+    "fieldName": "addClub",
+    "parentTypeName": "Mutation",
+    "variables": {}
+  },
+  "error": null,
+  "prev": null,
+  "stash": {},
+  "outErrors": []
 }
