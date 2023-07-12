@@ -31,6 +31,7 @@ export type AddClubInput = {
 export type AddClubResponse = {
   __typename?: 'AddClubResponse';
   newClubId: Scalars['String']['output'];
+  newUserId: Scalars['String']['output'];
 };
 
 export type ExampleLambdaDataSourceInput = {
