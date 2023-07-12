@@ -7,14 +7,15 @@ import { AWS } from "@serverless/typescript";
 
 // TODO: make this ddbResolvers and lambdaResolvers; treat separately
 // in order to dry the dataSource name and lambda fn name: always the same
-const resolvers = [
+const ddbResolvers = [
   "Query.getMyProfile.usersTable",
-  "Query.exampleLambdaDataSource.exampleLambdaDataSource",
   "Mutation.editMyProfile.usersTable",
-  "Mutation.addClub.addClub",
 ];
 
-const lambdaDataSources = ["exampleLambdaDataSource", "addClub"];
+const lambdaResolvers = [
+  // "Query.exampleLambdaDataSource", // see below, just verifying old format
+  "Mutation.addClub",
+];
 
 const withTemplateFiles = (endpointType, endpointName, dataSource) => ({
   request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
@@ -24,21 +25,32 @@ const withTemplateFiles = (endpointType, endpointName, dataSource) => ({
 });
 
 function customAppSyncResolvers() {
-  return resolvers.reduce((acc, val) => {
-    const s = val.split(".");
-    const type = s[0];
-    const name = s[1];
-    const dataSource = s[2];
-    acc[`${type}.${name}`] = withTemplateFiles(type, name, dataSource);
-    return acc;
-  }, {});
+  return {
+    ...ddbResolvers.reduce((acc, val) => {
+      const s = val.split(".");
+      const type = s[0];
+      const name = s[1];
+      const dataSource = s[2];
+      acc[`${type}.${name}`] = withTemplateFiles(type, name, dataSource);
+      return acc;
+    }, {}),
+    ...lambdaResolvers.reduce((acc, val) => {
+      const s = val.split(".");
+      const type = s[0];
+      const name = s[1];
+      acc[`${type}.${name}`] = withTemplateFiles(type, name, name);
+      return acc;
+    }, {}),
+  };
 }
 
 function customAppSyncLambdaDataSources() {
-  return lambdaDataSources.reduce((acc, val) => {
-    acc[val] = {
+  return lambdaResolvers.reduce((acc, val) => {
+    const s = val.split(".");
+    const name = s[1];
+    acc[name] = {
       type: "AWS_LAMBDA",
-      config: { functionName: val },
+      config: { functionName: name },
     };
     return acc;
   }, {});
@@ -59,6 +71,7 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   },
   additionalAuthentications: [{ type: "API_KEY" }],
   dataSources: {
+    // TODO: oops, refactor out this part: need clubsTable here too!
     usersTable: {
       type: "AMAZON_DYNAMODB",
       config: {
@@ -67,7 +80,16 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
     },
     ...customAppSyncLambdaDataSources(),
   },
-  resolvers: customAppSyncResolvers(),
+  resolvers: {
+    ...customAppSyncResolvers(),
+    // just verifying old event w/false request/response... see above
+    "Query.exampleLambdaDataSource": {
+      kind: "UNIT",
+      dataSource: "exampleLambdaDataSource",
+      request: false,
+      response: false,
+    },
+  },
   pipelineFunctions: {},
 };
 

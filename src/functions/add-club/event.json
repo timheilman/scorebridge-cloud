@@ -1,0 +1,8 @@
+{
+  "arguments": {
+    "input": {
+      "newAdminEmail": "tdh+testing-api-key@stanfordalumni.org",
+      "newClubName": "testing api key club name"
+    }
+  }
+}

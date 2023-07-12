@@ -1,0 +1,79 @@
+{
+  "arguments": {
+    "extension": "extf",
+    "contentType": "ct"
+  },
+  "identity": {
+    "claims": {
+      "sub": "f8b1c390-0071-70da-1b0c-102e414c1ced",
+      "iss": "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_A2BXBmWdY",
+      "cognito:username": "f8b1c390-0071-70da-1b0c-102e414c1ced",
+      "origin_jti": "17542f3f-c4dd-488d-abb9-60aa37de3416",
+      "aud": "4rt4en9tj5hagp1c2ohc701vqs",
+      "event_id": "38fa7f0c-4941-48ab-8eb0-926fb3fc2ab2",
+      "token_use": "id",
+      "auth_time": 1689104106,
+      "exp": 1689107706,
+      "custom:role": "adminSuper",
+      "iat": 1689104106,
+      "jti": "34dcb5b3-bafe-4e20-91a9-745e36f537b6",
+      "email": "tdh+scorebridge-dev-adminSuper@stanfordalumni.org"
+    },
+    "defaultAuthStrategy": "ALLOW",
+    "groups": null,
+    "issuer": "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_A2BXBmWdY",
+    "sourceIp": [
+      "97.120.74.51"
+    ],
+    "sub": "f8b1c390-0071-70da-1b0c-102e414c1ced",
+    "username": "f8b1c390-0071-70da-1b0c-102e414c1ced"
+  },
+  "source": null,
+  "request": {
+    "headers": {
+      "x-forwarded-for": "97.120.74.51, 130.176.100.131",
+      "sec-ch-ua-mobile": "?0",
+      "cloudfront-viewer-country": "US",
+      "cloudfront-is-tablet-viewer": "false",
+      "x-amzn-requestid": "ef47c852-5307-437b-abae-093a8a39cbff",
+      "via": "2.0 c1c7bd66e338154bf556b9c8414debe8.cloudfront.net (CloudFront)",
+      "cloudfront-forwarded-proto": "https",
+      "origin": "https://us-west-2.console.aws.amazon.com",
+      "content-length": "144",
+      "x-forwarded-proto": "https",
+      "accept-language": "en-US,en;q=0.6",
+      "host": "3v23wzqqqvgq5njljmxdj5tqia.appsync-api.us-west-2.amazonaws.com",
+      "sec-gpc": "1",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+      "cloudfront-is-mobile-viewer": "false",
+      "accept": "application/json, text/plain, */*",
+      "cloudfront-viewer-asn": "209",
+      "cloudfront-is-smarttv-viewer": "false",
+      "x-amzn-appsync-is-vpce-request": "false",
+      "accept-encoding": "gzip, deflate, br",
+      "referer": "https://us-west-2.console.aws.amazon.com/",
+      "content-type": "application/json",
+      "sec-fetch-mode": "cors",
+      "x-amzn-trace-id": "Root=1-64adaf0e-68302692016e158b240d0cff",
+      "x-amz-cf-id": "OGFkugxkrYxkwRM-qXul5Z7w5ZqVWoA2Zg0dqWo8fQ9zCCk9pbr3Iw==",
+      "authorization": "eyJraWQiOiJ2RFhSMU5zN2pDVkU0Z1wvNnIzNytNTER1M1ZvYWV2QUtvdFNlZWVmWE1Ldz0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmOGIxYzM5MC0wMDcxLTcwZGEtMWIwYy0xMDJlNDE0YzFjZWQiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtd2VzdC0yLmFtYXpvbmF3cy5jb21cL3VzLXdlc3QtMl9BMkJYQm1XZFkiLCJjb2duaXRvOnVzZXJuYW1lIjoiZjhiMWMzOTAtMDA3MS03MGRhLTFiMGMtMTAyZTQxNGMxY2VkIiwib3JpZ2luX2p0aSI6IjE3NTQyZjNmLWM0ZGQtNDg4ZC1hYmI5LTYwYWEzN2RlMzQxNiIsImF1ZCI6IjRydDRlbjl0ajVoYWdwMWMyb2hjNzAxdnFzIiwiZXZlbnRfaWQiOiIzOGZhN2YwYy00OTQxLTQ4YWItOGViMC05MjZmYjNmYzJhYjIiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTY4OTEwNDEwNiwiZXhwIjoxNjg5MTA3NzA2LCJjdXN0b206cm9sZSI6ImFkbWluU3VwZXIiLCJpYXQiOjE2ODkxMDQxMDYsImp0aSI6IjM0ZGNiNWIzLWJhZmUtNGUyMC05MWE5LTc0NWUzNmY1MzdiNiIsImVtYWlsIjoidGRoK3Njb3JlYnJpZGdlLWRldi1hZG1pblN1cGVyQHN0YW5mb3JkYWx1bW5pLm9yZyJ9.Sxk2KCjg3r48nIMMUWIsmEIZktBMk68hrThBLV0rLR3t5g19oRzkselkKS1GN-WWyjLpQb-p-kBqGQFgrqNyYqPaYikqd_fbBk6X5LTO_jCnpo7oL2uZbcj0oewSF0_2ESIhYyN2oWFceWkP7NsVN1x-k_FDNfLkK0Foy7Hz6GPEaFVLQ6YnqDEgBj2Aw6ZD56iKWBnLOV3usO1YXbssvVzfZ8xm1ipiHoWP_BOa7pbyvUCSsW9Q5UL9RHqM_b2UsjfspaZa-IG7afM68EWKe9rntVap2Hs6KOkn7DMS0fLTuysZzWzoDLXSPxEijW0iUQmHiW5phYUIt9siKG-A0A",
+      "sec-fetch-dest": "empty",
+      "x-amz-user-agent": "AWS-Console-AppSync/",
+      "sec-ch-ua-platform": "\"macOS\"",
+      "cloudfront-is-desktop-viewer": "true",
+      "sec-fetch-site": "cross-site",
+      "sec-ch-ua": "\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Brave\";v=\"114\"",
+      "x-forwarded-port": "443"
+    },
+    "domainName": null
+  },
+  "prev": null,
+  "info": {
+    "selectionSetList": [],
+    "selectionSetGraphQL": "",
+    "fieldName": "exampleLambdaDataSource",
+    "parentTypeName": "Query",
+    "variables": {}
+  },
+  "stash": {}
+}
