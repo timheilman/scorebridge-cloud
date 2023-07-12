@@ -79,6 +79,12 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
       },
     },
     ...customAppSyncLambdaDataSources(),
+    exampleLambdaDataSource: {
+      type: "AWS_LAMBDA",
+      config: {
+        functionName: { Ref: "exampleLambdaDataSource" },
+      },
+    },
   },
   resolvers: {
     ...customAppSyncResolvers(),
