@@ -43,6 +43,9 @@ export const main: AppSyncResolverHandler<
   ].forEach((val) => console.log(val));
   console.log("and the event:");
   console.log(JSON.stringify(event, null, 2));
+  return {
+    newClubId: "FAKE_NEW_CLUB_ID",
+  };
   // if (event.triggerSource !== "PostConfirmation_ConfirmSignUp") {
   //   return event;
   // }
