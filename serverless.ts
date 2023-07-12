@@ -116,20 +116,6 @@ const serverlessConfiguration: AWS & {
           ],
         },
       },
-      SelfSignUpUserPoolClient: {
-        Type: "AWS::Cognito::UserPoolClient",
-        Properties: {
-          UserPoolId: {
-            Ref: "CognitoUserPool",
-          },
-          ClientName: "web",
-          ExplicitAuthFlows: [
-            "ALLOW_REFRESH_TOKEN_AUTH",
-            "ALLOW_USER_SRP_AUTH",
-          ],
-          PreventUserExistenceErrors: "ENABLED",
-        },
-      },
       UserPoolInvokeConfirmUserSignupLambdaPermission: {
         Type: "AWS::Lambda::Permission",
         Properties: {

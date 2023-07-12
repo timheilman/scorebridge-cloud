@@ -12,9 +12,6 @@ export default {
     COGNITO_USER_POOL_ID: {
       Ref: "CognitoUserPool",
     },
-    SELF_SIGN_UP_COGNITO_USER_POOL_CLIENT_ID: {
-      Ref: "SelfSignUpUserPoolClient",
-    },
   },
   iamRoleStatements: [
     {
