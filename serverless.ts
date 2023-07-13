@@ -1,9 +1,7 @@
 import type { AWS } from "@serverless/typescript";
 
 // import hello from '@functions/hello';
-import confirmUserSignup from "@functions/confirm-user-signup";
-import exampleLambdaDataSource from "@functions/example-lambda-data-source";
-import addClub from "@functions/add-club";
+import allFunctions from "@functions/all";
 import appSync from "./serverless.appsync";
 import DynamoDbTables from "./serverless.dynamodb";
 import CognitoResources from "./serverless.cognito";
@@ -35,8 +33,7 @@ const serverlessConfiguration: AWS & {
       STAGE: `\${sls:stage}`,
     },
   },
-  // import the function via paths
-  functions: { confirmUserSignup, exampleLambdaDataSource, addClub },
+  functions: allFunctions,
   package: {
     individually: true,
     exclude: ["package-lock.json", "package.json"],
