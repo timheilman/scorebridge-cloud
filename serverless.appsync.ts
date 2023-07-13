@@ -14,6 +14,7 @@ const ddbResolvers = [
 const lambdaResolvers = [
   ["Query", "exampleLambdaDataSource"],
   ["Mutation", "addClub"],
+  ["Mutation", "removeClubAndAdmin"],
 ];
 
 // Derived:

@@ -23,15 +23,9 @@ export default {
         },
         {
           AttributeDataType: "String",
-          Name: "role",
-          Required: false, // true is not yet supported
-          Mutable: true, // setting at creation causes failure during password reset, so trying mutable
-        },
-        {
-          AttributeDataType: "String",
           Name: "tenantId",
-          Required: false,
-          Mutable: true,
+          Required: false, // true is not yet supported, plus adminSuper has none
+          Mutable: true, // setting at creation causes failure during password reset, so trying mutable
         },
       ],
       LambdaConfig: {
@@ -43,6 +37,27 @@ export default {
       AdminCreateUserConfig: {
         AllowAdminCreateUserOnly: true,
       },
+    },
+  },
+  AdminSuperGroup: {
+    Type: "AWS::Cognito::UserPoolGroup",
+    Properties: {
+      UserPoolId: { Ref: "CognitoUserPool" },
+      GroupName: "adminSuper",
+    },
+  },
+  AdminClubGroup: {
+    Type: "AWS::Cognito::UserPoolGroup",
+    Properties: {
+      UserPoolId: { Ref: "CognitoUserPool" },
+      GroupName: "adminClub",
+    },
+  },
+  TabletTableGroup: {
+    Type: "AWS::Cognito::UserPoolGroup",
+    Properties: {
+      UserPoolId: { Ref: "CognitoUserPool" },
+      GroupName: "tabletTable",
     },
   },
   WebUserPoolClient: {

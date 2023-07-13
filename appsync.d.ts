@@ -75,6 +75,7 @@ export type Mutation = {
   editMyProfile: MyProfile;
   follow: Scalars['Boolean']['output'];
   like: Scalars['Boolean']['output'];
+  removeClubAndAdmin: RemoveClubAndAdminResponse;
   reply: Reply;
   retweet: Scalars['Boolean']['output'];
   tweet: Tweet;
@@ -106,6 +107,11 @@ export type MutationFollowArgs = {
 
 export type MutationLikeArgs = {
   tweetId: Scalars['ID']['input'];
+};
+
+
+export type MutationRemoveClubAndAdminArgs = {
+  input: RemoveClubAndAdminInput;
 };
 
 
@@ -255,6 +261,16 @@ export type QueryGetTweetsArgs = {
   limit: Scalars['Int']['input'];
   nextToken?: InputMaybe<Scalars['String']['input']>;
   userId: Scalars['ID']['input'];
+};
+
+export type RemoveClubAndAdminInput = {
+  clubId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
+export type RemoveClubAndAdminResponse = {
+  __typename?: 'RemoveClubAndAdminResponse';
+  status: Scalars['String']['output'];
 };
 
 export type Reply = ITweet & {

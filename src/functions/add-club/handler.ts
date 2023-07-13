@@ -3,6 +3,7 @@ import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 import { ulid } from "ulid";
 import { fromEnv } from "@aws-sdk/credential-providers";
 import {
+  AdminAddUserToGroupCommand,
   AdminCreateUserCommand,
   AdminUpdateUserAttributesCommand,
   AdminUpdateUserAttributesCommandInput,
@@ -66,16 +67,12 @@ export const main: AppSyncResolverHandler<
   // cognito: create the user; this should send email
   const createdUser = await createCognitoUser(email);
   const userId = createdUser.User.Username;
-  // cognito: set user's role to adminClub
   // cognito: set user's clubId to synthetic id for the club
   try {
     const updateUserParams: AdminUpdateUserAttributesCommandInput = {
-      UserAttributes: [
-        { Name: "custom:role", Value: "adminClub" },
-        { Name: "custom:tenantId", Value: clubId },
-      ],
+      UserAttributes: [{ Name: "custom:tenantId", Value: clubId }],
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: email,
+      Username: email, // TODO: wow this works?  try userId instead and see if it works, see below todo
     };
     const updateUserCommand = new AdminUpdateUserAttributesCommand(
       updateUserParams
@@ -86,7 +83,22 @@ export const main: AppSyncResolverHandler<
     throw error;
   }
   console.log("Cognito user created successfully.");
+  // cognito: add the user to the adminClub group
+  // Prepare the parameters for the AdminAddUserToGroupCommand
 
+  // Add the user to the group
+  try {
+    const params = {
+      GroupName: "adminClub",
+      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+      Username: email, // TODO: see above todo
+    };
+    const command = new AdminAddUserToGroupCommand(params);
+    await cachedCognitoIdpClient().send(command);
+    console.log("User added to the adminClub group successfully");
+  } catch (error) {
+    console.error("Error adding user to the adminClub group:", error);
+  }
   try {
     const user = {
       id: { S: userId },
