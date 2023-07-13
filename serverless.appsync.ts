@@ -28,15 +28,19 @@ const resolverDefinition = (endpointType, endpointName, dataSource) => ({
 
 function customAppSyncResolvers() {
   return {
-    ...ddbResolvers.reduce((acc, val) => {
-      acc[`${val[0]}.${val[1]}`] = resolverDefinition(val[0], val[1], val[2]);
+    ...ddbResolvers.reduce((acc, typeNameDs) => {
+      acc[`${typeNameDs[0]}.${typeNameDs[1]}`] = resolverDefinition(
+        typeNameDs[0],
+        typeNameDs[1],
+        typeNameDs[2]
+      );
       return acc;
     }, {}),
-    ...lambdaResolvers.reduce((acc, val) => {
-      acc[`${val[0]}.${val[1]}`] = resolverDefinition(
-        val[0],
-        val[1],
-        val[1] /* lambdas always get their own same-named datasource */
+    ...lambdaResolvers.reduce((acc, typeName) => {
+      acc[`${typeName[0]}.${typeName[1]}`] = resolverDefinition(
+        typeName[0],
+        typeName[1],
+        typeName[1] /* lambdas always get their own same-named datasource */
       );
       return acc;
     }, {}),
@@ -44,10 +48,10 @@ function customAppSyncResolvers() {
 }
 
 function customAppSyncLambdaDataSources() {
-  return lambdaResolvers.reduce((acc, val) => {
-    acc[val[1]] = {
+  return lambdaResolvers.reduce((acc, typeAndName) => {
+    acc[typeAndName[1]] = {
       type: "AWS_LAMBDA",
-      config: { functionName: val[1] },
+      config: { functionName: typeAndName[1] },
     };
     return acc;
   }, {});
