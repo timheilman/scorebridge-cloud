@@ -27,5 +27,7 @@ const buildSyntheticHashNoSortTable = (tableNameHyphens) => ({
   },
 });
 
-export const UsersTable = buildSyntheticHashNoSortTable("users-table");
-export const ClubsTable = buildSyntheticHashNoSortTable("clubs-table");
+export default {
+  UsersTable: buildSyntheticHashNoSortTable("users-table"),
+  ClubsTable: buildSyntheticHashNoSortTable("clubs-table"),
+};
