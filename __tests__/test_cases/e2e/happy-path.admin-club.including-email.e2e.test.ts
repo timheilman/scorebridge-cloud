@@ -1,9 +1,9 @@
-import requiredEnvVar from "@libs/requiredEnvVar";
 import {
   AdminSetUserPasswordCommand,
   AdminSetUserPasswordCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { cachedCognitoIdpClient } from "@libs/cognito";
+import requiredEnvVar from "../../../src/libs/requiredEnvVar";
+import { cachedCognitoIdpClient } from "../../../src/libs/cognito";
 import {
   anUnknownUserAddsAClubViaApiKey,
   // aUserRemovesHisOwnClub,
