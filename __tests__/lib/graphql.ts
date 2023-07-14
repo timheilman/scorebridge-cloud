@@ -13,10 +13,19 @@ error: ${JSON.stringify(errors, null, 2)}
   }
 };
 
-const graphQl = async (url, query, variables = {}, auth = null) => {
+const graphQl = async (
+  url,
+  query,
+  variables = {},
+  auth = null,
+  apiKey = null
+) => {
   const headers: Record<string, unknown> = {};
   if (auth) {
     headers.Authorization = auth;
+  }
+  if (apiKey) {
+    headers["x-api-key"] = apiKey;
   }
 
   try {
@@ -27,7 +36,7 @@ const graphQl = async (url, query, variables = {}, auth = null) => {
         query,
         variables: JSON.stringify(variables),
       },
-      { headers: { Authorization: auth } }
+      headers
     );
     console.log("Done posting raw-dogged GQL");
 

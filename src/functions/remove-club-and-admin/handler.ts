@@ -1,31 +1,17 @@
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 import { fromEnv } from "@aws-sdk/credential-providers";
-import {
-  AdminDeleteUserCommand,
-  CognitoIdentityProviderClient,
-} from "@aws-sdk/client-cognito-identity-provider";
+import { AdminDeleteUserCommand } from "@aws-sdk/client-cognito-identity-provider";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { DeleteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
+import { cachedCognitoIdpClient } from "@libs/cognito";
 import {
   MutationRemoveClubAndAdminArgs,
   RemoveClubAndAdminResponse,
 } from "../../../appsync";
 
-let cognitoIdpClient;
 let dynamoDbClient;
-
-function cachedCognitoIdpClient() {
-  if (cognitoIdpClient) {
-    return cognitoIdpClient;
-  }
-  cognitoIdpClient = new CognitoIdentityProviderClient({
-    region: requiredEnvVar("AWS_REGION"),
-    credentials: fromEnv(),
-  });
-  return cognitoIdpClient;
-}
 
 function cachedDdbClient() {
   if (dynamoDbClient) {

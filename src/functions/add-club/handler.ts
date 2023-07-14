@@ -1,43 +1,18 @@
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 import { ulid } from "ulid";
-import { fromEnv } from "@aws-sdk/credential-providers";
 import {
   AdminAddUserToGroupCommand,
   AdminCreateUserCommand,
   AdminUpdateUserAttributesCommand,
   AdminUpdateUserAttributesCommandInput,
-  CognitoIdentityProviderClient,
 } from "@aws-sdk/client-cognito-identity-provider";
 import requiredEnvVar from "@libs/requiredEnvVar";
-import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
+import { cachedCognitoIdpClient } from "@libs/cognito";
+import { cachedDynamoDbClient } from "@libs/ddb";
 import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
-
-let cognitoIdpClient;
-let dynamoDbClient;
-
-function cachedCognitoIdpClient() {
-  if (cognitoIdpClient) {
-    return cognitoIdpClient;
-  }
-  cognitoIdpClient = new CognitoIdentityProviderClient({
-    region: requiredEnvVar("AWS_REGION"),
-    credentials: fromEnv(),
-  });
-  return cognitoIdpClient;
-}
-
-function cachedDdbClient() {
-  if (dynamoDbClient) {
-    return dynamoDbClient;
-  }
-  dynamoDbClient = new DynamoDBClient({
-    region: requiredEnvVar("AWS_REGION"),
-    credentials: fromEnv(),
-  });
-  return dynamoDbClient;
-}
 
 async function createCognitoUser(email: string) {
   try {
@@ -112,7 +87,7 @@ export const main: AppSyncResolverHandler<
       Item: user,
       ConditionExpression: "attribute_not_exists(id)",
     });
-    await cachedDdbClient().send(createUserDdbCommand);
+    await cachedDynamoDbClient().send(createUserDdbCommand);
   } catch (error) {
     console.error("Error creating ddb user", error);
     throw error;
@@ -130,7 +105,7 @@ export const main: AppSyncResolverHandler<
       Item: club,
       ConditionExpression: "attribute_not_exists(id)",
     });
-    await cachedDdbClient().send(createClubDdbCommand);
+    await cachedDynamoDbClient().send(createClubDdbCommand);
   } catch (error) {
     console.error("Error creating ddb club", error);
     throw error;
