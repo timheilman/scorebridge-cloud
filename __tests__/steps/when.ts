@@ -71,9 +71,9 @@ export async function anUnknownUserAddsAClubViaApiKey(
   newUserId: string;
 }> {
   const addClub = `mutation addClub($input: AddClubInput!) {
-    addClub(addClubInput: $input) {
-      id
-      name
+    addClub(input: $input) {
+      newClubId
+      newUserId
     }
   }`;
   const variables = {

@@ -54,10 +54,15 @@ export const clubExistsInClubsTable = async (id: string) => {
   const item = unmarshall(response.Item);
 
   if (item) {
+    console.log("returning club from then statement");
+    console.log("marshalled:");
+    console.log(response.Item);
+    console.log("unmarshalled:");
+    console.log(item);
     return item;
   }
 
   throw new Error(
-    `User with ID [${id}] not found in table [${process.env.USERS_TABLE}]`
+    `Club with ID [${id}] not found in table [${process.env.CLUBS_TABLE}]`
   );
 };

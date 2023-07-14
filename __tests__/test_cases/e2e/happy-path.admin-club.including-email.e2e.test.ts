@@ -29,26 +29,22 @@ describe("When an unknown user adds a club via API key", () => {
       newClubName
     );
 
-    const expectMatchObjectCreatedAt = {
-      createdAt: expect.stringMatching(
-        /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g
-      ),
-    };
     const ddbUser = await userExistsInUsersTable(newUserId);
-    expect(ddbUser).toMatchObject({
-      id: newUserId,
-      ...expectMatchObjectCreatedAt,
-    });
+    expect(ddbUser.id).toBe(newUserId);
+    expect(ddbUser.email).toBe(email);
+    expect(ddbUser.createdAt).toMatch(
+      /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g
+    );
 
     const ddbClub = await clubExistsInClubsTable(newClubId);
-    expect(ddbClub).toMatchObject({
-      id: newClubId,
-      name: newClubName,
-      ...expectMatchObjectCreatedAt,
-    });
+    expect(ddbClub.id).toBe(newClubId);
+    expect(ddbClub.name).toBe(newClubName);
+    expect(ddbClub.createdAt).toMatch(
+      /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g
+    );
 
     const cognitoUser = await userExistsInCognito(newUserId);
-    expect(cognitoUser).toMatchObject({}); // TODO: fix this w/result encountered
+    expect(cognitoUser).toEqual({}); // TODO: fix this w/result encountered
 
     // next is aws sdk equivalent of the aws cli that yan cui shows in ... TODO: lookup that video
     // i.e. accept the auth challenge and provide a new password.
