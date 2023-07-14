@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders } from "axios";
+import axios from "axios";
 
 const throwOnErrors = ({ query, variables, errors }) => {
   if (errors) {
