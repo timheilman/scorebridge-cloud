@@ -26,6 +26,7 @@ export type Scalars = {
 export type AddClubInput = {
   newAdminEmail: Scalars['AWSEmail']['input'];
   newClubName: Scalars['String']['input'];
+  suppressInvitationEmail?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type AddClubResponse = {

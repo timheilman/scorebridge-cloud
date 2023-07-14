@@ -14,12 +14,21 @@ import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
 import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
 
-async function createCognitoUser(email: string) {
+async function createCognitoUser(
+  email: string,
+  suppressInvitationEmail: boolean
+) {
   try {
+    // Because there is a quota on the number of emails we may send using cognito, but
+    // it is far beyond anything expected in production, we suppress emails when testing
+    const emailAction = suppressInvitationEmail
+      ? { MessageAction: "SUPPRESS" }
+      : {};
     const createUserParams = {
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
       Username: email,
       UserAttributes: [{ Name: "email", Value: email }],
+      ...emailAction,
     };
 
     const createUserCommand = new AdminCreateUserCommand(createUserParams);
@@ -40,8 +49,11 @@ export const main: AppSyncResolverHandler<
   const email = event.arguments.input.newAdminEmail;
   const clubName = event.arguments.input.newClubName;
   const clubId = ulid();
-  // cognito: create the user; this should send email
-  const createdUser = await createCognitoUser(email);
+  // cognito: create the user; suppress email only for testing
+  const createdUser = await createCognitoUser(
+    email,
+    event.arguments.input.suppressInvitationEmail
+  );
   const userId = createdUser.User.Username;
   // cognito: set user's clubId to synthetic id for the club
   try {

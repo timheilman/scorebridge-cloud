@@ -63,6 +63,7 @@ type Mutation {
 input AddClubInput {
   newAdminEmail: AWSEmail!
   newClubName: String!
+  suppressInvitationEmail: Boolean
 }
 
 type AddClubResponse {

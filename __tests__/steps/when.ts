@@ -83,6 +83,7 @@ export const anUnknownUserAddsAClubViaApiKey = async (
     input: {
       newAdminEmail,
       newClubName,
+      suppressInvitationEmail: true, // only for testing, due to email quota
     },
   };
 
@@ -91,7 +92,7 @@ export const anUnknownUserAddsAClubViaApiKey = async (
     addClub,
     variables,
     null,
-    requiredEnvVar("ADD_CLUB_API_KEY")
+    requiredEnvVar("ADD_CLUB_API_KEY") // TODO: SCOR-66 use secrets manager instead
   );
   const output = data.addClub;
 
