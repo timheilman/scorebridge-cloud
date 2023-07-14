@@ -43,7 +43,8 @@ async function getUserDdb(id: string) {
       }),
     })
   );
-  return unmarshall(response.Item);
+  console.log("getUserDdb returning Item from", response);
+  return response.Item;
 }
 
 export const userExistsInUsersTable = async (id: string) => {
@@ -51,7 +52,7 @@ export const userExistsInUsersTable = async (id: string) => {
   const item = await getUserDdb(id);
 
   if (item) {
-    return item;
+    return unmarshall(item);
   }
 
   throw new Error(
@@ -60,7 +61,7 @@ export const userExistsInUsersTable = async (id: string) => {
 };
 
 export const userDoesNotExistInUsersTable = async (id: string) => {
-  expect(await getUserDdb(id)).toBe({});
+  expect(await getUserDdb(id)).toBeUndefined();
 };
 
 async function getClubDdb(id: string) {
@@ -72,7 +73,7 @@ async function getClubDdb(id: string) {
       }),
     })
   );
-  return unmarshall(response.Item);
+  return response.Item;
 }
 
 export const clubExistsInClubsTable = async (id: string) => {
@@ -80,7 +81,7 @@ export const clubExistsInClubsTable = async (id: string) => {
   const item = await getClubDdb(id);
 
   if (item) {
-    return item;
+    return unmarshall(item);
   }
 
   throw new Error(
@@ -89,5 +90,5 @@ export const clubExistsInClubsTable = async (id: string) => {
 };
 
 export const clubDoesNotExistInClubsTable = async (id: string) => {
-  expect(await getClubDdb(id)).toBe({});
+  expect(await getClubDdb(id)).toBeUndefined();
 };
