@@ -1,6 +1,6 @@
 import { config as dotenvConfig } from "dotenv";
 import { AppSyncResolverEvent, Context as AwsLambdaContext } from "aws-lambda";
-import requiredEnvVar from "@libs/requiredEnvVar";
+import requiredEnvVar from "../../src/libs/requiredEnvVar";
 import { main as exampleLambdaDataSource } from "../../src/functions/example-lambda-data-source/handler";
 import GraphQL from "../lib/graphql";
 import { QueryExampleLambdaDataSourceArgs } from "../../appsync";
