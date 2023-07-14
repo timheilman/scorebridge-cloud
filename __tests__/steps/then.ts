@@ -11,8 +11,8 @@ import { cachedDynamoDbClient } from "../../src/libs/ddb";
 
 dotenvConfig();
 
-export const userExistsInCognito = async (
-  userId
+const getUserCognito = async (
+  userId: string
 ): Promise<AdminGetUserCommandOutput> =>
   cachedCognitoIdpClient().send(
     new AdminGetUserCommand({
@@ -21,8 +21,20 @@ export const userExistsInCognito = async (
     })
   );
 
-export const userExistsInUsersTable = async (id: string) => {
-  console.log(`looking for user [${id}] in table [${process.env.USERS_TABLE}]`);
+export const userExistsInCognito = async (
+  userId
+): Promise<AdminGetUserCommandOutput> => getUserCognito(userId);
+
+export const userDoesNotExistInCognito = async (userId: string) => {
+  try {
+    await getUserCognito(userId);
+  } catch (e) {
+    /* eslint-disable no-undef */
+    expect(e.name).toBe("UserNotFoundException");
+  }
+};
+
+async function getUserDdb(id: string) {
   const response = await cachedDynamoDbClient().send(
     new GetItemCommand({
       TableName: process.env.USERS_TABLE,
@@ -31,7 +43,12 @@ export const userExistsInUsersTable = async (id: string) => {
       }),
     })
   );
-  const item = unmarshall(response.Item);
+  return unmarshall(response.Item);
+}
+
+export const userExistsInUsersTable = async (id: string) => {
+  console.log(`looking for user [${id}] in table [${process.env.USERS_TABLE}]`);
+  const item = await getUserDdb(id);
 
   if (item) {
     return item;
@@ -41,8 +58,12 @@ export const userExistsInUsersTable = async (id: string) => {
     `User with ID [${id}] not found in table [${process.env.USERS_TABLE}]`
   );
 };
-export const clubExistsInClubsTable = async (id: string) => {
-  console.log(`looking for club [${id}] in table [${process.env.CLUBS_TABLE}]`);
+
+export const userDoesNotExistInUsersTable = async (id: string) => {
+  expect(await getUserDdb(id)).toBe({});
+};
+
+async function getClubDdb(id: string) {
   const response = await cachedDynamoDbClient().send(
     new GetItemCommand({
       TableName: process.env.CLUBS_TABLE,
@@ -51,18 +72,22 @@ export const clubExistsInClubsTable = async (id: string) => {
       }),
     })
   );
-  const item = unmarshall(response.Item);
+  return unmarshall(response.Item);
+}
+
+export const clubExistsInClubsTable = async (id: string) => {
+  console.log(`looking for club [${id}] in table [${process.env.CLUBS_TABLE}]`);
+  const item = await getClubDdb(id);
 
   if (item) {
-    console.log("returning club from then statement");
-    console.log("marshalled:");
-    console.log(response.Item);
-    console.log("unmarshalled:");
-    console.log(item);
     return item;
   }
 
   throw new Error(
     `Club with ID [${id}] not found in table [${process.env.CLUBS_TABLE}]`
   );
+};
+
+export const clubDoesNotExistInClubsTable = async (id: string) => {
+  expect(await getClubDdb(id)).toBe({});
 };

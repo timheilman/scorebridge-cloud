@@ -1,5 +1,8 @@
 import chance from "chance";
 import { config as dotenvConfig } from "dotenv";
+import { InitiateAuthCommand } from "@aws-sdk/client-cognito-identity-provider";
+import { cachedCognitoIdpClient } from "../../src/libs/cognito";
+import requiredEnvVar from "../../src/libs/requiredEnvVar";
 
 dotenvConfig();
 const lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
@@ -28,5 +31,25 @@ export const aRandomUser = (): {
     name,
     password,
     email,
+  };
+};
+
+export const aLoggedInUser = async (email, password) => {
+  const auth = await cachedCognitoIdpClient().send(
+    new InitiateAuthCommand({
+      AuthFlow: "USER_PASSWORD_AUTH",
+      ClientId: requiredEnvVar("COGNITO_USER_POOL_CLIENT_ID_AUTOMATED_TESTS"),
+      AuthParameters: {
+        USERNAME: email,
+        PASSWORD: password,
+      },
+    })
+  );
+
+  console.log(`[${email}] - signed in`);
+
+  return {
+    idToken: auth.AuthenticationResult.IdToken,
+    accessToken: auth.AuthenticationResult.AccessToken,
   };
 };

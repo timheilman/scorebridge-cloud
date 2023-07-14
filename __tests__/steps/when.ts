@@ -103,7 +103,8 @@ export const anUnknownUserAddsAClubViaApiKey = async (
 
 export const aUserCallsRemoveClubAndAdmin = async (
   userId: string,
-  clubId: string
+  clubId: string,
+  accessToken: string
 ): Promise<RemoveClubAndAdminResponse> => {
   const removeClubAndAdmin = `mutation removeClubAndAdmin($input: RemoveClubAndAdminInput!) {
     removeClubAndAdmin(input: $input) {
@@ -121,15 +122,12 @@ export const aUserCallsRemoveClubAndAdmin = async (
     requiredEnvVar("API_URL"),
     removeClubAndAdmin,
     variables,
-    user.,
+    accessToken
   );
-  const output = data.addClub;
+  const output = data.removeClubAndAdmin;
 
-  console.log(
-    `added club. newUserId: ${output.newUserId}; newClubId: ${output.newClubId}`
-  );
+  console.log(`removed club and admin. status: ${output.status}`);
   return output;
-
 };
 
 export const aUserCallsGetMyProfile = async (user) => {

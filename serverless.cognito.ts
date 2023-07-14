@@ -60,13 +60,27 @@ export default {
       GroupName: "tabletTable",
     },
   },
-  WebUserPoolClient: {
+  UserPoolClientWeb: {
     Type: "AWS::Cognito::UserPoolClient",
     Properties: {
       UserPoolId: {
         Ref: "CognitoUserPool",
       },
       ClientName: "web",
+      ExplicitAuthFlows: [
+        "ALLOW_USER_SRP_AUTH",
+        "ALLOW_USER_PASSWORD_AUTH",
+        "ALLOW_REFRESH_TOKEN_AUTH",
+      ],
+    },
+  },
+  UserPoolClientAutomatedTests: {
+    Type: "AWS::Cognito::UserPoolClient",
+    Properties: {
+      UserPoolId: {
+        Ref: "CognitoUserPool",
+      },
+      ClientName: "automatedTests",
       ExplicitAuthFlows: [
         "ALLOW_USER_SRP_AUTH",
         "ALLOW_USER_PASSWORD_AUTH",

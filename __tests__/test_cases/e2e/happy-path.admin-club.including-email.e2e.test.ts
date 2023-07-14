@@ -17,7 +17,7 @@ import {
   clubExistsInClubsTable,
   clubDoesNotExistInClubsTable,
 } from "../../steps/then";
-import { aRandomClubName, aRandomUser } from "../../steps/given";
+import { aLoggedInUser, aRandomClubName, aRandomUser } from "../../steps/given";
 
 function cognitoUserAttributeValue(
   cognitoUser: AdminGetUserCommandOutput,
@@ -79,7 +79,15 @@ describe("When an unknown user adds a club via API key", () => {
     expect(cognitoUserPasswordChanged.UserStatus).toEqual("CONFIRMED");
   });
   it("Then removing the club (and user) via normal login succeeds in cognito and ddb", async () => {
-    const result = await aUserCallsRemoveClubAndAdmin(userId, clubId);
-    expect(result).toEqual("");
+    const { accessToken } = await aLoggedInUser(email, password);
+    const result = await aUserCallsRemoveClubAndAdmin(
+      userId,
+      clubId,
+      accessToken
+    );
+    expect(result.status).toEqual("OK");
+    await userDoesNotExistInCognito(userId);
+    await userDoesNotExistInUsersTable(userId);
+    await clubDoesNotExistInClubsTable(clubId);
   });
 });

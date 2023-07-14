@@ -76,9 +76,14 @@ const serverlessConfiguration: AWS & {
 
       AwsRegion: { Value: `\${aws:region}` },
 
-      WebCognitoUserPoolClientId: {
+      CognitoUserPoolClientIdWeb: {
         Value: {
-          Ref: "WebUserPoolClient",
+          Ref: "UserPoolClientWeb",
+        },
+      },
+      CognitoUserPoolClientIdAutomatedTests: {
+        Value: {
+          Ref: "UserPoolClientAutomatedTests",
         },
       },
       AddClubApiKey: {
