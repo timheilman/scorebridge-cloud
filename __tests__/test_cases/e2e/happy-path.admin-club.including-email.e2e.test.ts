@@ -1,4 +1,5 @@
 import {
+  AdminGetUserCommandOutput,
   AdminSetUserPasswordCommand,
   AdminSetUserPasswordCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
@@ -6,59 +7,79 @@ import requiredEnvVar from "../../../src/libs/requiredEnvVar";
 import { cachedCognitoIdpClient } from "../../../src/libs/cognito";
 import {
   anUnknownUserAddsAClubViaApiKey,
-  // aUserRemovesHisOwnClub,
+  aUserCallsRemoveClubAndAdmin,
 } from "../../steps/when";
 import {
   userExistsInCognito,
-  // userDoesNotExistInCognito,
+  userDoesNotExistInCognito,
   userExistsInUsersTable,
-  // userDoesNotExistInUsersTable,
+  userDoesNotExistInUsersTable,
   clubExistsInClubsTable,
-  // clubDoesNotExistInClubsTable,
+  clubDoesNotExistInClubsTable,
 } from "../../steps/then";
 import { aRandomClubName, aRandomUser } from "../../steps/given";
 
+function cognitoUserAttributeValue(
+  cognitoUser: AdminGetUserCommandOutput,
+  attributeKey: string
+) {
+  return cognitoUser.UserAttributes.find((a) => a.Name === attributeKey).Value;
+}
+
 /* eslint-disable no-undef */
+const timestampFormat =
+  /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g;
 describe("When an unknown user adds a club via API key", () => {
+  let password;
+  let email;
+  let clubName;
+  let userId;
+  let clubId;
   it("The user and club should be saved in DynamoDB and Cognito", async () => {
-    const { password, /* name, */ email } = aRandomUser();
-    const newClubName = aRandomClubName();
+    const user = aRandomUser();
+    password = user.password;
+    email = user.email;
+    clubName = aRandomClubName();
 
-    const { newUserId, newClubId } = await anUnknownUserAddsAClubViaApiKey(
-      email,
-      newClubName
-    );
+    const result = await anUnknownUserAddsAClubViaApiKey(email, clubName);
+    userId = result.newUserId;
+    clubId = result.newClubId;
 
-    const ddbUser = await userExistsInUsersTable(newUserId);
-    expect(ddbUser.id).toBe(newUserId);
+    const ddbUser = await userExistsInUsersTable(userId);
+    expect(ddbUser.id).toBe(userId);
     expect(ddbUser.email).toBe(email);
-    expect(ddbUser.createdAt).toMatch(
-      /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g
+    expect(ddbUser.createdAt).toMatch(timestampFormat);
+
+    const ddbClub = await clubExistsInClubsTable(clubId);
+    expect(ddbClub.id).toBe(clubId);
+    expect(ddbClub.name).toBe(clubName);
+    expect(ddbClub.createdAt).toMatch(timestampFormat);
+
+    const cognitoUser = await userExistsInCognito(userId);
+    expect(cognitoUserAttributeValue(cognitoUser, "custom:tenantId")).toEqual(
+      clubId
     );
-
-    const ddbClub = await clubExistsInClubsTable(newClubId);
-    expect(ddbClub.id).toBe(newClubId);
-    expect(ddbClub.name).toBe(newClubName);
-    expect(ddbClub.createdAt).toMatch(
-      /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g
-    );
-
-    const cognitoUser = await userExistsInCognito(newUserId);
-    expect(cognitoUser).toEqual({}); // TODO: fix this w/result encountered
-
-    // next is aws sdk equivalent of the aws cli that yan cui shows in ... TODO: lookup that video
-    // i.e. accept the auth challenge and provide a new password.
-    // can't find that video, but did find this:
+    expect(cognitoUserAttributeValue(cognitoUser, "email")).toEqual(email);
+    expect(cognitoUser.Username).toEqual(userId);
+    expect(cognitoUser.UserStatus).toEqual("FORCE_CHANGE_PASSWORD");
+    expect(cognitoUser.UserCreateDate.toJSON()).toMatch(timestampFormat);
+  });
+  it("Once the user resets their password their status changes to CONFIRMED", async () => {
     const input: AdminSetUserPasswordCommandInput = {
       // AdminSetUserPasswordRequest
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: newUserId,
+      Username: userId,
       Password: password,
       Permanent: true,
     };
     const command = new AdminSetUserPasswordCommand(input);
     /* const response = */ await cachedCognitoIdpClient().send(command);
 
-    // then: call remove & verify gone.
+    const cognitoUserPasswordChanged = await userExistsInCognito(userId);
+    expect(cognitoUserPasswordChanged.UserStatus).toEqual("CONFIRMED");
+  });
+  it("Then removing the club (and user) via normal login succeeds in cognito and ddb", async () => {
+    const result = await aUserCallsRemoveClubAndAdmin(userId, clubId);
+    expect(result).toEqual("");
   });
 });

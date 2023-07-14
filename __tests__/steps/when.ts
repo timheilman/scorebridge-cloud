@@ -3,7 +3,10 @@ import { AppSyncResolverEvent, Context as AwsLambdaContext } from "aws-lambda";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
 import { main as exampleLambdaDataSource } from "../../src/functions/example-lambda-data-source/handler";
 import GraphQL from "../lib/graphql";
-import { QueryExampleLambdaDataSourceArgs } from "../../appsync";
+import {
+  QueryExampleLambdaDataSourceArgs,
+  RemoveClubAndAdminResponse,
+} from "../../appsync";
 
 dotenvConfig();
 
@@ -63,13 +66,13 @@ export const weInvokeExampleLambdaDataSource = async (
   return exampleLambdaDataSource(minimalEvent, minimalContext, null);
 };
 
-export async function anUnknownUserAddsAClubViaApiKey(
+export const anUnknownUserAddsAClubViaApiKey = async (
   newAdminEmail: string,
   newClubName: string
 ): Promise<{
   newClubId: string;
   newUserId: string;
-}> {
+}> => {
   const addClub = `mutation addClub($input: AddClubInput!) {
     addClub(input: $input) {
       newClubId
@@ -96,7 +99,38 @@ export async function anUnknownUserAddsAClubViaApiKey(
     `added club. newUserId: ${output.newUserId}; newClubId: ${output.newClubId}`
   );
   return output;
-}
+};
+
+export const aUserCallsRemoveClubAndAdmin = async (
+  userId: string,
+  clubId: string
+): Promise<RemoveClubAndAdminResponse> => {
+  const removeClubAndAdmin = `mutation removeClubAndAdmin($input: RemoveClubAndAdminInput!) {
+    removeClubAndAdmin(input: $input) {
+      status
+    }
+  }`;
+  const variables = {
+    input: {
+      userId,
+      clubId,
+    },
+  };
+
+  const data = await GraphQL(
+    requiredEnvVar("API_URL"),
+    removeClubAndAdmin,
+    variables,
+    user.,
+  );
+  const output = data.addClub;
+
+  console.log(
+    `added club. newUserId: ${output.newUserId}; newClubId: ${output.newClubId}`
+  );
+  return output;
+
+};
 
 export const aUserCallsGetMyProfile = async (user) => {
   const getMyProfile = `query getMyProfile {
