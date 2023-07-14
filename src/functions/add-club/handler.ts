@@ -60,7 +60,7 @@ export const main: AppSyncResolverHandler<
     const updateUserParams: AdminUpdateUserAttributesCommandInput = {
       UserAttributes: [{ Name: "custom:tenantId", Value: clubId }],
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: email, // TODO: wow this works?  try userId instead and see if it works, see below todo
+      Username: userId, // note: email also works here!
     };
     const updateUserCommand = new AdminUpdateUserAttributesCommand(
       updateUserParams
@@ -79,7 +79,7 @@ export const main: AppSyncResolverHandler<
     const params = {
       GroupName: "adminClub",
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: email, // TODO: see above todo
+      Username: userId, // note: email also works here
     };
     const command = new AdminAddUserToGroupCommand(params);
     await cachedCognitoIdpClient().send(command);
