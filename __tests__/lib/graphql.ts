@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
 
 const throwOnErrors = ({ query, variables, errors }) => {
   if (errors) {
@@ -20,7 +20,7 @@ const graphQl = async (
   auth = null,
   apiKey = null
 ) => {
-  const headers: Record<string, unknown> = {};
+  const headers: Record<string, string> = {};
   if (auth) {
     headers.Authorization = auth;
   }
@@ -36,7 +36,7 @@ const graphQl = async (
         query,
         variables: JSON.stringify(variables),
       },
-      headers
+      { headers }
     );
     console.log("Done posting raw-dogged GQL");
 
