@@ -11,6 +11,7 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { marshall } from "@aws-sdk/util-dynamodb";
 import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
 
 let cognitoIdpClient;
@@ -100,11 +101,11 @@ export const main: AppSyncResolverHandler<
     console.error("Error adding user to the adminClub group:", error);
   }
   try {
-    const user = {
-      id: { S: userId },
-      email: { S: email },
-      createdAt: { S: new Date().toJSON() },
-    };
+    const user = marshall({
+      id: userId,
+      email,
+      createdAt: new Date().toJSON(),
+    });
 
     const createUserDdbCommand = new PutItemCommand({
       TableName: requiredEnvVar("USERS_TABLE"),
@@ -119,11 +120,11 @@ export const main: AppSyncResolverHandler<
   console.log("Ddb user created successfully.");
 
   try {
-    const club = {
-      id: { S: clubId },
-      name: { S: clubName },
-      createdAt: { S: new Date().toJSON() },
-    };
+    const club = marshall({
+      id: clubId,
+      name: clubName,
+      createdAt: new Date().toJSON(),
+    });
     const createClubDdbCommand = new PutItemCommand({
       TableName: requiredEnvVar("CLUBS_TABLE"),
       Item: club,

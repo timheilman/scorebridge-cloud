@@ -7,6 +7,7 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { DeleteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { marshall } from "@aws-sdk/util-dynamodb";
 import {
   MutationRemoveClubAndAdminArgs,
   RemoveClubAndAdminResponse,
@@ -70,7 +71,7 @@ export const main: AppSyncResolverHandler<
   try {
     const deleteUserDdbCommand = new DeleteItemCommand({
       TableName: requiredEnvVar("USERS_TABLE"),
-      Key: { id: { S: userId } },
+      Key: marshall({ id: userId }),
     });
     await cachedDdbClient().send(deleteUserDdbCommand);
   } catch (error) {
