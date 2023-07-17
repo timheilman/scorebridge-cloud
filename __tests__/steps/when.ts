@@ -50,15 +50,15 @@ export const weInvokeExampleLambdaDataSource = async (
     getRemainingTimeInMillis(): number {
       throw new Error("Function not implemented.");
     },
-    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     done(_error?: Error, _result?: any): void {
       throw new Error("Function not implemented.");
     },
-    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fail(_error: string | Error): void {
       throw new Error("Function not implemented.");
     },
-    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     succeed(_messageOrObject: any): void {
       throw new Error("Function not implemented.");
     },

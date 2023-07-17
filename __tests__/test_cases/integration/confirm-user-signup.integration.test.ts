@@ -4,7 +4,7 @@ import { weInvokeConfirmUserSignup } from "../../steps/when";
 import { userExistsInUsersTable } from "../../steps/then";
 
 const chance = new Chance();
-/* eslint-disable no-undef */
+ 
 describe("When confirmUserSignup runs", () => {
   it("The user's profile should be saved in DynamoDB", async () => {
     const { name, email } = aRandomUser();

@@ -26,7 +26,7 @@ function cognitoUserAttributeValue(
   return cognitoUser.UserAttributes.find((a) => a.Name === attributeKey).Value;
 }
 
-/* eslint-disable no-undef */
+ 
 const timestampFormat =
   /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g;
 describe("When an unknown user adds a club via API key", () => {

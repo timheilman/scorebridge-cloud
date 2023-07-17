@@ -29,7 +29,7 @@ export const userDoesNotExistInCognito = async (userId: string) => {
   try {
     await getUserCognito(userId);
   } catch (e) {
-    /* eslint-disable no-undef */
+     
     expect(e.name).toBe("UserNotFoundException");
   }
 };
