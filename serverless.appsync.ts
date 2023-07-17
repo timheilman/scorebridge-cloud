@@ -33,7 +33,7 @@ function customAppSyncResolvers() {
       acc[`${typeNameDs[0]}.${typeNameDs[1]}`] = resolverDefinition(
         typeNameDs[0],
         typeNameDs[1],
-        typeNameDs[2]
+        typeNameDs[2],
       );
       return acc;
     }, {}),
@@ -41,7 +41,7 @@ function customAppSyncResolvers() {
       acc[`${typeName[0]}.${typeName[1]}`] = resolverDefinition(
         typeName[0],
         typeName[1],
-        typeName[1] /* lambdas always get their own same-named datasource */
+        typeName[1] /* lambdas always get their own same-named datasource */,
       );
       return acc;
     }, {}),
@@ -109,7 +109,7 @@ export const AdditionalAppSyncResources = {
         "Fn::GetAtt": ["GraphQlApi", "ApiId"],
       },
       Description: `AppSync API key for stage \${sls:stage} for adding new clubs`,
-      Expires: `\${env:ADD_USER_API_KEY_EXPIRES_EPOCH_SEC}`
+      Expires: `\${env:ADD_USER_API_KEY_EXPIRES_EPOCH_SEC}`,
     },
   },
-}
+};

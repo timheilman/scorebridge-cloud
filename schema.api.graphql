@@ -4,7 +4,9 @@ schema {
 }
 
 type Query {
-  exampleLambdaDataSource(input: ExampleLambdaDataSourceInput): ExampleLambdaDataSourceOutput!
+  exampleLambdaDataSource(
+    input: ExampleLambdaDataSourceInput
+  ): ExampleLambdaDataSourceOutput!
 
   getMyTimeline(limit: Int!, nextToken: String): TweetsPage!
 
@@ -20,10 +22,12 @@ type Query {
 
   getFollowing(userId: ID!, limit: Int!, nextToken: String): ProfilesPage!
 
-  getTracerBulletData(tracerBulletQueryInput: TracerBulletQueryInput): TracerBulletOutput!
+  getTracerBulletData(
+    tracerBulletQueryInput: TracerBulletQueryInput
+  ): TracerBulletOutput!
 }
 
-input ExampleLambdaDataSourceInput  {
+input ExampleLambdaDataSourceInput {
   extension: String!
   contentType: String
 }
@@ -35,11 +39,12 @@ type ExampleLambdaDataSourceOutput {
 type Mutation {
   editMyProfile(newProfile: ProfileInput!): MyProfile!
 
-  addClub(input: AddClubInput!): AddClubResponse!
-  @aws_api_key
+  addClub(input: AddClubInput!): AddClubResponse! @aws_api_key
 
-  removeClubAndAdmin(input: RemoveClubAndAdminInput!): RemoveClubAndAdminResponse!
-  @aws_auth(cognito_groups: ["adminClub", "adminSuper"])
+  removeClubAndAdmin(
+    input: RemoveClubAndAdminInput!
+  ): RemoveClubAndAdminResponse!
+    @aws_auth(cognito_groups: ["adminClub", "adminSuper"])
 
   tweet(text: String!): Tweet!
 
@@ -57,7 +62,9 @@ type Mutation {
 
   unfollow(userId: ID!): Boolean!
 
-  doTracerBulletMutation(tracerBulletMutationInput: TracerBulletMutationInput): TracerBulletOutput!
+  doTracerBulletMutation(
+    tracerBulletMutationInput: TracerBulletMutationInput
+  ): TracerBulletOutput!
 }
 
 input AddClubInput {
@@ -206,5 +213,3 @@ input TracerBulletMutationInput {
 type TracerBulletOutput {
   tracerBulletOutputString: String!
 }
-
-

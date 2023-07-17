@@ -18,7 +18,7 @@ const graphQl = async (
   query,
   variables = {},
   auth = null,
-  apiKey = null
+  apiKey = null,
 ) => {
   const headers: Record<string, string> = {};
   if (auth) {
@@ -36,7 +36,7 @@ const graphQl = async (
         query,
         variables: JSON.stringify(variables),
       },
-      { headers }
+      { headers },
     );
     console.log("Done posting raw-dogged GQL");
 

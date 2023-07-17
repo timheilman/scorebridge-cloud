@@ -43,7 +43,7 @@ export const aLoggedInUser = async (email, password) => {
         USERNAME: email,
         PASSWORD: password,
       },
-    })
+    }),
   );
 
   console.log(`[${email}] - signed in`);

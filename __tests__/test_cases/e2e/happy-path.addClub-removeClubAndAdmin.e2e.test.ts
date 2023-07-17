@@ -21,7 +21,7 @@ import { aLoggedInUser, aRandomClubName, aRandomUser } from "../../steps/given";
 
 function cognitoUserAttributeValue(
   cognitoUser: AdminGetUserCommandOutput,
-  attributeKey: string
+  attributeKey: string,
 ) {
   return cognitoUser.UserAttributes.find((a) => a.Name === attributeKey).Value;
 }
@@ -57,7 +57,7 @@ describe("When an unknown user adds a club via API key", () => {
 
     const cognitoUser = await userExistsInCognito(userId);
     expect(cognitoUserAttributeValue(cognitoUser, "custom:tenantId")).toEqual(
-      clubId
+      clubId,
     );
     expect(cognitoUserAttributeValue(cognitoUser, "email")).toEqual(email);
     expect(cognitoUser.Username).toEqual(userId);
@@ -83,7 +83,7 @@ describe("When an unknown user adds a club via API key", () => {
     const result = await aUserCallsRemoveClubAndAdmin(
       userId,
       clubId,
-      accessToken
+      accessToken,
     );
     expect(result.status).toEqual("OK");
     await userDoesNotExistInCognito(userId);

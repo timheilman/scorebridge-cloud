@@ -16,7 +16,7 @@ import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
 
 async function createCognitoUser(
   email: string,
-  suppressInvitationEmail: boolean
+  suppressInvitationEmail: boolean,
 ) {
   try {
     // Because there is a quota on the number of emails we may send using cognito, but
@@ -44,7 +44,7 @@ export const main: AppSyncResolverHandler<
   MutationAddClubArgs,
   AddClubResponse
 > = async (
-  event: AppSyncResolverEvent<MutationAddClubArgs>
+  event: AppSyncResolverEvent<MutationAddClubArgs>,
 ): Promise<AddClubResponse> => {
   const email = event.arguments.input.newAdminEmail;
   const clubName = event.arguments.input.newClubName;
@@ -52,7 +52,7 @@ export const main: AppSyncResolverHandler<
   // cognito: create the user; suppress email only for testing
   const createdUser = await createCognitoUser(
     email,
-    event.arguments.input.suppressInvitationEmail
+    event.arguments.input.suppressInvitationEmail,
   );
   const userId = createdUser.User.Username;
   // cognito: set user's clubId to synthetic id for the club
@@ -63,7 +63,7 @@ export const main: AppSyncResolverHandler<
       Username: userId, // note: email also works here!
     };
     const updateUserCommand = new AdminUpdateUserAttributesCommand(
-      updateUserParams
+      updateUserParams,
     );
     await cachedCognitoIdpClient().send(updateUserCommand);
   } catch (error) {

@@ -12,7 +12,7 @@ dotenvConfig();
 
 export const weInvokeExampleLambdaDataSource = async (
   extension: string,
-  contentType: string
+  contentType: string,
 ) => {
   const minimalEvent: AppSyncResolverEvent<QueryExampleLambdaDataSourceArgs> = {
     arguments: {
@@ -68,7 +68,7 @@ export const weInvokeExampleLambdaDataSource = async (
 
 export const anUnknownUserAddsAClubViaApiKey = async (
   newAdminEmail: string,
-  newClubName: string
+  newClubName: string,
 ): Promise<{
   newClubId: string;
   newUserId: string;
@@ -92,12 +92,12 @@ export const anUnknownUserAddsAClubViaApiKey = async (
     addClub,
     variables,
     null,
-    requiredEnvVar("ADD_CLUB_API_KEY") // TODO: SCOR-66 use secrets manager instead
+    requiredEnvVar("ADD_CLUB_API_KEY"), // TODO: SCOR-66 use secrets manager instead
   );
   const output = data.addClub;
 
   console.log(
-    `added club. newUserId: ${output.newUserId}; newClubId: ${output.newClubId}`
+    `added club. newUserId: ${output.newUserId}; newClubId: ${output.newClubId}`,
   );
   return output;
 };
@@ -105,7 +105,7 @@ export const anUnknownUserAddsAClubViaApiKey = async (
 export const aUserCallsRemoveClubAndAdmin = async (
   userId: string,
   clubId: string,
-  accessToken: string
+  accessToken: string,
 ): Promise<RemoveClubAndAdminResponse> => {
   const removeClubAndAdmin = `mutation removeClubAndAdmin($input: RemoveClubAndAdminInput!) {
     removeClubAndAdmin(input: $input) {
@@ -123,7 +123,7 @@ export const aUserCallsRemoveClubAndAdmin = async (
     requiredEnvVar("API_URL"),
     removeClubAndAdmin,
     variables,
-    accessToken
+    accessToken,
   );
   const output = data.removeClubAndAdmin;
 
@@ -158,7 +158,7 @@ export const aUserCallsGetMyProfile = async (user) => {
     process.env.API_URL,
     getMyProfile,
     {},
-    user.accessToken
+    user.accessToken,
   );
   const profile = data.getMyProfile;
 
@@ -197,7 +197,7 @@ export const aUserCallsEditMyProfile = async (user, input) => {
     process.env.API_URL,
     editMyProfile,
     variables,
-    user.accessToken
+    user.accessToken,
   );
   const profile = data.editMyProfile;
 

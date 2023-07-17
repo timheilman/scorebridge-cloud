@@ -44,7 +44,7 @@ export const main: AppSyncResolverHandler<
   MutationRemoveClubAndAdminArgs,
   RemoveClubAndAdminResponse
 > = async (
-  event: AppSyncResolverEvent<MutationRemoveClubAndAdminArgs>
+  event: AppSyncResolverEvent<MutationRemoveClubAndAdminArgs>,
 ): Promise<RemoveClubAndAdminResponse> => {
   const { clubId, userId } = event.arguments.input;
   try {

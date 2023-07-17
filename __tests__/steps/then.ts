@@ -12,17 +12,17 @@ import { cachedDynamoDbClient } from "../../src/libs/ddb";
 dotenvConfig();
 
 const getUserCognito = async (
-  userId: string
+  userId: string,
 ): Promise<AdminGetUserCommandOutput> =>
   cachedCognitoIdpClient().send(
     new AdminGetUserCommand({
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
       Username: userId,
-    })
+    }),
   );
 
 export const userExistsInCognito = async (
-  userId
+  userId,
 ): Promise<AdminGetUserCommandOutput> => getUserCognito(userId);
 
 export const userDoesNotExistInCognito = async (userId: string) => {
@@ -41,7 +41,7 @@ async function getUserDdb(id: string) {
       Key: marshall({
         id,
       }),
-    })
+    }),
   );
   console.log("getUserDdb returning Item from", response);
   return response.Item;
@@ -56,7 +56,7 @@ export const userExistsInUsersTable = async (id: string) => {
   }
 
   throw new Error(
-    `User with ID [${id}] not found in table [${process.env.USERS_TABLE}]`
+    `User with ID [${id}] not found in table [${process.env.USERS_TABLE}]`,
   );
 };
 
@@ -71,7 +71,7 @@ async function getClubDdb(id: string) {
       Key: marshall({
         id,
       }),
-    })
+    }),
   );
   return response.Item;
 }
@@ -85,7 +85,7 @@ export const clubExistsInClubsTable = async (id: string) => {
   }
 
   throw new Error(
-    `Club with ID [${id}] not found in table [${process.env.CLUBS_TABLE}]`
+    `Club with ID [${id}] not found in table [${process.env.CLUBS_TABLE}]`,
   );
 };
 

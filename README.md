@@ -4,7 +4,7 @@
 
 This project was generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/).
 
-For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).  To view this README at its origin as created by that template, use `git checkout SLS_CREATE_RESULT`.
+For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/). To view this README at its origin as created by that template, use `git checkout SLS_CREATE_RESULT`.
 
 [Jira](https://theilman.atlassian.net/jira/software/projects/SCOR/boards/1) is the project-tracking software.
 
@@ -22,7 +22,7 @@ Export an env var, SB_TEST_AWS_CLI_PROFILE, containing the profile that you use 
 aws sso login --profile <that_profile_name>
 ```
 
-Also export ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=NaN .  This allows serverless packaging into .serverless to proceed 
+Also export ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=NaN . This allows serverless packaging into .serverless to proceed
 even when not deploying.
 
 ### Using NPM
@@ -39,20 +39,20 @@ Use `npm run gql-types-codegen` to generate typescript types from the gql schema
 
 ## Testing
 
-For now, only the dev environment is enabled.  First, establish a `.env` file at project root using:
+For now, only the dev environment is enabled. First, establish a `.env` file at project root using:
 
 ```
 npm run -- exportEnvDev
 ```
 
-That file will point at appropriate services for the stage or "env".  Then run integration and/or e2e tests with:
+That file will point at appropriate services for the stage or "env". Then run integration and/or e2e tests with:
 
 ```
 npm run -- integration-test
 npm run -- e2e-test
 ```
 
-Integration tests System-Under-Test is everything behind an artificial invocation of lambda code.  Thus NODE_ENV is inspected in production code, and SSO credentials rather than env-provided ones are used when NODE_ENV is test, but otherwise all execution beyond the lambda is real.
+Integration tests System-Under-Test is everything behind an artificial invocation of lambda code. Thus NODE_ENV is inspected in production code, and SSO credentials rather than env-provided ones are used when NODE_ENV is test, but otherwise all execution beyond the lambda is real.
 
 E2E tests are as close to acceptance tests as we can get, although user sign up is simulated with cognito idp admin commands.
 

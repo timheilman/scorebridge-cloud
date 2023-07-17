@@ -16,14 +16,14 @@ describe("When exampleLambdaDataSource runs", () => {
       const result: ExampleLambdaDataSourceOutput =
         (await weInvokeExampleLambdaDataSource(
           extension,
-          contentType
+          contentType,
         )) as ExampleLambdaDataSourceOutput;
       expect(
-        JSON.parse(result.exampleOutputField).arguments.input.extension
+        JSON.parse(result.exampleOutputField).arguments.input.extension,
       ).toBe(extension);
       expect(
-        JSON.parse(result.exampleOutputField).arguments.input.contentType
+        JSON.parse(result.exampleOutputField).arguments.input.contentType,
       ).toBe(contentType);
-    }
+    },
   );
 });

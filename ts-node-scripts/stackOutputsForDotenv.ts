@@ -13,14 +13,18 @@ function findIndexes(array, condition) {
 function stackOutputsPromptIndex(slsInfoLines) {
   const i = slsInfoLines.findIndex((s) => s.match(/^Stack Outputs:/));
   if (i === -1) {
-    throw new Error(`Could not find prompt 'Stack Outputs:'. Lines: \n${slsInfoLines.join('\n')}`);
+    throw new Error(
+      `Could not find prompt 'Stack Outputs:'. Lines: \n${slsInfoLines.join(
+        "\n",
+      )}`,
+    );
   }
   return i;
 }
 
 function firstNonblankStartAfterPromptIndex(
   slsInfoLines: string[],
-  startIndex
+  startIndex,
 ) {
   const blankLineIndexes = findIndexes(slsInfoLines, (l) => l.match(/^[^ ]/));
   return blankLineIndexes.find((n) => n >= startIndex);
@@ -56,7 +60,7 @@ function graphQlApiUrl(slsInfoLines: string[]) {
 exec("npx sls info --verbose", (error, stdout /* , stderr */) => {
   if (error) {
     console.log(
-      `build error: unable to pull stack outputs from serverless framework`
+      `build error: unable to pull stack outputs from serverless framework`,
     );
     console.log(`build error: ${error.message}`);
   }
@@ -64,8 +68,8 @@ exec("npx sls info --verbose", (error, stdout /* , stderr */) => {
   const slsInfoLines = stdout.split("\n");
   console.log(
     `${shellInputFormat(linesBetweenPromptAndEmptyLine(slsInfoLines)).join(
-      "\n"
+      "\n",
     )}
-API_URL=${graphQlApiUrl(slsInfoLines)}\n`
+API_URL=${graphQlApiUrl(slsInfoLines)}\n`,
   );
 });

@@ -24,9 +24,7 @@
     "defaultAuthStrategy": "ALLOW",
     "groups": null,
     "issuer": "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_A2BXBmWdY",
-    "sourceIp": [
-      "97.120.74.51"
-    ],
+    "sourceIp": ["97.120.74.51"],
     "sub": "f8b1c390-0071-70da-1b0c-102e414c1ced",
     "username": "f8b1c390-0071-70da-1b0c-102e414c1ced"
   },
@@ -71,9 +69,7 @@
   },
   "prev": null,
   "info": {
-    "selectionSetList": [
-      "exampleOutputField"
-    ],
+    "selectionSetList": ["exampleOutputField"],
     "selectionSetGraphQL": "{\n  exampleOutputField\n}",
     "fieldName": "exampleLambdaDataSource",
     "parentTypeName": "Query",

@@ -10,7 +10,7 @@ import requiredEnvVar from "../src/libs/requiredEnvVar";
 dotenvConfig();
 
 async function createFirstCognitoAdminSuperForEnv(
-  email: string
+  email: string,
 ): Promise<void> {
   const client = createCognitoIdentityProviderClient();
 
@@ -34,7 +34,7 @@ async function createFirstCognitoAdminSuperForEnv(
       Username: email,
     };
     const updateUserCommand = new AdminUpdateUserAttributesCommand(
-      updateUserParams
+      updateUserParams,
     );
     await client.send(updateUserCommand);
   } catch (error) {
