@@ -1,5 +1,6 @@
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
+
 import {
   ExampleLambdaDataSourceOutput,
   QueryExampleLambdaDataSourceArgs,

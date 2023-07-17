@@ -1,6 +1,7 @@
 import { PutItemCommand } from "@aws-sdk/client-dynamodb";
-import Chance from "chance";
 import { PostConfirmationTriggerEvent } from "aws-lambda";
+import Chance from "chance";
+
 import { cachedDynamoDbClient } from "../../libs/ddb";
 
 const chance = new Chance();

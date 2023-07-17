@@ -1,4 +1,5 @@
 import { handlerPath } from "@libs/handler-resolver";
+
 import schema from "./schema";
 
 export default {

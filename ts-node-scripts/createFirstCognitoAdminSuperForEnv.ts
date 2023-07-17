@@ -4,8 +4,9 @@ import {
   AdminUpdateUserAttributesCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { config as dotenvConfig } from "dotenv";
-import createCognitoIdentityProviderClient from "./createCognitoIdentityProviderClient";
+
 import requiredEnvVar from "../src/libs/requiredEnvVar";
+import createCognitoIdentityProviderClient from "./createCognitoIdentityProviderClient";
 
 dotenvConfig();
 

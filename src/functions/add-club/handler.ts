@@ -1,17 +1,18 @@
-import { AppSyncResolverEvent } from "aws-lambda";
-import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
-import { ulid } from "ulid";
 import {
   AdminAddUserToGroupCommand,
   AdminCreateUserCommand,
   AdminUpdateUserAttributesCommand,
   AdminUpdateUserAttributesCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
-import requiredEnvVar from "@libs/requiredEnvVar";
 import { PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
+import requiredEnvVar from "@libs/requiredEnvVar";
+import { AppSyncResolverEvent } from "aws-lambda";
+import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
+import { ulid } from "ulid";
+
 import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
 
 async function createCognitoUser(

@@ -1,13 +1,14 @@
-import { GetItemCommand } from "@aws-sdk/client-dynamodb";
-import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
-import { config as dotenvConfig } from "dotenv";
 import {
   AdminGetUserCommand,
   AdminGetUserCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
+import { GetItemCommand } from "@aws-sdk/client-dynamodb";
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
+import { config as dotenvConfig } from "dotenv";
+
 import { cachedCognitoIdpClient } from "../../src/libs/cognito";
-import requiredEnvVar from "../../src/libs/requiredEnvVar";
 import { cachedDynamoDbClient } from "../../src/libs/ddb";
+import requiredEnvVar from "../../src/libs/requiredEnvVar";
 
 dotenvConfig();
 

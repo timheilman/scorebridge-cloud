@@ -1,12 +1,13 @@
-import { config as dotenvConfig } from "dotenv";
 import { AppSyncResolverEvent, Context as AwsLambdaContext } from "aws-lambda";
-import requiredEnvVar from "../../src/libs/requiredEnvVar";
-import { main as exampleLambdaDataSource } from "../../src/functions/example-lambda-data-source/handler";
-import GraphQL from "../lib/graphql";
+import { config as dotenvConfig } from "dotenv";
+
 import {
   QueryExampleLambdaDataSourceArgs,
   RemoveClubAndAdminResponse,
 } from "../../appsync";
+import { main as exampleLambdaDataSource } from "../../src/functions/example-lambda-data-source/handler";
+import requiredEnvVar from "../../src/libs/requiredEnvVar";
+import GraphQL from "../lib/graphql";
 
 dotenvConfig();
 

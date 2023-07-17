@@ -1,7 +1,8 @@
 import { Chance } from "chance";
+
 import { aRandomUser } from "../../steps/given";
-import { weInvokeConfirmUserSignup } from "../../steps/when";
 import { userExistsInUsersTable } from "../../steps/then";
+import { weInvokeConfirmUserSignup } from "../../steps/when";
 
 const chance = new Chance();
 

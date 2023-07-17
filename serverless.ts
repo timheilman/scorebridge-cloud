@@ -1,11 +1,11 @@
-import type { AWS } from "@serverless/typescript";
-
 // import hello from '@functions/hello';
 import allFunctions from "@functions/all";
+import type { AWS } from "@serverless/typescript";
+
 import appSync from "./serverless.appsync";
 import { AdditionalAppSyncResources } from "./serverless.appsync";
-import DynamoDbTables from "./serverless.dynamodb";
 import CognitoResources from "./serverless.cognito";
+import DynamoDbTables from "./serverless.dynamodb";
 
 const serverlessConfiguration: AWS & {
   appSync: unknown;

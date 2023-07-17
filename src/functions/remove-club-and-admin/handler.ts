@@ -1,11 +1,12 @@
-import { AppSyncResolverEvent } from "aws-lambda";
-import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
-import { fromEnv } from "@aws-sdk/credential-providers";
 import { AdminDeleteUserCommand } from "@aws-sdk/client-cognito-identity-provider";
-import requiredEnvVar from "@libs/requiredEnvVar";
 import { DeleteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { fromEnv } from "@aws-sdk/credential-providers";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
+import requiredEnvVar from "@libs/requiredEnvVar";
+import { AppSyncResolverEvent } from "aws-lambda";
+import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
+
 import {
   MutationRemoveClubAndAdminArgs,
   RemoveClubAndAdminResponse,

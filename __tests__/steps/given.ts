@@ -1,6 +1,7 @@
+import { InitiateAuthCommand } from "@aws-sdk/client-cognito-identity-provider";
 import chance from "chance";
 import { config as dotenvConfig } from "dotenv";
-import { InitiateAuthCommand } from "@aws-sdk/client-cognito-identity-provider";
+
 import { cachedCognitoIdpClient } from "../../src/libs/cognito";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
 

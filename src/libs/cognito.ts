@@ -1,7 +1,8 @@
 import { CognitoIdentityProviderClient } from "@aws-sdk/client-cognito-identity-provider";
 import { fromEnv } from "@aws-sdk/credential-providers";
-import requiredEnvVar from "./requiredEnvVar";
+
 import fromSsoUsingProfileFromEnv from "./from-sso-using-profile-from-env";
+import requiredEnvVar from "./requiredEnvVar";
 
 export function createCognitoIdentityProviderClient() {
   return new CognitoIdentityProviderClient({

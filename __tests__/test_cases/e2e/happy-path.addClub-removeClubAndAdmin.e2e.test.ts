@@ -3,21 +3,22 @@ import {
   AdminSetUserPasswordCommand,
   AdminSetUserPasswordCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
-import requiredEnvVar from "../../../src/libs/requiredEnvVar";
+
 import { cachedCognitoIdpClient } from "../../../src/libs/cognito";
+import requiredEnvVar from "../../../src/libs/requiredEnvVar";
+import { aLoggedInUser, aRandomClubName, aRandomUser } from "../../steps/given";
+import {
+  clubDoesNotExistInClubsTable,
+  clubExistsInClubsTable,
+  userDoesNotExistInCognito,
+  userDoesNotExistInUsersTable,
+  userExistsInCognito,
+  userExistsInUsersTable,
+} from "../../steps/then";
 import {
   anUnknownUserAddsAClubViaApiKey,
   aUserCallsRemoveClubAndAdmin,
 } from "../../steps/when";
-import {
-  userExistsInCognito,
-  userDoesNotExistInCognito,
-  userExistsInUsersTable,
-  userDoesNotExistInUsersTable,
-  clubExistsInClubsTable,
-  clubDoesNotExistInClubsTable,
-} from "../../steps/then";
-import { aLoggedInUser, aRandomClubName, aRandomUser } from "../../steps/given";
 
 function cognitoUserAttributeValue(
   cognitoUser: AdminGetUserCommandOutput,
