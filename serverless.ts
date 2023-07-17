@@ -3,6 +3,7 @@ import type { AWS } from "@serverless/typescript";
 // import hello from '@functions/hello';
 import allFunctions from "@functions/all";
 import appSync from "./serverless.appsync";
+import { AdditionalAppSyncResources } from "./serverless.appsync";
 import DynamoDbTables from "./serverless.dynamodb";
 import CognitoResources from "./serverless.cognito";
 
@@ -57,15 +58,7 @@ const serverlessConfiguration: AWS & {
     Resources: {
       ...CognitoResources,
       ...DynamoDbTables,
-      AddClubApiKey: {
-        Type: "AWS::AppSync::ApiKey",
-        Properties: {
-          ApiId: {
-            "Fn::GetAtt": ["GraphQlApi", "ApiId"],
-          },
-          Description: `AppSync API key for stage \${sls:stage} for adding new clubs`,
-        },
-      },
+      ...AdditionalAppSyncResources,
     },
     Outputs: {
       CognitoUserPoolId: {

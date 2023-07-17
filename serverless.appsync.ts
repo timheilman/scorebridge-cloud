@@ -100,3 +100,16 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
 };
 
 export default appsyncApi;
+
+export const AdditionalAppSyncResources = {
+  AddClubApiKey: {
+    Type: "AWS::AppSync::ApiKey",
+    Properties: {
+      ApiId: {
+        "Fn::GetAtt": ["GraphQlApi", "ApiId"],
+      },
+      Description: `AppSync API key for stage \${sls:stage} for adding new clubs`,
+      Expires: `\${env:ADD_USER_API_KEY_EXPIRES_EPOCH_SEC}`
+    },
+  },
+}
