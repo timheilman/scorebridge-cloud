@@ -81,7 +81,7 @@ function customAppSyncDataSources() {
 }
 
 const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
-  name: "ScoreBridge-backend",
+  name: "scorebridge-cloud",
   schema: "schema.api.graphql",
   authentication: {
     type: "AMAZON_COGNITO_USER_POOLS",

@@ -1,5 +1,5 @@
 {
-  "name": "ScoreBridge-backend",
+  "name": "scorebridge-cloud",
   "private": true,
   "version": "1.0.0",
   "description": "Serverless aws-nodejs-typescript template",
@@ -7,13 +7,13 @@
   "scripts": {
     "codegen-gql-types": "graphql-codegen",
     "sls": "sls",
-    "deploy": "ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=`ts-node ts-node-scripts/printRolloverEpochSeconds.ts` sls deploy"
+    "deploy": "ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=`ts-node ts-node-scripts/printRolloverEpochSeconds.ts` sls deploy",
     "package": "ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=`ts-node ts-node-scripts/printRolloverEpochSeconds.ts` sls package",
     "createFirstCognitoAdminSuperForEnv": "ts-node ts-node-scripts/createFirstCognitoAdminSuperForEnv.ts",
     "exportEnvDev": "sls export-env --all --overwrite && echo >> .env && ts-node ts-node-scripts/stackOutputsForDotenv.ts >> .env",
     "test": "jest --verbose ./__tests__/test_cases/unit",
     "integration-test": "jest --verbose ./__tests__/test_cases/integration",
-    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e",
+    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e"
   },
   "engines": {
     "node": ">=14.15.0"

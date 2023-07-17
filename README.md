@@ -25,7 +25,8 @@ aws sso login --profile <that_profile_name>
 ### Using NPM
 
 - Run `npm i` to install the project dependencies
-- Run `npx sls deploy` to deploy this stack to AWS
+- Run `npx run package` to package into ./.serverless
+- Run `npx run deploy` to deploy this stack to AWS
 
 ### Updating graphql-based typescript types
 
