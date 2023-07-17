@@ -4,8 +4,6 @@ import {
   ExampleLambdaDataSourceOutput,
   QueryExampleLambdaDataSourceArgs,
 } from "../../../appsync";
-
-// eslint-disable-next-line import/prefer-default-export
 export const main: AppSyncResolverHandler<
   QueryExampleLambdaDataSourceArgs,
   ExampleLambdaDataSourceOutput

@@ -39,7 +39,6 @@ async function destroyCognitoUser(userId: string) {
   }
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export const main: AppSyncResolverHandler<
   MutationRemoveClubAndAdminArgs,
   RemoveClubAndAdminResponse

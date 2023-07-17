@@ -39,7 +39,6 @@ async function createCognitoUser(
   }
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export const main: AppSyncResolverHandler<
   MutationAddClubArgs,
   AddClubResponse

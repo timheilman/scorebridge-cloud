@@ -51,7 +51,7 @@ export const weInvokeExampleLambdaDataSource = async (
       throw new Error("Function not implemented.");
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    done(_error?: Error, _result?: any): void {
+    done(_error?: Error, _result?: unknown): void {
       throw new Error("Function not implemented.");
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -59,7 +59,7 @@ export const weInvokeExampleLambdaDataSource = async (
       throw new Error("Function not implemented.");
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    succeed(_messageOrObject: any): void {
+    succeed(_messageOrObject: unknown): void {
       throw new Error("Function not implemented.");
     },
   };

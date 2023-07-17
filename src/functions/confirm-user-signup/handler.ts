@@ -5,7 +5,6 @@ import { cachedDynamoDbClient } from "../../libs/ddb";
 
 const chance = new Chance();
 
-// eslint-disable-next-line import/prefer-default-export
 export const main = async (event: PostConfirmationTriggerEvent) => {
   const { USERS_TABLE } = process.env;
   if (event.triggerSource !== "PostConfirmation_ConfirmSignUp") {

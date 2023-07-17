@@ -3,7 +3,6 @@ import { fromEnv } from "@aws-sdk/credential-providers";
 import fromSsoUsingProfileFromEnv from "./from-sso-using-profile-from-env";
 
 let dynamoDbClient;
-// eslint-disable-next-line import/prefer-default-export
 export const cachedDynamoDbClient = () => {
   if (dynamoDbClient) {
     return dynamoDbClient;
