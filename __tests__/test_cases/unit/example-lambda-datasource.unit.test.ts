@@ -1,7 +1,7 @@
 import { config as dotenvConfig } from "dotenv";
 import { weInvokeExampleLambdaDataSource } from "../../steps/when";
 import { ExampleLambdaDataSourceOutput } from "../../../appsync";
- 
+
 dotenvConfig();
 describe("When exampleLambdaDataSource runs", () => {
   it.each([
