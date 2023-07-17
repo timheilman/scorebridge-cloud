@@ -39,6 +39,8 @@
     "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^29.5.2",
     "@types/node": "^14.14.25",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",
     "esbuild": "^0.14.11",
