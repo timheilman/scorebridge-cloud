@@ -13,7 +13,7 @@ function findIndexes(array, condition) {
 function stackOutputsPromptIndex(slsInfoLines) {
   const i = slsInfoLines.findIndex((s) => s.match(/^Stack Outputs:/));
   if (i === -1) {
-    throw new Error("Could not find prompt 'Stack Outputs:'");
+    throw new Error(`Could not find prompt 'Stack Outputs:'. Lines: \n${slsInfoLines.join('\n')}`);
   }
   return i;
 }

@@ -11,8 +11,8 @@ const serverlessConfiguration: AWS & {
   appSync: unknown;
 } = {
   org: "theilman",
-  app: "scorebridge-backend-app",
-  service: "scorebridge-backend-service",
+  app: "scorebridge-cloud-app",
+  service: "scorebridge-cloud-service",
   frameworkVersion: "3",
   plugins: [
     "serverless-esbuild",
