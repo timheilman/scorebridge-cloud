@@ -3,7 +3,7 @@ import { fromEnv } from "@aws-sdk/credential-providers";
 
 import fromSsoUsingProfileFromEnv from "./from-sso-using-profile-from-env";
 
-let dynamoDbClient;
+let dynamoDbClient: DynamoDBClient;
 export const cachedDynamoDbClient = () => {
   if (dynamoDbClient) {
     return dynamoDbClient;

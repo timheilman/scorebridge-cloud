@@ -1,4 +1,4 @@
-const buildSyntheticHashNoSortTable = (tableNameHyphens) => ({
+const buildSyntheticHashNoSortTable = (tableNameHyphens: string) => ({
   Type: "AWS::DynamoDB::Table",
   Properties: {
     BillingMode: "PAY_PER_REQUEST",

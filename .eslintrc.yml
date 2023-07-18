@@ -12,6 +12,8 @@ parserOptions:
 plugins:
   - "@typescript-eslint"
   - "simple-import-sort"
+ignorePatterns:
+  - "jest.config.js"
 rules: {
   "sort-imports": "off",
   "simple-import-sort/imports": "error",

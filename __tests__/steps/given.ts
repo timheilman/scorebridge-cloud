@@ -35,7 +35,7 @@ export const aRandomUser = (): {
   };
 };
 
-export const aLoggedInUser = async (email, password) => {
+export const aLoggedInUser = async (email: string, password: string) => {
   const auth = await cachedCognitoIdpClient().send(
     new InitiateAuthCommand({
       AuthFlow: "USER_PASSWORD_AUTH",

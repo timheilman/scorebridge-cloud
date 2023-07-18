@@ -1,16 +1,16 @@
 import { exec } from "child_process";
 
-function camelToScreamingSnake(str) {
+function camelToScreamingSnake(str: string): string {
   return str.replace(/([a-z])([A-Z])/g, "$1_$2").toUpperCase();
 }
 
-function findIndexes(array, condition) {
+function findIndexes(array: string[], condition: (string) => boolean) {
   return array
     .map((element, index) => (condition(element) ? index : -1))
     .filter((index) => index !== -1);
 }
 
-function stackOutputsPromptIndex(slsInfoLines) {
+function stackOutputsPromptIndex(slsInfoLines: string[]): number {
   const i = slsInfoLines.findIndex((s) => s.match(/^Stack Outputs:/));
   if (i === -1) {
     throw new Error(
@@ -24,9 +24,12 @@ function stackOutputsPromptIndex(slsInfoLines) {
 
 function firstNonblankStartAfterPromptIndex(
   slsInfoLines: string[],
-  startIndex,
-) {
-  const blankLineIndexes = findIndexes(slsInfoLines, (l) => l.match(/^[^ ]/));
+  startIndex: number,
+): number {
+  const blankLineIndexes = findIndexes(
+    slsInfoLines,
+    (l: string) => !!l.match(/^[^ ]/),
+  );
   return blankLineIndexes.find((n) => n >= startIndex);
 }
 

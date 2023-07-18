@@ -20,7 +20,11 @@ const lambdaResolvers = [
 // Derived:
 const ddbDataSources = [...new Set(ddbResolvers.map((v) => v[2]))];
 
-const resolverDefinition = (endpointType, endpointName, dataSource) => ({
+const resolverDefinition = (
+  endpointType,
+  endpointName,
+  dataSource: string,
+) => ({
   request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
   response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
   kind: "UNIT",
@@ -58,7 +62,7 @@ function customAppSyncLambdaDataSources() {
   }, {});
 }
 
-function capitalizeFirstLetter(string) {
+function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 

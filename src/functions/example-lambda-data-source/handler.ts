@@ -10,6 +10,7 @@ export const main: AppSyncResolverHandler<
   ExampleLambdaDataSourceOutput
 > = async (
   event: AppSyncResolverEvent<QueryExampleLambdaDataSourceArgs>,
+  // eslint-disable-next-line @typescript-eslint/require-await
 ): Promise<ExampleLambdaDataSourceOutput> => {
   const ct = event.arguments.input.contentType;
   const ext = event.arguments.input.extension;

@@ -15,14 +15,13 @@ describe("When exampleLambdaDataSource runs", () => {
     "Returns an arg list for extension %s and content type %s",
     async (extension, contentType) => {
       const result: ExampleLambdaDataSourceOutput =
-        (await weInvokeExampleLambdaDataSource(
-          extension,
-          contentType,
-        )) as ExampleLambdaDataSourceOutput;
+        await weInvokeExampleLambdaDataSource(extension, contentType);
       expect(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         JSON.parse(result.exampleOutputField).arguments.input.extension,
       ).toBe(extension);
       expect(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         JSON.parse(result.exampleOutputField).arguments.input.contentType,
       ).toBe(contentType);
     },

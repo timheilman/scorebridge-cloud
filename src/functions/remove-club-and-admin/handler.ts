@@ -12,7 +12,7 @@ import {
   RemoveClubAndAdminResponse,
 } from "../../../appsync";
 
-let dynamoDbClient;
+let dynamoDbClient: DynamoDBClient;
 
 function cachedDdbClient() {
   if (dynamoDbClient) {

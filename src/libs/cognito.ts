@@ -11,8 +11,8 @@ export function createCognitoIdentityProviderClient() {
   });
 }
 
-let cognitoIdpClient;
-export function cachedCognitoIdpClient() {
+let cognitoIdpClient: CognitoIdentityProviderClient;
+export function cachedCognitoIdpClient(): CognitoIdentityProviderClient {
   if (cognitoIdpClient) {
     return cognitoIdpClient;
   }

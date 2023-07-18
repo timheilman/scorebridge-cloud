@@ -23,13 +23,14 @@ const getUserCognito = async (
   );
 
 export const userExistsInCognito = async (
-  userId,
+  userId: string,
 ): Promise<AdminGetUserCommandOutput> => getUserCognito(userId);
 
 export const userDoesNotExistInCognito = async (userId: string) => {
   try {
     await getUserCognito(userId);
   } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(e.name).toBe("UserNotFoundException");
   }
 };

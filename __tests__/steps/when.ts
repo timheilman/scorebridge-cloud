@@ -2,6 +2,8 @@ import { AppSyncResolverEvent, Context as AwsLambdaContext } from "aws-lambda";
 import { config as dotenvConfig } from "dotenv";
 
 import {
+  AddClubResponse,
+  ExampleLambdaDataSourceOutput,
   QueryExampleLambdaDataSourceArgs,
   RemoveClubAndAdminResponse,
 } from "../../appsync";
@@ -14,7 +16,7 @@ dotenvConfig();
 export const weInvokeExampleLambdaDataSource = async (
   extension: string,
   contentType: string,
-) => {
+): Promise<void | ExampleLambdaDataSourceOutput> => {
   const minimalEvent: AppSyncResolverEvent<QueryExampleLambdaDataSourceArgs> = {
     arguments: {
       input: {
@@ -95,7 +97,7 @@ export const anUnknownUserAddsAClubViaApiKey = async (
     null,
     requiredEnvVar("ADD_CLUB_API_KEY"), // TODO: SCOR-66 use secrets manager instead
   );
-  const output = data.addClub;
+  const output = data.addClub as AddClubResponse;
 
   console.log(
     `added club. newUserId: ${output.newUserId}; newClubId: ${output.newClubId}`,
@@ -126,13 +128,16 @@ export const aUserCallsRemoveClubAndAdmin = async (
     variables,
     accessToken,
   );
-  const output = data.removeClubAndAdmin;
+  const output = data.removeClubAndAdmin as RemoveClubAndAdminResponse;
 
   console.log(`removed club and admin. status: ${output.status}`);
   return output;
 };
 
-export const aUserCallsGetMyProfile = async (user) => {
+export const aUserCallsGetMyProfile = async (user: {
+  accessToken: string;
+  username: string;
+}) => {
   const getMyProfile = `query getMyProfile {
     getMyProfile {
       backgroundImageUrl
@@ -168,7 +173,10 @@ export const aUserCallsGetMyProfile = async (user) => {
   return profile;
 };
 
-export const aUserCallsEditMyProfile = async (user, input) => {
+export const aUserCallsEditMyProfile = async (
+  user: { username: string; accessToken: string },
+  input,
+) => {
   const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
     editMyProfile(newProfile: $input) {
       backgroundImageUrl
@@ -188,6 +196,7 @@ export const aUserCallsEditMyProfile = async (user, input) => {
     }
   }`;
   const variables = {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     input,
   };
 

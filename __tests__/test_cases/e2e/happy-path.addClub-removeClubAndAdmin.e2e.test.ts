@@ -30,11 +30,11 @@ function cognitoUserAttributeValue(
 const timestampFormat =
   /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g;
 describe("When an unknown user adds a club via API key", () => {
-  let password;
-  let email;
-  let clubName;
-  let userId;
-  let clubId;
+  let password: string;
+  let email: string;
+  let clubName: string;
+  let userId: string;
+  let clubId: string;
   it("The user and club should be saved in DynamoDB and Cognito", async () => {
     const user = aRandomUser();
     password = user.password;
