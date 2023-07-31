@@ -15,7 +15,8 @@
     "integration-test": "jest --verbose ./__tests__/test_cases/integration",
     "e2e-test": "jest --verbose ./__tests__/test_cases/e2e",
     "lint": "eslint --fix --max-warnings 0 --report-unused-disable-directives .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "tidy": "npm run lint; npm run format"
   },
   "engines": {
     "node": ">=14.15.0"
