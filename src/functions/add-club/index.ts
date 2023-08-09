@@ -31,6 +31,7 @@ export default {
     {
       Effect: "Allow",
       Action: [
+        "cognito-idp:AdminGetUser",
         "cognito-idp:AdminCreateUser",
         "cognito-idp:AdminUpdateUserAttributes",
       ],
