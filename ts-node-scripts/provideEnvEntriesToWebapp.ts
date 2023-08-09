@@ -11,6 +11,7 @@ function convertToReactActVar(s: string) {
   "COGNITO_USER_POOL_ID",
   "COGNITO_USER_POOL_CLIENT_ID_WEB",
   "API_URL",
+  "STAGE",
 ].forEach((webappDependentVar) => {
   console.log(convertToReactActVar(webappDependentVar));
 });
