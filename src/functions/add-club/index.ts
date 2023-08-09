@@ -23,7 +23,7 @@ export default {
     },
     {
       Effect: "Allow",
-      Action: "dynamodb:PutItem",
+      Action: ["dynamodb:PutItem", "dynamoDb:UpdateItem"],
       Resource: {
         "Fn::GetAtt": ["ClubsTable", "Arn"],
       },

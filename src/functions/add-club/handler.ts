@@ -2,12 +2,14 @@ import {
   AdminAddUserToGroupCommand,
   AdminCreateUserCommand,
   AdminGetUserCommand,
-  AdminGetUserCommandInput,
-  AdminGetUserCommandOutput,
   AdminUpdateUserAttributesCommand,
   AdminUpdateUserAttributesCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { PutItemCommand } from "@aws-sdk/client-dynamodb";
+import {
+  PutItemCommand,
+  UpdateItemCommand,
+  UpdateItemCommandOutput,
+} from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
@@ -18,9 +20,7 @@ import { ulid } from "ulid";
 
 import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
 
-async function getCognitoUser(
-  email: string,
-): Promise<AdminGetUserCommandOutput> {
+const getCognitoUser = async (email: string) => {
   try {
     const getUserCommand = new AdminGetUserCommand({
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
@@ -31,17 +31,17 @@ async function getCognitoUser(
     console.error(`Error getting user ${email}:`, e);
     throw e;
   }
-}
+};
 
 async function createCognitoUser(
   email: string,
-  suppressInvitationEmail: boolean,
+  invitationEmailAction: "SUPPRESS" | "RESEND" | undefined,
 ) {
   try {
     // Because there is a quota on the number of emails we may send using cognito, but
     // it is far beyond anything expected in production, we suppress emails when testing
-    const emailAction = suppressInvitationEmail
-      ? { MessageAction: "SUPPRESS" }
+    const emailAction = invitationEmailAction
+      ? { MessageAction: invitationEmailAction }
       : {};
     const createUserParams = {
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
@@ -57,6 +57,10 @@ async function createCognitoUser(
     throw error;
   }
 }
+
+const reinviteUser = async (email: string) => {
+  return createCognitoUser(email, "RESEND");
+};
 const getNullableUser = async (email: string) => {
   try {
     return await getCognitoUser(email);
@@ -70,6 +74,22 @@ const getNullableUser = async (email: string) => {
   }
 };
 
+const updateClubName = async (
+  clubId: string,
+  newClubName: string,
+): Promise<UpdateItemCommandOutput> => {
+  const updateClubDdbCommand = new UpdateItemCommand({
+    TableName: requiredEnvVar("CLUBS_TABLE"),
+    Key: marshall({ id: clubId }),
+    UpdateExpression: "set name = :val1",
+    ExpressionAttributeValues: marshall({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      ":val1": newClubName,
+    }),
+  });
+  return await cachedDynamoDbClient().send(updateClubDdbCommand);
+};
+
 export const main: AppSyncResolverHandler<
   MutationAddClubArgs,
   AddClubResponse
@@ -78,22 +98,26 @@ export const main: AppSyncResolverHandler<
 ): Promise<AddClubResponse> => {
   const email = event.arguments.input.newAdminEmail;
   const clubName = event.arguments.input.newClubName;
-  const clubId = ulid();
   const user = await getNullableUser(email);
   if (user) {
-    console.log(
-      `user log for status of confirmed or not: ${JSON.stringify(
-        user,
-        null,
-        2,
-      )}`,
-    );
-    return { newUserId: "rename", newClubId: "rename" };
+    if (user.UserStatus === "FORCE_CHANGE_PASSWORD") {
+      const clubId = user.UserAttributes.find(
+        (at) => at.Name === "custom:tenantId",
+      ).Value;
+      await updateClubName(clubId, clubName);
+      await reinviteUser(email);
+      return { newUserId: user.Username, newClubId: clubId };
+    } else {
+      throw new Error(
+        "Account has already been created and password confirmed for this account.",
+      );
+    }
   } else {
+    const clubId = ulid();
     // cognito: create the user; suppress email only for testing
     const createdUser = await createCognitoUser(
       email,
-      event.arguments.input.suppressInvitationEmail,
+      event.arguments.input.suppressInvitationEmail ? "SUPPRESS" : undefined,
     );
     const userId = createdUser.User.Username;
     // cognito: set user's clubId to synthetic id for the club
