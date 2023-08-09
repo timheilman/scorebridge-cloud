@@ -81,7 +81,8 @@ const updateClubName = async (
   const updateClubDdbCommand = new UpdateItemCommand({
     TableName: requiredEnvVar("CLUBS_TABLE"),
     Key: marshall({ id: clubId }),
-    UpdateExpression: "set name = :val1",
+    UpdateExpression: "set #name = :val1",
+    ExpressionAttributeNames: { "#name": "name" },
     ExpressionAttributeValues: marshall({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       ":val1": newClubName,
