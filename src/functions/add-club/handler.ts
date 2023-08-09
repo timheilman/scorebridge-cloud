@@ -57,6 +57,18 @@ async function createCognitoUser(
     throw error;
   }
 }
+const getNullableUser = async (email: string) => {
+  try {
+    return await getCognitoUser(email);
+  } catch (problem) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (problem?.errorType === "UserNotFoundException") {
+      return null;
+    }
+    console.error("unexpected problem!", problem);
+    throw problem;
+  }
+};
 
 export const main: AppSyncResolverHandler<
   MutationAddClubArgs,
@@ -67,90 +79,95 @@ export const main: AppSyncResolverHandler<
   const email = event.arguments.input.newAdminEmail;
   const clubName = event.arguments.input.newClubName;
   const clubId = ulid();
-  try {
-    /* const foundUser = */ await getCognitoUser(email);
-  } catch (problem) {
-    console.log("expected problem:", problem);
-    throw problem;
-  }
-
-  // cognito: create the user; suppress email only for testing
-  const createdUser = await createCognitoUser(
-    email,
-    event.arguments.input.suppressInvitationEmail,
-  );
-  const userId = createdUser.User.Username;
-  // cognito: set user's clubId to synthetic id for the club
-  try {
-    const updateUserParams: AdminUpdateUserAttributesCommandInput = {
-      UserAttributes: [{ Name: "custom:tenantId", Value: clubId }],
-      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: userId, // note: email also works here!
-    };
-    const updateUserCommand = new AdminUpdateUserAttributesCommand(
-      updateUserParams,
+  const user = await getNullableUser(email);
+  if (user) {
+    console.log(
+      `user log for status of confirmed or not: ${JSON.stringify(
+        user,
+        null,
+        2,
+      )}`,
     );
-    await cachedCognitoIdpClient().send(updateUserCommand);
-  } catch (error) {
-    console.error("Error updating user to adminClub role:", error);
-    throw error;
-  }
-  console.log("Cognito user created successfully.");
-  // cognito: add the user to the adminClub group
-  // Prepare the parameters for the AdminAddUserToGroupCommand
-
-  // Add the user to the group
-  try {
-    const params = {
-      GroupName: "adminClub",
-      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: userId, // note: email also works here
-    };
-    const command = new AdminAddUserToGroupCommand(params);
-    await cachedCognitoIdpClient().send(command);
-    console.log("User added to the adminClub group successfully");
-  } catch (error) {
-    console.error("Error adding user to the adminClub group:", error);
-  }
-  try {
-    const user = marshall({
-      id: userId,
+    return { newUserId: "rename", newClubId: "rename" };
+  } else {
+    // cognito: create the user; suppress email only for testing
+    const createdUser = await createCognitoUser(
       email,
-      createdAt: new Date().toJSON(),
-    });
+      event.arguments.input.suppressInvitationEmail,
+    );
+    const userId = createdUser.User.Username;
+    // cognito: set user's clubId to synthetic id for the club
+    try {
+      const updateUserParams: AdminUpdateUserAttributesCommandInput = {
+        UserAttributes: [{ Name: "custom:tenantId", Value: clubId }],
+        UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+        Username: userId, // note: email also works here!
+      };
+      const updateUserCommand = new AdminUpdateUserAttributesCommand(
+        updateUserParams,
+      );
+      await cachedCognitoIdpClient().send(updateUserCommand);
+    } catch (error) {
+      console.error("Error updating user to adminClub role:", error);
+      throw error;
+    }
+    console.log("Cognito user created successfully.");
+    // cognito: add the user to the adminClub group
+    // Prepare the parameters for the AdminAddUserToGroupCommand
 
-    const createUserDdbCommand = new PutItemCommand({
-      TableName: requiredEnvVar("USERS_TABLE"),
-      Item: user,
-      ConditionExpression: "attribute_not_exists(id)",
-    });
-    await cachedDynamoDbClient().send(createUserDdbCommand);
-  } catch (error) {
-    console.error("Error creating ddb user", error);
-    throw error;
+    // Add the user to the group
+    try {
+      const params = {
+        GroupName: "adminClub",
+        UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+        Username: userId, // note: email also works here
+      };
+      const command = new AdminAddUserToGroupCommand(params);
+      await cachedCognitoIdpClient().send(command);
+      console.log("User added to the adminClub group successfully");
+    } catch (error) {
+      console.error("Error adding user to the adminClub group:", error);
+    }
+    try {
+      const user = marshall({
+        id: userId,
+        email,
+        createdAt: new Date().toJSON(),
+      });
+
+      const createUserDdbCommand = new PutItemCommand({
+        TableName: requiredEnvVar("USERS_TABLE"),
+        Item: user,
+        ConditionExpression: "attribute_not_exists(id)",
+      });
+      await cachedDynamoDbClient().send(createUserDdbCommand);
+    } catch (error) {
+      console.error("Error creating ddb user", error);
+      throw error;
+    }
+    console.log("Ddb user created successfully.");
+
+    try {
+      const club = marshall({
+        id: clubId,
+        name: clubName,
+        createdAt: new Date().toJSON(),
+      });
+      const createClubDdbCommand = new PutItemCommand({
+        TableName: requiredEnvVar("CLUBS_TABLE"),
+        Item: club,
+        ConditionExpression: "attribute_not_exists(id)",
+      });
+      await cachedDynamoDbClient().send(createClubDdbCommand);
+    } catch (error) {
+      console.error("Error creating ddb club", error);
+      throw error;
+    }
+    console.log("Ddb club created successfully.");
+
+    return {
+      newUserId: userId,
+      newClubId: clubId,
+    };
   }
-  console.log("Ddb user created successfully.");
-
-  try {
-    const club = marshall({
-      id: clubId,
-      name: clubName,
-      createdAt: new Date().toJSON(),
-    });
-    const createClubDdbCommand = new PutItemCommand({
-      TableName: requiredEnvVar("CLUBS_TABLE"),
-      Item: club,
-      ConditionExpression: "attribute_not_exists(id)",
-    });
-    await cachedDynamoDbClient().send(createClubDdbCommand);
-  } catch (error) {
-    console.error("Error creating ddb club", error);
-    throw error;
-  }
-  console.log("Ddb club created successfully.");
-
-  return {
-    newUserId: userId,
-    newClubId: clubId,
-  };
 };
