@@ -1,6 +1,9 @@
 import {
   AdminAddUserToGroupCommand,
   AdminCreateUserCommand,
+  AdminGetUserCommand,
+  AdminGetUserCommandInput,
+  AdminGetUserCommandOutput,
   AdminUpdateUserAttributesCommand,
   AdminUpdateUserAttributesCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
@@ -14,6 +17,21 @@ import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 import { ulid } from "ulid";
 
 import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
+
+async function getCognitoUser(
+  email: string,
+): Promise<AdminGetUserCommandOutput> {
+  try {
+    const getUserCommand = new AdminGetUserCommand({
+      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+      Username: email,
+    });
+    return await cachedCognitoIdpClient().send(getUserCommand);
+  } catch (e) {
+    console.error(`Error getting user ${email}:`, e);
+    throw e;
+  }
+}
 
 async function createCognitoUser(
   email: string,
@@ -49,6 +67,13 @@ export const main: AppSyncResolverHandler<
   const email = event.arguments.input.newAdminEmail;
   const clubName = event.arguments.input.newClubName;
   const clubId = ulid();
+  try {
+    /* const foundUser = */ await getCognitoUser(email);
+  } catch (problem) {
+    console.log("expected problem:", problem);
+    throw problem;
+  }
+
   // cognito: create the user; suppress email only for testing
   const createdUser = await createCognitoUser(
     email,
