@@ -9,7 +9,7 @@ dotenvConfig();
 const lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
 
 export const aRandomClubName = (): string =>
-  `Randomized Club Name ${chance().string({
+  `scorebridge-cloud e2e test club ${chance().string({
     length: 8,
     pool: lowerCaseLetters,
   })}`;
