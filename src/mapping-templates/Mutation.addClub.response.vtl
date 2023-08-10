@@ -1,1 +1,5 @@
-$util.toJson($context.result)
+if (!$util.isNull($ctx.result.error))
+  $util.error($ctx.result.error.message, $ctx.result.error.type)
+#end
+
+$utils.toJson($ctx.result)

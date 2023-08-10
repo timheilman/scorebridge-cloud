@@ -42,8 +42,8 @@ describe("When an unknown user adds a club via API key", () => {
     clubName = aRandomClubName();
 
     const result = await anUnknownUserAddsAClubViaApiKey(email, clubName);
-    userId = result.newUserId;
-    clubId = result.newClubId;
+    userId = result.userId;
+    clubId = result.clubId;
 
     const ddbUser = await userExistsInUsersTable(userId);
     expect(ddbUser.id).toBe(userId);

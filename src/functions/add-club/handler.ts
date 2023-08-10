@@ -15,9 +15,11 @@ import {
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
+import { middyValidation } from "@libs/lambda";
 import { logCompletionDecorator as lcd } from "@libs/log-completion-decorator";
 import requiredEnvVar from "@libs/requiredEnvVar";
-import { AppSyncResolverEvent, Callback, Context } from "aws-lambda";
+import { ValidationError } from "@libs/validation-error";
+import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 import { ulid } from "ulid";
 
@@ -164,12 +166,11 @@ async function readdClub(input: AddClubInput, user: AdminGetUserCommandOutput) {
 async function handleFoundCognitoUser(
   user: AdminGetUserCommandOutput,
   input: AddClubInput,
-  callback: Callback<AddClubResponse>,
 ) {
   if (user.UserStatus === "FORCE_CHANGE_PASSWORD") {
     return await readdClub(input, user);
   } else {
-    callback(
+    throw new ValidationError(
       `An account has already been registered under this email address: ${input.newAdminEmail}.`,
     );
   }
@@ -212,21 +213,21 @@ async function handleNoSuchCognitoUser({
   return { userId: userId, clubId: clubId };
 }
 
-export const main: AppSyncResolverHandler<
+const almostMain: AppSyncResolverHandler<
   MutationAddClubArgs,
   AddClubResponse
 > = async (
   event: AppSyncResolverEvent<MutationAddClubArgs>,
-  _context: Context,
-  callback: Callback<AddClubResponse>,
 ): Promise<AddClubResponse> => {
   const user = await lcd(
     getNullableUser(event.arguments.input.newAdminEmail),
     "Discovered cognito user existence successfully",
   );
   if (user) {
-    return await handleFoundCognitoUser(user, event.arguments.input, callback);
+    return await handleFoundCognitoUser(user, event.arguments.input);
   } else {
     return await handleNoSuchCognitoUser(event.arguments.input);
   }
 };
+
+export const main = middyValidation(almostMain);
