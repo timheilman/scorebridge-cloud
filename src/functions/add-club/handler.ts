@@ -26,6 +26,12 @@ import {
   MutationAddClubArgs,
 } from "../../../appsync";
 
+async function logCompletionDecorator<T>(promise: Promise<T>, message: string) {
+  const r = await promise;
+  console.log(message);
+  return r;
+}
+
 const getCognitoUser = async (email: string) => {
   try {
     const getUserCommand = new AdminGetUserCommand({
@@ -57,7 +63,7 @@ async function cognitoCreateUser(
     };
 
     const createUserCommand = new AdminCreateUserCommand(createUserParams);
-    return await cachedCognitoIdpClient().send(createUserCommand);
+    return cachedCognitoIdpClient().send(createUserCommand);
   } catch (error) {
     console.error("Error creating user:", error);
     throw error;
@@ -174,8 +180,21 @@ async function readdClub(input: AddClubInput, user: AdminGetUserCommandOutput) {
   ).Value;
   const clubUpdatePromise = updateClubName(clubId, input.newClubName);
   const addlPromises: Promise<AdminCreateUserCommandOutput>[] =
-    input.suppressInvitationEmail ? [] : [reinviteUser(input.newAdminEmail)];
-  await Promise.all([clubUpdatePromise, ...addlPromises]);
+    input.suppressInvitationEmail
+      ? []
+      : [
+          logCompletionDecorator(
+            reinviteUser(input.newAdminEmail),
+            "Reinvited user email successfully",
+          ),
+        ];
+  await Promise.all([
+    logCompletionDecorator(
+      clubUpdatePromise,
+      "Updated club to new club name successfully",
+    ),
+    ...addlPromises,
+  ]);
   return { newUserId: user.Username, newClubId: clubId };
 }
 
@@ -206,15 +225,6 @@ async function handleNoSuchCognitoUser({
   // start club creation in parallel since it does not need userId
   const ddbCreateClubPromise = ddbCreateClub(clubId, newClubName);
 
-  // cross-cut the completion logs
-  async function logCompletionDecorator<T>(
-    promise: Promise<T>,
-    message: string,
-  ) {
-    const r = await promise;
-    console.log(message);
-    return r;
-  }
   // everything else needs teh userId, so await its creation
   const createdUser = await logCompletionDecorator(
     cogCreateUserPromise,
@@ -253,7 +263,10 @@ export const main: AppSyncResolverHandler<
 > = async (
   event: AppSyncResolverEvent<MutationAddClubArgs>,
 ): Promise<AddClubResponse> => {
-  const user = await getNullableUser(event.arguments.input.newAdminEmail);
+  const user = await logCompletionDecorator(
+    getNullableUser(event.arguments.input.newAdminEmail),
+    "Discovered cognito user existence successfully",
+  );
   if (user) {
     return await handleFoundCognitoUser(user, event.arguments.input);
   } else {
