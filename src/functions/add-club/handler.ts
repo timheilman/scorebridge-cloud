@@ -16,13 +16,9 @@ import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
 import { InputValidationError } from "@libs/errors/input-validation-error";
-import {
-  inputValidationErrorMiddleware,
-  userAlreadyExistsErrorMiddleware,
-} from "@libs/lambda";
+import { middyWithErrorHandling } from "@libs/lambda";
 import { logCompletionDecorator as lcd } from "@libs/log-completion-decorator";
 import requiredEnvVar from "@libs/requiredEnvVar";
-import middy from "@middy/core";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 import { ulid } from "ulid";
@@ -87,7 +83,6 @@ const updateClubName = async (
     UpdateExpression: "set #name = :val1",
     ExpressionAttributeNames: { "#name": "name" },
     ExpressionAttributeValues: marshall({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       ":val1": newClubName,
     }),
   });
@@ -234,6 +229,4 @@ const almostMain: AppSyncResolverHandler<
   }
 };
 
-export const main = middy(almostMain)
-  .use(inputValidationErrorMiddleware)
-  .use(userAlreadyExistsErrorMiddleware);
+export const main = middyWithErrorHandling(almostMain);

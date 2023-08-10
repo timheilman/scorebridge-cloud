@@ -100,9 +100,9 @@ export const anUnknownUserAddsAClubViaApiKey = async (
   const output = data.addClub as AddClubResponse;
 
   console.log(
-    `added club. newUserId: ${output.data.userId}; newClubId: ${output.data.clubId}`,
+    `added club. newUserId: ${output.userId}; newClubId: ${output.clubId}`,
   );
-  return output.data;
+  return output;
 };
 
 export const aUserCallsRemoveClubAndAdmin = async (
