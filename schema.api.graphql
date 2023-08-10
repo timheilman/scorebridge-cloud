@@ -7,10 +7,6 @@ type Query {
   exampleLambdaDataSource(
     input: ExampleLambdaDataSourceInput
   ): ExampleLambdaDataSourceOutput!
-
-  getTracerBulletData(
-    tracerBulletQueryInput: TracerBulletQueryInput
-  ): TracerBulletOutput!
 }
 
 input ExampleLambdaDataSourceInput {
@@ -36,10 +32,16 @@ input AddClubInput {
   newClubName: String!
   suppressInvitationEmail: Boolean
 }
-
+type AddClubResponseData {
+  userId: String! @aws_api_key
+  clubId: String! @aws_api_key
+}
+type AddClubResponseError {
+  message: String!
+}
 type AddClubResponse {
-  newUserId: String! @aws_api_key
-  newClubId: String! @aws_api_key
+  data: AddClubResponseData
+  errors: [AddClubResponseError]
 }
 
 input RemoveClubAndAdminInput {
@@ -56,15 +58,3 @@ type RemoveClubAndAdminResponse {
 #  profiles: [IProfile!]
 #  nextToken: String
 #}
-
-input TracerBulletQueryInput {
-  tracerBulletQueryInputString: String!
-}
-
-input TracerBulletMutationInput {
-  tracerBulletMutationInputString: String!
-}
-
-type TracerBulletOutput {
-  tracerBulletOutputString: String!
-}

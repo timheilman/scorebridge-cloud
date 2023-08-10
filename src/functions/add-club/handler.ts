@@ -195,7 +195,7 @@ async function readdClub(input: AddClubInput, user: AdminGetUserCommandOutput) {
     ),
     ...addlPromises,
   ]);
-  return { newUserId: user.Username, newClubId: clubId };
+  return { data: { userId: user.Username, clubId: clubId } };
 }
 
 async function handleFoundCognitoUser(
@@ -206,7 +206,7 @@ async function handleFoundCognitoUser(
     return await readdClub(input, user);
   } else {
     throw new Error(
-      "Account has already been created and password confirmed for this account.",
+      `An account has already been registered under this email address: ${input.newAdminEmail}.`,
     );
   }
 }
@@ -252,8 +252,10 @@ async function handleNoSuchCognitoUser({
   ]);
 
   return {
-    newUserId: userId,
-    newClubId: clubId,
+    data: {
+      userId: userId,
+      clubId: clubId,
+    },
   };
 }
 
@@ -263,13 +265,18 @@ export const main: AppSyncResolverHandler<
 > = async (
   event: AppSyncResolverEvent<MutationAddClubArgs>,
 ): Promise<AddClubResponse> => {
-  const user = await logCompletionDecorator(
-    getNullableUser(event.arguments.input.newAdminEmail),
-    "Discovered cognito user existence successfully",
-  );
-  if (user) {
-    return await handleFoundCognitoUser(user, event.arguments.input);
-  } else {
-    return await handleNoSuchCognitoUser(event.arguments.input);
+  try {
+    const user = await logCompletionDecorator(
+      getNullableUser(event.arguments.input.newAdminEmail),
+      "Discovered cognito user existence successfully",
+    );
+    if (user) {
+      return await handleFoundCognitoUser(user, event.arguments.input);
+    } else {
+      return await handleNoSuchCognitoUser(event.arguments.input);
+    }
+  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+    return { errors: [{ message: error.message }] };
   }
 };
