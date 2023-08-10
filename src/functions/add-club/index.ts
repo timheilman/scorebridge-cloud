@@ -33,6 +33,7 @@ export default {
       Action: [
         "cognito-idp:AdminGetUser",
         "cognito-idp:AdminCreateUser",
+        "cognito-idp:AdminAddUserToGroup",
         "cognito-idp:AdminUpdateUserAttributes",
       ],
       Resource: {
