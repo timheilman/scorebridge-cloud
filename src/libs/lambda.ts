@@ -29,6 +29,7 @@ function errorMiddleware(errorClass) {
 
 export const middyWithErrorHandling = (handler: Handler) =>
   middy(handler)
-    .use(errorMiddleware(InputValidationError))
+    .use(errorMiddleware(Error))
     .use(errorMiddleware(UserAlreadyExistsError))
-    .use(errorMiddleware(Error));
+    .use(errorMiddleware(InputValidationError));
+// to get most specific, list from general to specific...
