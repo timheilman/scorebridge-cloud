@@ -31,19 +31,8 @@ export type AddClubInput = {
 
 export type AddClubResponse = {
   __typename?: 'AddClubResponse';
-  data?: Maybe<AddClubResponseData>;
-  errors?: Maybe<Array<Maybe<AddClubResponseError>>>;
-};
-
-export type AddClubResponseData = {
-  __typename?: 'AddClubResponseData';
   clubId: Scalars['String']['output'];
   userId: Scalars['String']['output'];
-};
-
-export type AddClubResponseError = {
-  __typename?: 'AddClubResponseError';
-  message: Scalars['String']['output'];
 };
 
 export type ExampleLambdaDataSourceInput = {
