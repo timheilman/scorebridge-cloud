@@ -33,41 +33,31 @@ async function logCompletionDecorator<T>(promise: Promise<T>, message: string) {
 }
 
 const getCognitoUser = async (email: string) => {
-  try {
-    const getUserCommand = new AdminGetUserCommand({
-      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: email,
-    });
-    return await cachedCognitoIdpClient().send(getUserCommand);
-  } catch (e) {
-    console.error(`Error getting user ${email}:`, e);
-    throw e;
-  }
+  const getUserCommand = new AdminGetUserCommand({
+    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+    Username: email,
+  });
+  return await cachedCognitoIdpClient().send(getUserCommand);
 };
 
 async function cognitoCreateUser(
   email: string,
   invitationEmailAction: "SUPPRESS" | "RESEND" | undefined,
 ) {
-  try {
-    // Because there is a quota on the number of emails we may send using cognito, but
-    // it is far beyond anything expected in production, we suppress emails when testing
-    const emailAction = invitationEmailAction
-      ? { MessageAction: invitationEmailAction }
-      : {};
-    const createUserParams = {
-      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: email,
-      UserAttributes: [{ Name: "email", Value: email }],
-      ...emailAction,
-    };
+  // Because there is a quota on the number of emails we may send using cognito, but
+  // it is far beyond anything expected in production, we suppress emails when testing
+  const emailAction = invitationEmailAction
+    ? { MessageAction: invitationEmailAction }
+    : {};
+  const createUserParams = {
+    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+    Username: email,
+    UserAttributes: [{ Name: "email", Value: email }],
+    ...emailAction,
+  };
 
-    const createUserCommand = new AdminCreateUserCommand(createUserParams);
-    return cachedCognitoIdpClient().send(createUserCommand);
-  } catch (error) {
-    console.error("Error creating user:", error);
-    throw error;
-  }
+  const createUserCommand = new AdminCreateUserCommand(createUserParams);
+  return cachedCognitoIdpClient().send(createUserCommand);
 }
 
 const reinviteUser = async (email: string) => {
@@ -104,74 +94,55 @@ const updateClubName = async (
 };
 
 async function ddbCreateClub(clubId: string, clubName: string) {
-  try {
-    const club = marshall({
-      id: clubId,
-      name: clubName,
-      createdAt: new Date().toJSON(),
-    });
-    const createClubDdbCommand = new PutItemCommand({
-      TableName: requiredEnvVar("CLUBS_TABLE"),
-      Item: club,
-      ConditionExpression: "attribute_not_exists(id)",
-    });
-    await cachedDynamoDbClient().send(createClubDdbCommand);
-  } catch (error) {
-    console.error("Error creating ddb club", error);
-    throw error;
-  }
+  const club = marshall({
+    id: clubId,
+    name: clubName,
+    createdAt: new Date().toJSON(),
+  });
+  const createClubDdbCommand = new PutItemCommand({
+    TableName: requiredEnvVar("CLUBS_TABLE"),
+    Item: club,
+    ConditionExpression: "attribute_not_exists(id)",
+  });
+  await cachedDynamoDbClient().send(createClubDdbCommand);
 }
 
 async function ddbCreateUser(userId: string, email: string) {
-  try {
-    const user = marshall({
-      id: userId,
-      email,
-      createdAt: new Date().toJSON(),
-    });
+  const user = marshall({
+    id: userId,
+    email,
+    createdAt: new Date().toJSON(),
+  });
 
-    const createUserDdbCommand = new PutItemCommand({
-      TableName: requiredEnvVar("USERS_TABLE"),
-      Item: user,
-      ConditionExpression: "attribute_not_exists(id)",
-    });
-    await cachedDynamoDbClient().send(createUserDdbCommand);
-  } catch (error) {
-    console.error("Error creating ddb user", error);
-    throw error;
-  }
+  const createUserDdbCommand = new PutItemCommand({
+    TableName: requiredEnvVar("USERS_TABLE"),
+    Item: user,
+    ConditionExpression: "attribute_not_exists(id)",
+  });
+  await cachedDynamoDbClient().send(createUserDdbCommand);
 }
 
 async function cognitoAddUserToGroup(userId: string) {
-  try {
-    const params = {
-      GroupName: "adminClub",
-      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: userId, // note: email also works here
-    };
-    const command = new AdminAddUserToGroupCommand(params);
-    await cachedCognitoIdpClient().send(command);
-    console.log("User added to the adminClub group successfully");
-  } catch (error) {
-    console.error("Error adding user to the adminClub group:", error);
-  }
+  const params = {
+    GroupName: "adminClub",
+    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+    Username: userId, // note: email also works here
+  };
+  const command = new AdminAddUserToGroupCommand(params);
+  await cachedCognitoIdpClient().send(command);
+  console.log("User added to the adminClub group successfully");
 }
 
 async function cognitoUpdateUserTenantId(clubId: string, userId: string) {
-  try {
-    const updateUserParams: AdminUpdateUserAttributesCommandInput = {
-      UserAttributes: [{ Name: "custom:tenantId", Value: clubId }],
-      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: userId, // note: email also works here!
-    };
-    const updateUserCommand = new AdminUpdateUserAttributesCommand(
-      updateUserParams,
-    );
-    await cachedCognitoIdpClient().send(updateUserCommand);
-  } catch (error) {
-    console.error("Error updating user to adminClub role:", error);
-    throw error;
-  }
+  const updateUserParams: AdminUpdateUserAttributesCommandInput = {
+    UserAttributes: [{ Name: "custom:tenantId", Value: clubId }],
+    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+    Username: userId, // note: email also works here!
+  };
+  const updateUserCommand = new AdminUpdateUserAttributesCommand(
+    updateUserParams,
+  );
+  await cachedCognitoIdpClient().send(updateUserCommand);
 }
 
 async function readdClub(input: AddClubInput, user: AdminGetUserCommandOutput) {
