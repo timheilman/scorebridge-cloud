@@ -15,8 +15,9 @@ import {
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
+import { logCompletionDecorator as lcd } from "@libs/log-completion-decorator";
 import requiredEnvVar from "@libs/requiredEnvVar";
-import { AppSyncResolverEvent } from "aws-lambda";
+import { AppSyncResolverEvent, Callback, Context } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 import { ulid } from "ulid";
 
@@ -25,12 +26,6 @@ import {
   AddClubResponse,
   MutationAddClubArgs,
 } from "../../../appsync";
-
-async function logCompletionDecorator<T>(promise: Promise<T>, message: string) {
-  const r = await promise;
-  console.log(message);
-  return r;
-}
 
 const getCognitoUser = async (email: string) => {
   const getUserCommand = new AdminGetUserCommand({
@@ -154,16 +149,13 @@ async function readdClub(input: AddClubInput, user: AdminGetUserCommandOutput) {
     input.suppressInvitationEmail
       ? []
       : [
-          logCompletionDecorator(
+          lcd(
             reinviteUser(input.newAdminEmail),
             "Reinvited user email successfully",
           ),
         ];
   await Promise.all([
-    logCompletionDecorator(
-      clubUpdatePromise,
-      "Updated club to new club name successfully",
-    ),
+    lcd(clubUpdatePromise, "Updated club to new club name successfully"),
     ...addlPromises,
   ]);
   return { userId: user.Username, clubId: clubId };
@@ -172,11 +164,12 @@ async function readdClub(input: AddClubInput, user: AdminGetUserCommandOutput) {
 async function handleFoundCognitoUser(
   user: AdminGetUserCommandOutput,
   input: AddClubInput,
+  callback: Callback<AddClubResponse>,
 ) {
   if (user.UserStatus === "FORCE_CHANGE_PASSWORD") {
     return await readdClub(input, user);
   } else {
-    throw new Error(
+    callback(
       `An account has already been registered under this email address: ${input.newAdminEmail}.`,
     );
   }
@@ -197,29 +190,23 @@ async function handleNoSuchCognitoUser({
   const ddbCreateClubPromise = ddbCreateClub(clubId, newClubName);
 
   // everything else needs teh userId, so await its creation
-  const createdUser = await logCompletionDecorator(
+  const createdUser = await lcd(
     cogCreateUserPromise,
     "Cognito user created successfully",
   );
   const userId = createdUser.User.Username;
   // the ddbClub creation and remaining userId-dependent promises can be awaited in parallel
   await Promise.all([
-    logCompletionDecorator(
+    lcd(
       cognitoUpdateUserTenantId(clubId, userId),
       "Cognito user tenantId set successfully",
     ),
-    logCompletionDecorator(
+    lcd(
       cognitoAddUserToGroup(userId),
       "Cognito user added to clubAdmin group successfully",
     ),
-    logCompletionDecorator(
-      ddbCreateUser(userId, newAdminEmail),
-      "Ddb user created successfully",
-    ),
-    logCompletionDecorator(
-      ddbCreateClubPromise,
-      "Ddb club created successfully",
-    ),
+    lcd(ddbCreateUser(userId, newAdminEmail), "Ddb user created successfully"),
+    lcd(ddbCreateClubPromise, "Ddb club created successfully"),
   ]);
 
   return { userId: userId, clubId: clubId };
@@ -230,13 +217,15 @@ export const main: AppSyncResolverHandler<
   AddClubResponse
 > = async (
   event: AppSyncResolverEvent<MutationAddClubArgs>,
+  _context: Context,
+  callback: Callback<AddClubResponse>,
 ): Promise<AddClubResponse> => {
-  const user = await logCompletionDecorator(
+  const user = await lcd(
     getNullableUser(event.arguments.input.newAdminEmail),
     "Discovered cognito user existence successfully",
   );
   if (user) {
-    return await handleFoundCognitoUser(user, event.arguments.input);
+    return await handleFoundCognitoUser(user, event.arguments.input, callback);
   } else {
     return await handleNoSuchCognitoUser(event.arguments.input);
   }
