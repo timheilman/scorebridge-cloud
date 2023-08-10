@@ -15,7 +15,7 @@ import {
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
-import { InputValidationError } from "@libs/errors/input-validation-error";
+import { UserAlreadyExistsError } from "@libs/errors/user-already-exists-error";
 import { middyWithErrorHandling } from "@libs/lambda";
 import { logCompletionDecorator as lcd } from "@libs/log-completion-decorator";
 import requiredEnvVar from "@libs/requiredEnvVar";
@@ -169,7 +169,7 @@ async function handleFoundCognitoUser(
   if (user.UserStatus === "FORCE_CHANGE_PASSWORD") {
     return await readdClub(input, user);
   } else {
-    throw new InputValidationError(
+    throw new UserAlreadyExistsError(
       `An account has already been registered under this email address: ${input.newAdminEmail}.`,
     );
   }
