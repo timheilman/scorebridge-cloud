@@ -15,10 +15,14 @@ import {
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
-import { middyValidation } from "@libs/lambda";
+import { InputValidationError } from "@libs/errors/input-validation-error";
+import {
+  inputValidationErrorMiddleware,
+  userAlreadyExistsErrorMiddleware,
+} from "@libs/lambda";
 import { logCompletionDecorator as lcd } from "@libs/log-completion-decorator";
 import requiredEnvVar from "@libs/requiredEnvVar";
-import { ValidationError } from "@libs/validation-error";
+import middy from "@middy/core";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 import { ulid } from "ulid";
@@ -170,7 +174,7 @@ async function handleFoundCognitoUser(
   if (user.UserStatus === "FORCE_CHANGE_PASSWORD") {
     return await readdClub(input, user);
   } else {
-    throw new ValidationError(
+    throw new InputValidationError(
       `An account has already been registered under this email address: ${input.newAdminEmail}.`,
     );
   }
@@ -230,4 +234,6 @@ const almostMain: AppSyncResolverHandler<
   }
 };
 
-export const main = middyValidation(almostMain);
+export const main = middy(almostMain)
+  .use(inputValidationErrorMiddleware)
+  .use(userAlreadyExistsErrorMiddleware);
