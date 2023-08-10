@@ -2,6 +2,7 @@ overwrite: true
 schema:
   - schema.api.graphql
   - aws-scalars.graphql
+  - aws-directives.graphql
 config:
   scalars:
     AWSJSON: string
