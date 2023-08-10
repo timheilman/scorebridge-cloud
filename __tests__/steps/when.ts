@@ -73,8 +73,8 @@ export const anUnknownUserAddsAClubViaApiKey = async (
   newAdminEmail: string,
   newClubName: string,
 ): Promise<{
-  newClubId: string;
-  newUserId: string;
+  clubId: string;
+  userId: string;
 }> => {
   const addClub = `mutation addClub($input: AddClubInput!) {
     addClub(input: $input) {
@@ -100,9 +100,9 @@ export const anUnknownUserAddsAClubViaApiKey = async (
   const output = data.addClub as AddClubResponse;
 
   console.log(
-    `added club. newUserId: ${output.newUserId}; newClubId: ${output.newClubId}`,
+    `added club. newUserId: ${output.data.userId}; newClubId: ${output.data.clubId}`,
   );
-  return output;
+  return output.data;
 };
 
 export const aUserCallsRemoveClubAndAdmin = async (

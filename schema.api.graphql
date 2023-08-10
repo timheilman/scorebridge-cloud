@@ -37,11 +37,11 @@ type AddClubResponseData {
   clubId: String! @aws_api_key
 }
 type AddClubResponseError {
-  message: String!
+  message: String! @aws_api_key
 }
 type AddClubResponse {
-  data: AddClubResponseData
-  errors: [AddClubResponseError]
+  data: AddClubResponseData @aws_api_key
+  errors: [AddClubResponseError] @aws_api_key
 }
 
 input RemoveClubAndAdminInput {
