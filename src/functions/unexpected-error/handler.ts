@@ -1,3 +1,4 @@
+import UnexpectedError from "@functions/unexpected-error/index";
 import { middyWithErrorHandling } from "@libs/lambda";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
@@ -9,7 +10,7 @@ const almostMain: AppSyncResolverHandler<void, UnexpectedErrorResponse> = (
   _event: AppSyncResolverEvent<void>,
 ): Promise<UnexpectedErrorResponse> => {
   return Promise.reject(
-    new Error(
+    new UnexpectedError(
       "This error is a synthetic unexpected error from a lambda implementation.",
     ),
   );
