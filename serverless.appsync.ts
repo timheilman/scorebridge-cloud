@@ -15,6 +15,7 @@ const lambdaResolvers = [
   ["Query", "exampleLambdaDataSource"],
   ["Mutation", "addClub"],
   ["Mutation", "removeClubAndAdmin"],
+  ["Mutation", "unexpectedError"],
 ];
 
 // Derived:
