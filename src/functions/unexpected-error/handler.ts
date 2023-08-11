@@ -1,4 +1,4 @@
-import UnexpectedError from "@functions/unexpected-error/index";
+import { UnexpectedError } from "@libs/errors/unexpected-error";
 import { middyWithErrorHandling } from "@libs/lambda";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";

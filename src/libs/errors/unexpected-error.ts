@@ -1,4 +1,4 @@
-export class UnexpecteError extends Error {
+export class UnexpectedError extends Error {
   constructor(message) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     super(message);
