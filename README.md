@@ -37,6 +37,10 @@ Although it is checked in, `appsync.d.ts` is a generated file.
 
 Use `npm run gql-types-codegen` to generate typescript types from the gql schema.
 
+## Exporting details to the webapp
+
+Both the webapp react app running locally and the cypress test harness for it require some exports from this repo.  Use `npm run refreshDetailsToWebapp` and see package.json for details.
+
 ## Testing
 
 For now, only the dev environment is enabled. First, establish a `.env` file at project root using:
