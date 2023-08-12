@@ -14,6 +14,12 @@ export default {
         },
       },
       UsernameAttributes: ["email"],
+      EmailConfiguration: {
+        EmailSendingAccount: "DEVELOPER",
+        From: "ScoreBridge-dev Admin Portal <tdh+scorebridge-dev-verified-aws-ses-from-address@stanfordalumni.org>",
+        SourceArn:
+          "arn:aws:ses:us-west-2:437893194722:identity/tdh+scorebridge-dev-verified-aws-ses-from-address@stanfordalumni.org",
+      },
       Schema: [
         {
           AttributeDataType: "String",
@@ -99,6 +105,38 @@ export default {
       SourceArn: {
         "Fn::GetAtt": ["CognitoUserPool", "Arn"],
       },
+    },
+  },
+  CognitoSesIntegrationRole: {
+    Type: "AWS::IAM::Role",
+    Properties: {
+      AssumeRolePolicyDocument: {
+        Version: "2012-10-17",
+        Statement: [
+          {
+            Effect: "Allow",
+            Principal: {
+              Service: "email.cognito-idp.amazonaws.com",
+            },
+            Action: "sts:AssumeRole",
+          },
+        ],
+      },
+      Policies: [
+        {
+          PolicyName: "AmazonCognitoIdpEmailServiceRolePolicy",
+          PolicyDocument: {
+            Version: "2012-10-17",
+            Statement: [
+              {
+                Effect: "Allow",
+                Action: ["ses:SendEmail", "ses:SendRawEmail"],
+                Resource: "*",
+              },
+            ],
+          },
+        },
+      ],
     },
   },
 };

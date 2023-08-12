@@ -1,0 +1,41 @@
+What not-specifying a ConfigurationSet does is to create a service-linked role,
+
+AWSServiceRoleForAmazonCognitoIdpEmailService
+
+with permissions policy
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ses:SendEmail",
+                "ses:SendRawEmail"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Deny",
+            "Action": [
+                "ses:List*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+and trust relationship
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "email.cognito-idp.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
