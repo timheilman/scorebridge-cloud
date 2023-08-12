@@ -6,6 +6,8 @@ import appSync from "./serverless.appsync";
 import { AdditionalAppSyncResources } from "./serverless.appsync";
 import CognitoResources from "./serverless.cognito";
 import DynamoDbTables from "./serverless.dynamodb";
+import SesResources from "./serverless.ses";
+import SnsResources from "./serverless.sns";
 
 const serverlessConfiguration: AWS & {
   appSync: unknown;
@@ -59,6 +61,8 @@ const serverlessConfiguration: AWS & {
       ...CognitoResources,
       ...DynamoDbTables,
       ...AdditionalAppSyncResources,
+      ...SesResources,
+      ...SnsResources,
     },
     Outputs: {
       CognitoUserPoolId: {

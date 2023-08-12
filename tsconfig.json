@@ -16,6 +16,7 @@
     "__tests__/**/*.ts",
     "src/**/*.ts",
     "serverless.ts",
+    "serverless.*.ts",
     "ts-node-scripts/*.ts"
   ],
   "exclude": [
