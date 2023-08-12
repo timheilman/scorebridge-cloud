@@ -3,6 +3,18 @@ export default {
     Type: "AWS::SQS::Queue",
     Properties: {
       QueueName: "SesSandboxQueue",
+      RedrivePolicy: {
+        deadLetterTargetArn: {
+          "Fn::GetAtt": ["SesSandboxDlQueue", "Arn"],
+        },
+        maxReceiveCount: 3,
+      },
+    },
+  },
+  SesSandboxDlQueue: {
+    Type: "AWS::SQS::Queue",
+    Properties: {
+      QueueName: "SESSandboxDlQueue",
     },
   },
   SesSandboxSnsSubscription: {
