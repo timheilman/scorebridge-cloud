@@ -23,9 +23,8 @@ export default {
             },
             Condition: {
               StringEquals: {
-                "AWS:SourceAccount": "111122223333",
-                "AWS:SourceArn":
-                  "arn:aws:ses:topic_region:111122223333:identity/identity_name",
+                "AWS:SourceAccount": `\${self.provider.environment.AWS_ACCOUNT_ID}`,
+                "AWS:SourceArn": `arn:aws:ses:\${self:provider.region}:\${self.provider.environment.AWS_ACCOUNT_ID}:identity/\${self.provider.environment.SES_FROM_ADDRESS}`,
               },
             },
           },

@@ -9,6 +9,31 @@ import DynamoDbTables from "./serverless.dynamodb";
 import SesResources from "./serverless.ses";
 import SnsResources from "./serverless.sns";
 
+const awsAccountIdPerStage = (stage: string) => {
+  if (stage === "dev") {
+    return "437893194722";
+  }
+  if (stage === "staging") {
+    return "655935885730";
+  }
+  if (stage === "prod") {
+    return "515279954553";
+  }
+  throw new Error(`No AWS account created for stage ${stage}.`);
+};
+
+const sesFromAddressPerStage = (stage: string) => {
+  if (stage === "dev") {
+    return "scorebridge8+dev@gmail.com";
+  }
+  if (stage === "staging") {
+    // return "scorebridge8+staging@gmail.com";
+  }
+  if (stage === "prod") {
+    // return "scorebridge8@gmail.com";
+  }
+  throw new Error(`No SES From: email has been verified stage ${stage}.`);
+};
 const serverlessConfiguration: AWS & {
   appSync: unknown;
 } = {
@@ -34,6 +59,8 @@ const serverlessConfiguration: AWS & {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       STAGE: `\${sls:stage}`,
+      AWS_ACCOUNT_ID: awsAccountIdPerStage(`\${sls:stage}`),
+      SES_FROM_ADDRESS: sesFromAddressPerStage(`\${sls:stage}`),
     },
   },
   functions: allFunctions,
