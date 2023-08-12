@@ -59,8 +59,12 @@ const serverlessConfiguration: AWS & {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       STAGE: `\${sls:stage}`,
-      AWS_ACCOUNT_ID: awsAccountIdPerStage(`\${sls:stage}`),
-      SES_FROM_ADDRESS: sesFromAddressPerStage(`\${sls:stage}`),
+      AWS_ACCOUNT_ID: awsAccountIdPerStage(
+        "dev", // todo: this can't be a plain ts fn, because we need the substitution by sls first, then alternation
+      ),
+      SES_FROM_ADDRESS: sesFromAddressPerStage(
+        "dev", // see above todo, just proceeding for now
+      ),
     },
   },
   functions: allFunctions,
