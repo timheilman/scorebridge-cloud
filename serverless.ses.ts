@@ -1,9 +1,28 @@
 // import { AppSyncConfig } from "serverless-appsync-plugin/src/types/plugin"
 export default {
-  SesSandboxVerifiedEmail: {
-    Type: "AWS::SES::Identity",
+  SesConfigSet: {
+    Type: "AWS::SES::ConfigurationSet",
+    Properties: { Name: "SesConfigSet" },
+  },
+  SesConfigSetEventDestination: {
+    Type: "AWS::SES::ConfigurationSetEventDestination",
     Properties: {
-      Email: `\${self:provider.environment.SES_FROM_ADDRESS}`,
+      ConfigurationSetName: { Ref: "SesConfigSet" },
+      EventDestination: {
+        Enabled: true,
+        SnsDestination: {
+          TopicARN: { Ref: "SesSandboxSnsTopic" },
+        },
+      },
+    },
+  },
+  SesSandboxVerifiedEmail: {
+    Type: "AWS::SES::EmailIdentity",
+    Properties: {
+      EmailIdentity: `\${self:provider.environment.SES_FROM_ADDRESS}`,
+      ConfigurationSetAttributes: {
+        ConfigurationSetName: { Ref: "SesConfigSet" },
+      },
     },
   },
   SesSandboxVerifiedEmailReceiptRule: {
