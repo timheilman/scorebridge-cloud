@@ -6,6 +6,7 @@ export default {
   },
   SesConfigSetEventDestination: {
     Type: "AWS::SES::ConfigurationSetEventDestination",
+    DependsOn: ["SesSandboxSnsTopic"],
     Properties: {
       ConfigurationSetName: { Ref: "SesConfigSet" },
       EventDestination: {
