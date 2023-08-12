@@ -27,7 +27,7 @@ export default {
             Resource: { "Fn::GetAtt": ["SesSandboxSqsQueue", "Arn"] },
             Condition: {
               ArnEquals: {
-                "aws:SourceArn": { Ref: "SesSandboxNotificationsTopic" },
+                "aws:SourceArn": { Ref: "SesSandboxSnsTopic" },
               },
             },
           },
