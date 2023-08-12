@@ -13,6 +13,9 @@ export default {
         SnsDestination: {
           TopicARN: { Ref: "SesSandboxSnsTopic" },
         },
+        // for event type list, see
+        // https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ses-configurationseteventdestination-eventdestination.html
+        MatchingEventTypes: ["delivery"],
       },
     },
   },
