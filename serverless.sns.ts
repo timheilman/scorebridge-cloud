@@ -24,7 +24,7 @@ export default {
             Condition: {
               StringEquals: {
                 "aws:SourceAccount": `\${self:provider.environment.AWS_ACCOUNT_ID}`,
-                "aws:SourceArn": `arn:aws:ses:\${aws:region}:\${self:provider.environment.AWS_ACCOUNT_ID}:identity/\${self:provider.environment.SES_FROM_ADDRESS}`,
+                // "aws:SourceArn": `arn:aws:ses:\${aws:region}:\${self:provider.environment.AWS_ACCOUNT_ID}:identity/\${self:provider.environment.SES_FROM_ADDRESS}`,
               },
             },
           },
