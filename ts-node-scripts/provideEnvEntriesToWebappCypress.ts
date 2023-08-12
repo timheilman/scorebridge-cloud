@@ -18,6 +18,7 @@ console.log(
       "CLUBS_TABLE",
       "STAGE",
       "SB_TEST_AWS_CLI_PROFILE",
+      "SES_SANDBOX_SQS_QUEUE_URL",
     ].reduce((acc, v) => {
       acc[v] = req(v);
       return acc;
