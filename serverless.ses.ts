@@ -1,5 +1,31 @@
 // import { AppSyncConfig } from "serverless-appsync-plugin/src/types/plugin"
 export default {
+  SesSandboxVerifiedEmail: {
+    Type: "AWS::SES::Identity",
+    Properties: {
+      Email: `\${self:properties.environment.SES_FROM_ADDRESS}`,
+    },
+  },
+  SesSandboxVerifiedEmailReceiptRule: {
+    Type: "AWS::SES::ReceiptRule",
+    Properties: {
+      RuleSetName: "default-rule-set", // Specify the rule set name
+      Rule: {
+        Name: "SesSandboxVerifiedEmailRule",
+        Enabled: true,
+        ScanEnabled: true,
+        TlsPolicy: "Optional",
+        Recipients: ["success@simulator.amazonses.com"],
+        Actions: [
+          {
+            SNSAction: {
+              TopicArn: { Ref: "SesSandboxSnsTopic" }, // Specify the SNS topic for delivery notifications
+            },
+          },
+        ],
+      },
+    },
+  },
   CognitoSesIntegrationRole: {
     Type: "AWS::IAM::Role",
     Properties: {
