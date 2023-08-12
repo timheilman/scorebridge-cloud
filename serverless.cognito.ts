@@ -16,9 +16,13 @@ export default {
       UsernameAttributes: ["email"],
       EmailConfiguration: {
         EmailSendingAccount: "DEVELOPER",
-        From: "ScoreBridge-dev Admin Portal <tdh+scorebridge-dev-verified-aws-ses-from-address@stanfordalumni.org>",
+        From:
+          `ScoreBridge Admin Portal ` +
+          `<\${self.provider.environment.SES_FROM_ADDRESS}>`,
         SourceArn:
-          "arn:aws:ses:us-west-2:437893194722:identity/tdh+scorebridge-dev-verified-aws-ses-from-address@stanfordalumni.org",
+          `arn:aws:ses:\${aws:region}:` +
+          `\${self:provider.environment.AWS_ACCOUNT_ID}:` +
+          `identity/\${self:provider.environment.SES_FROM_ADDRESS}`,
       },
       Schema: [
         {
