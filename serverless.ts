@@ -8,6 +8,7 @@ import CognitoResources from "./serverless.cognito";
 import DynamoDbTables from "./serverless.dynamodb";
 import SesResources from "./serverless.ses";
 import SnsResources from "./serverless.sns";
+import SqsResources from "./serverless.sqs";
 
 const awsAccountIdPerStage = (stage: string) => {
   if (stage === "dev") {
@@ -94,6 +95,7 @@ const serverlessConfiguration: AWS & {
       ...AdditionalAppSyncResources,
       ...SesResources,
       ...SnsResources,
+      ...SqsResources,
     },
     Outputs: {
       CognitoUserPoolId: {
@@ -117,6 +119,11 @@ const serverlessConfiguration: AWS & {
       AddClubApiKey: {
         Value: {
           "Fn::GetAtt": ["AddClubApiKey", "ApiKey"],
+        },
+      },
+      SesSandboxSqsQueueUrl: {
+        Value: {
+          "Fn::GetAtt": ["SesSandboxSqsQueue", "QueueUrl"],
         },
       },
     },
