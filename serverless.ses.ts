@@ -3,7 +3,7 @@ export default {
   SesSandboxVerifiedEmail: {
     Type: "AWS::SES::Identity",
     Properties: {
-      Email: `\${self:properties.environment.SES_FROM_ADDRESS}`,
+      Email: `\${self:provider.environment.SES_FROM_ADDRESS}`,
     },
   },
   SesSandboxVerifiedEmailReceiptRule: {
