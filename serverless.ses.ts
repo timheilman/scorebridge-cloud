@@ -10,7 +10,7 @@ export default {
     Properties: {
       ConfigurationSetName: { Ref: "SesConfigSet" },
       EventDestination: {
-        Enabled: true,
+        Enabled: true, // this seems to require setting manually in console despite this!
         SnsDestination: {
           TopicARN: { Ref: "SesSandboxSnsTopic" },
         },
