@@ -21,13 +21,13 @@ export default {
             Resource: {
               Ref: "SesSandboxSnsTopic",
             },
-            Condition: {
-              StringEquals: {
-                // this may be a red herring!  The damned enabled got flipped back to disabled!
-                "AWS:SourceAccount": `\${self:provider.environment.AWS_ACCOUNT_ID}`,
-                "AWS:SourceArn": `arn:aws:ses:\${aws:region}:\${self:provider.environment.AWS_ACCOUNT_ID}:identity/\${self:provider.environment.SES_FROM_ADDRESS}`,
-              },
-            },
+            // Condition: {
+            //   StringEquals: {
+            //     // this may be a red herring!  The damned enabled got flipped back to disabled!
+            //     "AWS:SourceAccount": `\${self:provider.environment.AWS_ACCOUNT_ID}`,
+            //     "AWS:SourceArn": `arn:aws:ses:\${aws:region}:\${self:provider.environment.AWS_ACCOUNT_ID}:identity/\${self:provider.environment.SES_FROM_ADDRESS}`,
+            //   },
+            // },
           },
         ],
       },
