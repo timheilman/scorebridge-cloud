@@ -9,3 +9,8 @@ Now test failing for weird reasons, re-exported in cloud and then refreshed to w
 OK, test weirdness fixed, now to put the damned security back in. But I hate stumbling in the dark.  How do I get to
 see the request context?!??!
 
+OK, can't get to see it, but with just the account restricted after the initial deploy, it's working.
+
+Now restrict the arn too and see if it still works: I think I'm zeroing in on this being a serverless framework issue;
+if this works I'll back off to just the two accounts restriction and see if it passes.  If so, discovering the arn
+will be hard.  Can I do disjunction?
