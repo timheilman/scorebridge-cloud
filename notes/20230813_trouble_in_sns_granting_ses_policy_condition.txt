@@ -1,0 +1,8 @@
+So where we are at today is mostly in commit messages but...
+
+with _no_ Condition:, the deploy succeeds w/event dest _enabled_.
+
+However, test fails because I haven't verified my email address.
+
+Now test failing for weird reasons, re-exported in cloud and then refreshed to webapp
+

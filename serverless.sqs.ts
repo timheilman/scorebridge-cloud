@@ -14,7 +14,7 @@ export default {
   SesSandboxDlQueue: {
     Type: "AWS::SQS::Queue",
     Properties: {
-      QueueName: "SESSandboxDlQueue",
+      QueueName: "SesSandboxDlQueue",
     },
   },
   SesSandboxSnsSubscription: {
