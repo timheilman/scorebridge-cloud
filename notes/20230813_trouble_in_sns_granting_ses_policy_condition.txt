@@ -6,3 +6,6 @@ However, test fails because I haven't verified my email address.
 
 Now test failing for weird reasons, re-exported in cloud and then refreshed to webapp
 
+OK, test weirdness fixed, now to put the damned security back in. But I hate stumbling in the dark.  How do I get to
+see the request context?!??!
+
