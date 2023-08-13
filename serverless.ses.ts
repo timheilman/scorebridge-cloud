@@ -24,7 +24,7 @@ export default {
     Type: "AWS::SES::EmailIdentity",
     DependsOn: ["SesConfigSet"],
     Properties: {
-      EmailIdentity: `\${self:provider.environment.SES_FROM_ADDRESS}`,
+      EmailIdentity: `\${self:custom.settings.SES_FROM_ADDRESS}`,
       ConfigurationSetAttributes: {
         ConfigurationSetName: { Ref: "SesConfigSet" },
       },

@@ -31,13 +31,6 @@ const serverlessConfiguration: AWS & {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
     },
-    environment: {
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
-      NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
-      STAGE: `\${sls:stage}`,
-      AWS_ACCOUNT_ID: `\${self:custom.settings.awsAcctId.\${sls:stage}}`,
-      SES_FROM_ADDRESS: `\${self:custom.settings.sesFromAddress.\${sls:stage}}`,
-    },
   },
   functions: allFunctions,
   package: {
@@ -56,7 +49,6 @@ const serverlessConfiguration: AWS & {
       concurrency: 10,
     },
     settings: {
-      COGNITO_USER_POOL_NAME: `ScoreBridgeCognitoUserPool-\${sls:stage}`,
       awsAcctId: {
         dev: "437893194722",
         staging: "655935885730",
@@ -67,6 +59,12 @@ const serverlessConfiguration: AWS & {
         staging: "scorebridge8+staging@gmail.com",
         prod: "scorebridge8@gmail.com",
       },
+      AWS_ACCOUNT_ID: `\${self:custom.settings.awsAcctId.\${sls:stage}}`,
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
+      COGNITO_USER_POOL_NAME: `ScoreBridgeCognitoUserPool-\${sls:stage}`,
+      NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      SES_FROM_ADDRESS: `\${self:custom.settings.sesFromAddress.\${sls:stage}}`,
+      STAGE: `\${sls:stage}`,
     },
   },
   resources: {

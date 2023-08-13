@@ -23,7 +23,7 @@ export default {
             },
             Condition: {
               StringEquals: {
-                "AWS:SourceAccount": `\${self:provider.environment.AWS_ACCOUNT_ID}`,
+                "AWS:SourceAccount": `\${self:custom.settings.AWS_ACCOUNT_ID}`,
               },
               ArnLike: {
                 // I would really really like to know what this * is, but it seems
@@ -35,7 +35,7 @@ export default {
                 // Upon deployment of the ConfigSet's EventDestination, it tries
                 // a publication to the topic.  Really curious what that * is
                 // for that case too, since no From: address was even in context.
-                "AWS:SourceArn": `arn:aws:ses:\${aws:region}:\${self:provider.environment.AWS_ACCOUNT_ID}:*`,
+                "AWS:SourceArn": `arn:aws:ses:\${aws:region}:\${self:custom.settings.AWS_ACCOUNT_ID}:*`,
               },
             },
           },

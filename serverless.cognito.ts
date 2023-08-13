@@ -18,11 +18,11 @@ export default {
         EmailSendingAccount: "DEVELOPER",
         From:
           `ScoreBridge Admin Portal ` +
-          `<\${self:provider.environment.SES_FROM_ADDRESS}>`,
+          `<\${self:custom.settings.SES_FROM_ADDRESS}>`,
         SourceArn:
           `arn:aws:ses:\${aws:region}:` +
-          `\${self:provider.environment.AWS_ACCOUNT_ID}:` +
-          `identity/\${self:provider.environment.SES_FROM_ADDRESS}`,
+          `\${self:custom.settings.AWS_ACCOUNT_ID}:` +
+          `identity/\${self:custom.settings.SES_FROM_ADDRESS}`,
       },
       Schema: [
         {
