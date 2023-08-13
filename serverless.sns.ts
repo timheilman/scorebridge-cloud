@@ -26,7 +26,7 @@ export default {
                 "AWS:SourceAccount": `\${self:provider.environment.AWS_ACCOUNT_ID}`,
               },
               ArnLike: {
-                "AWS:SourceArn": `arn:aws:ses:\${aws:region}:\${self:provider.environment.AWS_ACCOUNT_ID}:*`,
+                "AWS:SourceArn": `arn:aws:ses:\${aws:region}:\${self:provider.environment.AWS_ACCOUNT_ID}:identity/*`,
               },
             },
           },
