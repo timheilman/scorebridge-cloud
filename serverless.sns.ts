@@ -26,7 +26,16 @@ export default {
                 "AWS:SourceAccount": `\${self:provider.environment.AWS_ACCOUNT_ID}`,
               },
               ArnLike: {
-                "AWS:SourceArn": `arn:aws:ses:\${aws:region}:\${self:provider.environment.AWS_ACCOUNT_ID}:identity/*`,
+                // I would really really like to know what this * is, but it seems
+                // normally that would be via cloudTrail, which SES does not
+                // output configSet.eventDestination SNS publishes.  The docs at
+                // https://docs.aws.amazon.com/ses/latest/dg/configure-sns-notifications.html
+                // are flat-out wrong regarding `identity_name`.
+                //
+                // Upon deployment of the ConfigSet's EventDestination, it tries
+                // a publication to the topic.  Really curious what that * is
+                // for that case too, since no From: address was even in context.
+                "AWS:SourceArn": `arn:aws:ses:\${aws:region}:\${self:provider.environment.AWS_ACCOUNT_ID}:*`,
               },
             },
           },
