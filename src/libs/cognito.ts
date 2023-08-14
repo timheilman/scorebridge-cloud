@@ -18,10 +18,9 @@ export function cachedCognitoIdpClient(): CognitoIdentityProviderClient {
   }
   cognitoIdpClient = new CognitoIdentityProviderClient({
     region: requiredEnvVar("AWS_REGION"),
-    credentials:
-      process.env.NODE_ENV === "test"
-        ? fromSsoUsingProfileFromEnv()
-        : fromEnv(),
+    credentials: process.env.SB_TEST_AWS_CLI_PROFILE
+      ? fromSsoUsingProfileFromEnv()
+      : fromEnv(),
   });
   return cognitoIdpClient;
 }

@@ -1,8 +1,9 @@
 import {
+  AdminAddUserToGroupCommand,
   AdminCreateUserCommand,
-  AdminUpdateUserAttributesCommand,
-  AdminUpdateUserAttributesCommandInput,
+  AdminCreateUserCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
+import { cachedCognitoIdpClient } from "@libs/cognito";
 import { config as dotenvConfig } from "dotenv";
 
 import requiredEnvVar from "../src/libs/requiredEnvVar";
@@ -14,7 +15,7 @@ async function createFirstCognitoAdminSuperForEnv(
   email: string,
 ): Promise<void> {
   const client = createCognitoIdentityProviderClient();
-
+  let createUserResult: AdminCreateUserCommandOutput;
   try {
     const createUserParams = {
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
@@ -23,23 +24,22 @@ async function createFirstCognitoAdminSuperForEnv(
     };
 
     const createUserCommand = new AdminCreateUserCommand(createUserParams);
-    await client.send(createUserCommand);
+    createUserResult = await client.send(createUserCommand);
   } catch (error) {
     console.error("Error creating user:", error);
     throw error;
   }
   try {
-    const updateUserParams: AdminUpdateUserAttributesCommandInput = {
-      UserAttributes: [{ Name: "custom:role", Value: "adminSuper" }],
+    const params = {
+      GroupName: "adminSuper",
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: email,
+      Username: createUserResult.User.Username, // note: email also works here
     };
-    const updateUserCommand = new AdminUpdateUserAttributesCommand(
-      updateUserParams,
-    );
-    await client.send(updateUserCommand);
+    const command = new AdminAddUserToGroupCommand(params);
+    await cachedCognitoIdpClient().send(command);
+    console.log("User added to the adminSuper group successfully");
   } catch (error) {
-    console.error("Error updating user to adminSuper role:", error);
+    console.error("Error adding user to adminSuper group:", error);
     throw error;
   }
   console.log("Cognito user created successfully.");
