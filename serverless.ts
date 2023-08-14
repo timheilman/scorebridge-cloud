@@ -74,6 +74,14 @@ const serverlessConfiguration: AWS & {
     },
   },
   resources: {
+    Conditions: {
+      StageIsProd: {
+        "Fn::Equals": ["prod", `\${sls:stage}`],
+      },
+      StageIsNotProd: {
+        "Fn:Not": [{ "Fn::Equals": ["prod", `\${sls:stage}`] }],
+      },
+    },
     Resources: {
       ...CognitoResources,
       ...DynamoDbTables,

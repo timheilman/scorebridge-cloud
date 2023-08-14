@@ -1,6 +1,7 @@
 export default {
   SesSandboxSqsQueue: {
     Type: "AWS::SQS::Queue",
+    Condition: "StageIsNotProd",
     Properties: {
       QueueName: "SesSandboxQueue",
       RedrivePolicy: {
@@ -13,12 +14,14 @@ export default {
   },
   SesSandboxDlQueue: {
     Type: "AWS::SQS::Queue",
+    Condition: "StageIsNotProd",
     Properties: {
       QueueName: "SesSandboxDlQueue",
     },
   },
   SesSandboxSnsSubscription: {
     Type: "AWS::SNS::Subscription",
+    Condition: "StageIsNotProd",
     Properties: {
       Protocol: "sqs",
       TopicArn: { Ref: "SesSandboxSnsTopic" },
@@ -27,6 +30,7 @@ export default {
   },
   SesSandboxSqsPermission: {
     Type: "AWS::SQS::QueuePolicy",
+    Condition: "StageIsNotProd",
     Properties: {
       Queues: [{ Ref: "SesSandboxSqsQueue" }],
       PolicyDocument: {

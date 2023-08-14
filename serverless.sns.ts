@@ -1,12 +1,14 @@
 export default {
   SesSandboxSnsTopic: {
     Type: "AWS::SNS::Topic",
+    Condition: "StageIsNotProd",
     Properties: {
       DisplayName: "SesSandboxNotifications",
     },
   },
   SesSandboxNotificationsPolicy: {
     Type: "AWS::SNS::TopicPolicy",
+    Condition: "StageIsNotProd",
     Properties: {
       PolicyDocument: {
         Version: "2012-10-17",
