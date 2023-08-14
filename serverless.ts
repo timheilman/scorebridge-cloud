@@ -6,6 +6,7 @@ import appSync from "./serverless.appsync";
 import { AdditionalAppSyncResources } from "./serverless.appsync";
 import CognitoResources from "./serverless.cognito";
 import DynamoDbTables from "./serverless.dynamodb";
+import LambdaPermissionResources from "./serverless.lambdaPermission";
 import SesResources from "./serverless.ses";
 import SnsResources from "./serverless.sns";
 import SqsResources from "./serverless.sqs";
@@ -89,6 +90,7 @@ const serverlessConfiguration: AWS & {
       ...SesResources,
       ...SnsResources,
       ...SqsResources,
+      ...LambdaPermissionResources,
     },
     Outputs: {
       AddClubApiKey: {

@@ -121,12 +121,17 @@ async function handleFoundCognitoUser(
 ) {
   if (user.UserStatus === "FORCE_CHANGE_PASSWORD") {
     const promises: Promise<unknown>[] = [];
-    promises.push(
-      lcd(
-        cognitoUpdateClubNameAttribute(user.Username, input.newClubName),
-        "Updated cognito user attribute for initial club name.",
-      ),
-    );
+    if (
+      user.UserAttributes.find((a) => a.Name === "custom:initialClubName")
+        .Value !== input.newClubName
+    ) {
+      promises.push(
+        lcd(
+          cognitoUpdateClubNameAttribute(user.Username, input.newClubName),
+          "Updated cognito user attribute for initial club name.",
+        ),
+      );
+    }
     if (!input.suppressInvitationEmail) {
       promises.push(
         lcd(reinviteUser(input.newAdminEmail), "Reinvited found user."),

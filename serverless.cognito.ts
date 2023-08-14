@@ -110,49 +110,4 @@ export default {
       ],
     },
   },
-  UserPoolInvokeConfirmUserSignupLambdaPermission: {
-    Type: "AWS::Lambda::Permission",
-    Properties: {
-      Action: "lambda:invokeFunction",
-      FunctionName: {
-        Ref: "ConfirmUserSignupLambdaFunction",
-      },
-      Principal: "cognito-idp.amazonaws.com",
-      SourceArn: {
-        "Fn::GetAtt": ["CognitoUserPool", "Arn"],
-      },
-    },
-  },
-  CognitoSesIntegrationRole: {
-    Type: "AWS::IAM::Role",
-    Properties: {
-      AssumeRolePolicyDocument: {
-        Version: "2012-10-17",
-        Statement: [
-          {
-            Effect: "Allow",
-            Principal: {
-              Service: "email.cognito-idp.amazonaws.com",
-            },
-            Action: "sts:AssumeRole",
-          },
-        ],
-      },
-      Policies: [
-        {
-          PolicyName: "AmazonCognitoIdpEmailServiceRolePolicy",
-          PolicyDocument: {
-            Version: "2012-10-17",
-            Statement: [
-              {
-                Effect: "Allow",
-                Action: ["ses:SendEmail", "ses:SendRawEmail"],
-                Resource: "*",
-              },
-            ],
-          },
-        },
-      ],
-    },
-  },
 };
