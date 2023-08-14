@@ -128,6 +128,7 @@ const serverlessConfiguration: AWS & {
           Ref: "CognitoUserPool",
         },
       },
+      PortalUrl: `\${self:custom.settings.PORTAL_URL}`,
       SesSandboxSqsQueueUrl: {
         Value: {
           "Fn::GetAtt": ["SesSandboxSqsQueue", "QueueUrl"],

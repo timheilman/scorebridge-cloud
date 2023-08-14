@@ -17,6 +17,7 @@ console.log(
       "USERS_TABLE",
       "CLUBS_TABLE",
       "STAGE",
+      "PORTAL_URL",
       "SB_TEST_AWS_CLI_PROFILE",
       "SES_SANDBOX_SQS_QUEUE_URL",
     ].reduce((acc, v) => {
