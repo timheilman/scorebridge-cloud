@@ -107,36 +107,18 @@ const serverlessConfiguration: AWS & {
       ...SqsResources,
     },
     Outputs: {
-      AddClubApiKey: {
-        Value: {
-          "Fn::GetAtt": ["AddClubApiKey", "ApiKey"],
-        },
-      },
+      AddClubApiKey: { Value: { "Fn::GetAtt": ["AddClubApiKey", "ApiKey"] } },
       AwsRegion: { Value: `\${aws:region}` },
       CognitoUserPoolClientIdAutomatedTests: {
-        Value: {
-          Ref: "UserPoolClientAutomatedTests",
-        },
+        Value: { Ref: "UserPoolClientAutomatedTests" },
       },
-      CognitoUserPoolClientIdWeb: {
-        Value: {
-          Ref: "UserPoolClientWeb",
-        },
-      },
-      CognitoUserPoolId: {
-        Value: {
-          Ref: "CognitoUserPool",
-        },
-      },
-      PortalUrl: `\${self:custom.settings.PORTAL_URL}`,
+      CognitoUserPoolClientIdWeb: { Value: { Ref: "UserPoolClientWeb" } },
+      CognitoUserPoolId: { Value: { Ref: "CognitoUserPool" } },
+      PortalUrl: { Value: `\${self:custom.settings.PORTAL_URL}` },
       SesSandboxSqsQueueUrl: {
-        Value: {
-          "Fn::GetAtt": ["SesSandboxSqsQueue", "QueueUrl"],
-        },
+        Value: { "Fn::GetAtt": ["SesSandboxSqsQueue", "QueueUrl"] },
       },
-      Stage: {
-        Value: `\${sls:stage}`,
-      },
+      Stage: { Value: `\${sls:stage}` },
     },
   },
   appSync,
