@@ -77,24 +77,24 @@ const serverlessConfiguration: AWS & {
       ...SqsResources,
     },
     Outputs: {
-      // CognitoUserPoolId: {
-      //   Value: {
-      //     Ref: "CognitoUserPool",
-      //   },
-      // },
+      CognitoUserPoolId: {
+        Value: {
+          Ref: "CognitoUserPool",
+        },
+      },
 
       AwsRegion: { Value: `\${aws:region}` },
 
-      // CognitoUserPoolClientIdWeb: {
-      //   Value: {
-      //     Ref: "UserPoolClientWeb",
-      //   },
-      // },
-      // CognitoUserPoolClientIdAutomatedTests: {
-      //   Value: {
-      //     Ref: "UserPoolClientAutomatedTests",
-      //   },
-      // },
+      CognitoUserPoolClientIdWeb: {
+        Value: {
+          Ref: "UserPoolClientWeb",
+        },
+      },
+      CognitoUserPoolClientIdAutomatedTests: {
+        Value: {
+          Ref: "UserPoolClientAutomatedTests",
+        },
+      },
       AddClubApiKey: {
         Value: {
           "Fn::GetAtt": ["AddClubApiKey", "ApiKey"],
