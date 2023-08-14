@@ -17,7 +17,7 @@ export default {
       UsernameAttributes: ["email"],
       EmailConfiguration: {
         EmailSendingAccount: "DEVELOPER",
-        ReplyToEmailAddress: "scorebridge8+do-not-reply@gmail.com",
+        ReplyToEmailAddress: `\${self:custom.settings.SES_REPLY_TO_ADDRESS}`,
         From:
           `ScoreBridge Admin Portal ` +
           `<\${self:custom.settings.SES_FROM_ADDRESS}>`,
