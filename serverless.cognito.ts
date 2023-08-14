@@ -41,11 +41,12 @@ export default {
         },
         // TODO: after checking in, comment-out all cognito again *sigh* because cannot remove these
       ],
-      LambdaConfig: {
-        PostConfirmation: {
-          "Fn::GetAtt": ["ConfirmUserSignupLambdaFunction", "Arn"],
-        },
-      },
+      // LambdaConfig: {
+      //   PostConfirmation: {
+      // Turns out this was not firing due to admin-based commands, so nix it:
+      //     "Fn::GetAtt": ["ConfirmUserSignupLambdaFunction", "Arn"],
+      //   },
+      // },
       UserPoolName: `\${self:custom.settings.COGNITO_USER_POOL_NAME}`,
       AdminCreateUserConfig: {
         AllowAdminCreateUserOnly: true,
