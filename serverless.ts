@@ -54,6 +54,11 @@ const serverlessConfiguration: AWS & {
         staging: "655935885730",
         prod: "515279954553",
       },
+      inviteMessageSubject: {
+        dev: "Welcome to the ScoreBridge-dev App",
+        staging: "Welcome to the ScoreBridge-staging App",
+        prod: "Welcome to the ScoreBridge App",
+      },
       sesFromAddress: {
         dev: "scorebridge8+dev@gmail.com",
         staging: "scorebridge8+staging@gmail.com",
@@ -62,6 +67,7 @@ const serverlessConfiguration: AWS & {
       AWS_ACCOUNT_ID: `\${self:custom.settings.awsAcctId.\${sls:stage}}`,
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       COGNITO_USER_POOL_NAME: `ScoreBridgeCognitoUserPool-\${sls:stage}`,
+      INVITE_MESSAGE_SUBJECT: `\${self:custom.settings.inviteMessageSubject.\${sls:stage}}`,
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       SES_FROM_ADDRESS: `\${self:custom.settings.sesFromAddress.\${sls:stage}}`,
       STAGE: `\${sls:stage}`,

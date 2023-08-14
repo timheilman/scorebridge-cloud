@@ -56,7 +56,7 @@ export default {
         AllowAdminCreateUserOnly: true,
         InviteMessageTemplate: {
           EmailMessage: inviteMessageTemplate,
-          EmailSubject: "Welcome to the ScoreBridge App",
+          EmailSubject: `\${self:custom.settings.INVITE_MESSAGE_SUBJECT`,
         },
       },
     },
