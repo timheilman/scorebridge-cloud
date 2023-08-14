@@ -97,21 +97,21 @@ const serverlessConfiguration: AWS & {
         },
       },
       AwsRegion: { Value: `\${aws:region}` },
-      // CognitoUserPoolClientIdAutomatedTests: {
-      //   Value: {
-      //     Ref: "UserPoolClientAutomatedTests",
-      //   },
-      // },
-      // CognitoUserPoolClientIdWeb: {
-      //   Value: {
-      //     Ref: "UserPoolClientWeb",
-      //   },
-      // },
-      // CognitoUserPoolId: {
-      //   Value: {
-      //     Ref: "CognitoUserPool",
-      //   },
-      // },
+      CognitoUserPoolClientIdAutomatedTests: {
+        Value: {
+          Ref: "UserPoolClientAutomatedTests",
+        },
+      },
+      CognitoUserPoolClientIdWeb: {
+        Value: {
+          Ref: "UserPoolClientWeb",
+        },
+      },
+      CognitoUserPoolId: {
+        Value: {
+          Ref: "CognitoUserPool",
+        },
+      },
       SesSandboxSqsQueueUrl: {
         Value: {
           "Fn::GetAtt": ["SesSandboxSqsQueue", "QueueUrl"],
