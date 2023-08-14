@@ -9,9 +9,10 @@ export default {
     CLUBS_TABLE: {
       Ref: "ClubsTable",
     },
-    COGNITO_USER_POOL_ID: {
-      Ref: "CognitoUserPool",
-    },
+    COGNITO_USER_POOL_ID: "FOO",
+    // {
+    //       Ref: "CognitoUserPool",
+    //     },
   },
   iamRoleStatements: [
     {
@@ -28,12 +29,12 @@ export default {
         "Fn::GetAtt": ["ClubsTable", "Arn"],
       },
     },
-    {
-      Effect: "Allow",
-      Action: "cognito-idp:AdminDeleteUser",
-      Resource: {
-        "Fn::GetAtt": ["CognitoUserPool", "Arn"],
-      },
-    },
+    // {
+    //   Effect: "Allow",
+    //   Action: "cognito-idp:AdminDeleteUser",
+    //   Resource: {
+    //     "Fn::GetAtt": ["CognitoUserPool", "Arn"],
+    //   },
+    // },
   ],
 };

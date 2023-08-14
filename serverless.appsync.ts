@@ -89,16 +89,17 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   name: "scorebridge-cloud",
   schema: "schema.api.graphql",
   authentication: {
-    type: "AMAZON_COGNITO_USER_POOLS",
-    config: {
-      awsRegion: "us-west-2",
-      userPoolId: {
-        Ref: "CognitoUserPool",
-      },
-      defaultAction: "ALLOW",
-    },
+    type: "API_KEY",
+    // type: "AMAZON_COGNITO_USER_POOLS",
+    // config: {
+    //   awsRegion: "us-west-2",
+    //   userPoolId: {
+    //     Ref: "CognitoUserPool",
+    //   },
+    //   defaultAction: "ALLOW",
+    // },
   },
-  additionalAuthentications: [{ type: "API_KEY" }],
+  // additionalAuthentications: [{ type: "API_KEY" }],
   dataSources: customAppSyncDataSources(),
   resolvers: customAppSyncResolvers(),
   pipelineFunctions: {},
