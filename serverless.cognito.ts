@@ -51,7 +51,10 @@ export default {
       AdminCreateUserConfig: {
         AllowAdminCreateUserOnly: true,
         InviteMessageTemplate: {
-          EmailMessage: inviteMessageTemplate,
+          EmailMessage: inviteMessageTemplate({
+            loginUrl: `\${self:custom.settings.PORTAL_URL}`,
+            portalName: `\${self:custom.settings.PORTAL_NAME}`,
+          }),
           EmailSubject: `\${self:custom.settings.INVITE_MESSAGE_SUBJECT}`,
         },
       },

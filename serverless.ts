@@ -59,6 +59,14 @@ const serverlessConfiguration: AWS & {
         staging: "Welcome to the ScoreBridge-staging App",
         prod: "Welcome to the ScoreBridge App",
       },
+      portalName: {
+        dev: "ScoreBridge-dev Admin Portal",
+        staging: "ScoreBridge-staging Admin Portal",
+        prod: "ScoreBridge Admin Portal",
+      },
+      portalUrl: {
+        dev: "https://dev.d2efhllh5f21k3.amplifyapp.com/",
+      },
       sesFromAddress: {
         dev: "scorebridge8+dev@gmail.com",
         staging: "scorebridge8+staging@gmail.com",
@@ -74,6 +82,8 @@ const serverlessConfiguration: AWS & {
       COGNITO_USER_POOL_NAME: `ScoreBridgeCognitoUserPool-\${sls:stage}`,
       INVITE_MESSAGE_SUBJECT: `\${self:custom.settings.inviteMessageSubject.\${sls:stage}}`,
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      PORTAL_NAME: `\${self:custom.settings.portalName.\${sls:stage}}`,
+      PORTAL_URL: `\${self:custom.settings.portalUrl.\${sls:stage}}`,
       SES_FROM_ADDRESS: `\${self:custom.settings.sesFromAddress.\${sls:stage}}`,
       SES_REPLY_TO_ADDRESS: `\${self:custom.settings.sesReplyToAddress.\${sls:stage}}`,
       STAGE: `\${sls:stage}`,
