@@ -77,33 +77,34 @@ const serverlessConfiguration: AWS & {
       ...SqsResources,
     },
     Outputs: {
-      CognitoUserPoolId: {
+      AddClubApiKey: {
         Value: {
-          Ref: "CognitoUserPool",
+          "Fn::GetAtt": ["AddClubApiKey", "ApiKey"],
         },
       },
-
       AwsRegion: { Value: `\${aws:region}` },
-
-      CognitoUserPoolClientIdWeb: {
-        Value: {
-          Ref: "UserPoolClientWeb",
-        },
-      },
       CognitoUserPoolClientIdAutomatedTests: {
         Value: {
           Ref: "UserPoolClientAutomatedTests",
         },
       },
-      AddClubApiKey: {
+      CognitoUserPoolClientIdWeb: {
         Value: {
-          "Fn::GetAtt": ["AddClubApiKey", "ApiKey"],
+          Ref: "UserPoolClientWeb",
+        },
+      },
+      CognitoUserPoolId: {
+        Value: {
+          Ref: "CognitoUserPool",
         },
       },
       SesSandboxSqsQueueUrl: {
         Value: {
           "Fn::GetAtt": ["SesSandboxSqsQueue", "QueueUrl"],
         },
+      },
+      Stage: {
+        Value: `\${sls:stage}`,
       },
     },
   },
