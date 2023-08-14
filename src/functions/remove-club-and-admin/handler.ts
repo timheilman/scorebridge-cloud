@@ -26,18 +26,13 @@ function cachedDdbClient() {
 }
 
 async function destroyCognitoUser(userId: string) {
-  try {
-    const deleteUserParams = {
-      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: userId,
-    };
+  const deleteUserParams = {
+    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+    Username: userId,
+  };
 
-    const deleteUserCommand = new AdminDeleteUserCommand(deleteUserParams);
-    return await cachedCognitoIdpClient().send(deleteUserCommand);
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    throw error;
-  }
+  const deleteUserCommand = new AdminDeleteUserCommand(deleteUserParams);
+  return await cachedCognitoIdpClient().send(deleteUserCommand);
 }
 
 export const main: AppSyncResolverHandler<
@@ -46,37 +41,30 @@ export const main: AppSyncResolverHandler<
 > = async (
   event: AppSyncResolverEvent<MutationRemoveClubAndAdminArgs>,
 ): Promise<RemoveClubAndAdminResponse> => {
-  const { clubId, userId } = event.arguments.input;
-  try {
-    await destroyCognitoUser(userId);
-  } catch (error) {
-    console.error("Error destroying cognito user", error);
-    throw error;
-  }
+  const { clubId } = event.arguments.input;
+  const promises: Promise<unknown>[] = [];
+  promises.push(destroyCognitoUser(event.arguments.input.userId));
 
-  try {
-    const deleteUserDdbCommand = new DeleteItemCommand({
-      TableName: requiredEnvVar("USERS_TABLE"),
-      Key: marshall({ id: userId }),
-    });
-    await cachedDdbClient().send(deleteUserDdbCommand);
-  } catch (error) {
-    console.error("Error deleting ddb user", error);
-    throw error;
-  }
+  promises.push(
+    cachedDdbClient().send(
+      new DeleteItemCommand({
+        TableName: requiredEnvVar("USERS_TABLE"),
+        Key: marshall({ id: event.arguments.input.userId }),
+      }),
+    ),
+  );
   console.log("Ddb user deleted successfully.");
 
-  try {
-    const deleteClubDdbCommand = new DeleteItemCommand({
-      TableName: requiredEnvVar("CLUBS_TABLE"),
-      Key: { id: { S: clubId } },
-    });
-    await cachedDdbClient().send(deleteClubDdbCommand);
-  } catch (error) {
-    console.error("Error deleting ddb club", error);
-    throw error;
-  }
-  console.log("Ddb club deleted successfully.");
+  promises.push(
+    cachedDdbClient().send(
+      new DeleteItemCommand({
+        TableName: requiredEnvVar("CLUBS_TABLE"),
+        Key: { id: { S: clubId } },
+      }),
+    ),
+  );
+
+  await Promise.all(promises);
 
   return {
     status: "OK",
