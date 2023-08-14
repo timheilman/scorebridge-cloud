@@ -56,7 +56,7 @@ export default {
         AllowAdminCreateUserOnly: true,
         InviteMessageTemplate: {
           EmailMessage: inviteMessageTemplate,
-          EmailSubject: `\${self:custom.settings.INVITE_MESSAGE_SUBJECT`,
+          EmailSubject: `\${self:custom.settings.INVITE_MESSAGE_SUBJECT}`,
         },
       },
     },
