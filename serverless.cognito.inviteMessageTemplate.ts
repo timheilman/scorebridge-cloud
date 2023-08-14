@@ -1,21 +1,13 @@
 import fs from "fs";
 import Handlebars from "handlebars";
 import path from "path";
-async function readFile(filePath: string): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    fs.readFile(filePath, "utf8", (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
+function readFileSync(filePath: string): string {
+  return fs.readFileSync(filePath, "utf8");
 }
-const templateContent = readFile(
+const templateContext = readFileSync(
   path.join(__dirname, "serverless.cognito.inviteMessageTemplate.handlebars"),
 );
-const template = Handlebars.compile(templateContent);
+const template = Handlebars.compile(templateContext);
 
 function context(stage: string) {
   if (stage === "dev") {
@@ -30,7 +22,7 @@ function context(stage: string) {
     };
   } else if (stage === "prod") {
     return {
-      portalName: "ScoreBridge-staging Admin Portal",
+      portalName: "ScoreBridge Admin Portal",
       loginUrl: "https://todo.get.prod.set.up.amplifyapp.com/",
     };
   } else {
