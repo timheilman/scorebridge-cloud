@@ -14,7 +14,7 @@
     "provideEnvEntriesToWebapp": "ts-node ts-node-scripts/provideEnvEntriesToWebapp.ts > ${SCOREBRIDGE_WEBAPP_CLONE_LOCATION:-../scorebridge-webapp/}.env",
     "provideEnvEntriesToWebappCypress": "ts-node ts-node-scripts/provideEnvEntriesToWebappCypress.ts > ${SCOREBRIDGE_WEBAPP_CLONE_LOCATION:-../scorebridge-webapp/}cypress.env.json",
     "provideGqlTypesToWebapp": "cp ./appsync.d.ts ${SCOREBRIDGE_WEBAPP_CLONE_LOCATION:-../scorebridge-webapp/}",
-    "refreshDetailsToWebapp": "npm run provideEnvEntriesToWebapp; npm run provideEnvEntriesToWebappCypress; npm run provideGqlTypesToWebapp",
+    "refreshDetailsToWebapp": "npm run exportEnvDev; npm run provideEnvEntriesToWebapp; npm run provideEnvEntriesToWebappCypress; npm run provideGqlTypesToWebapp",
     "test": "jest --verbose ./__tests__/test_cases/unit",
     "integration-test": "jest --verbose ./__tests__/test_cases/integration",
     "e2e-test": "jest --verbose ./__tests__/test_cases/e2e",
