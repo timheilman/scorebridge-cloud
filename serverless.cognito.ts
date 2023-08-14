@@ -1,4 +1,11 @@
 // import { AppSyncConfig } from "serverless-appsync-plugin/src/types/plugin"
+const head = `<head><title>email title</title></head>`;
+const heading = `<h2>Welcome to the ScoreBridge-\${sls:stage} Portal</h2>`;
+const list = `<ul><li>Username: {username}</li><li>Password: {####}</li></ul>`;
+const footer = `<hr/><a href="https://localhost:3000/">https://localhost:3000/</a>`;
+const info = `<p>Please use these credentials to <a href="http://localhost:3000/"/>login</a>:</p>${list}${footer}`;
+const body = `<body>${heading}${info}</body>`;
+const inviteMessageTemplate = `<html>${head}${body}</html>`;
 export default {
   CognitoUserPool: {
     Type: "AWS::Cognito::UserPool",
@@ -16,6 +23,7 @@ export default {
       UsernameAttributes: ["email"],
       EmailConfiguration: {
         EmailSendingAccount: "DEVELOPER",
+        ReplyToEmailAddress: "scorebridge8+do-not-reply@gmail.com",
         From:
           `ScoreBridge Admin Portal ` +
           `<\${self:custom.settings.SES_FROM_ADDRESS}>`,
@@ -37,6 +45,12 @@ export default {
           Required: false, // true is not yet supported, plus adminSuper has none
           Mutable: true, // setting at creation causes failure during password reset, so trying mutable
         },
+        {
+          AttributeDataType: "String",
+          Name: "role",
+          Required: false, // true is not yet supported
+          Mutable: true, // setting at creation causes failure during password reset, so trying mutable
+        },
       ],
       LambdaConfig: {
         PostConfirmation: {
@@ -46,6 +60,10 @@ export default {
       UserPoolName: `\${self:custom.settings.COGNITO_USER_POOL_NAME}`,
       AdminCreateUserConfig: {
         AllowAdminCreateUserOnly: true,
+        InviteMessageTemplate: {
+          EmailMessage: inviteMessageTemplate,
+          EmailSubject: "Welcome to the ScoreBridge App",
+        },
       },
     },
   },
