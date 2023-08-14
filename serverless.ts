@@ -79,7 +79,7 @@ const serverlessConfiguration: AWS & {
         "Fn::Equals": ["prod", `\${sls:stage}`],
       },
       StageIsNotProd: {
-        "Fn:Not": [{ "Fn::Equals": ["prod", `\${sls:stage}`] }],
+        "Fn::Not": [{ "Fn::Equals": ["prod", `\${sls:stage}`] }],
       },
     },
     Resources: {
