@@ -39,6 +39,12 @@ export default {
           Required: false, // true is not yet supported, plus adminSuper has none
           Mutable: true, // setting at creation causes failure during password reset, so trying mutable
         },
+        {
+          AttributeDataType: "String",
+          Name: "initialClubName",
+          Required: false, // true is not yet supported, plus adminSuper has none
+          Mutable: true, // setting at creation causes failure during password reset, so trying mutable
+        },
       ],
       LambdaConfig: {
         PostConfirmation: {

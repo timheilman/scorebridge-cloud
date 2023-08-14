@@ -6,6 +6,9 @@ export default {
     USERS_TABLE: {
       Ref: "UsersTable",
     },
+    CLUBS_TABLE: {
+      Ref: "ClubsTable",
+    },
   },
   iamRoleStatements: [
     {
@@ -13,6 +16,13 @@ export default {
       Action: "dynamodb:PutItem",
       Resource: {
         "Fn::GetAtt": ["UsersTable", "Arn"],
+      },
+    },
+    {
+      Effect: "Allow",
+      Action: "dynamodb:PutItem",
+      Resource: {
+        "Fn::GetAtt": ["ClubsTable", "Arn"],
       },
     },
   ],

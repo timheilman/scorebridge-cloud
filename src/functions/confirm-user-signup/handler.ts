@@ -1,36 +1,49 @@
 import { PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { marshall } from "@aws-sdk/util-dynamodb";
+import { logCompletionDecorator as lcd } from "@libs/log-completion-decorator";
+import requiredEnvVar from "@libs/requiredEnvVar";
 import { PostConfirmationTriggerEvent } from "aws-lambda";
-import Chance from "chance";
 
 import { cachedDynamoDbClient } from "../../libs/ddb";
 
-const chance = new Chance();
-
-export const main = async (event: PostConfirmationTriggerEvent) => {
-  const { USERS_TABLE } = process.env;
-  if (event.triggerSource !== "PostConfirmation_ConfirmSignUp") {
-    return event;
-  }
-  const { name } = event.request.userAttributes;
-  const suffix = chance.string({
-    length: 8,
-    casing: "upper",
-    alpha: true,
-    numeric: true,
+async function ddbCreateUser(userId: string, email: string) {
+  const user = marshall({
+    id: userId,
+    email,
+    createdAt: new Date().toJSON(),
   });
-  const screenName = `${name.replace(/[^a-zA-Z0-9]/g, "")}${suffix}`;
-  const user = {
-    id: { S: event.userName },
-    name: { S: name },
-    screenName: { S: screenName },
-    createdAt: { S: new Date().toJSON() },
-  };
-  const command = new PutItemCommand({
-    TableName: USERS_TABLE,
+  const ddbCreateCommandUser = new PutItemCommand({
+    TableName: requiredEnvVar("USERS_TABLE"),
     Item: user,
     ConditionExpression: "attribute_not_exists(id)",
   });
-  await cachedDynamoDbClient().send(command);
+  return cachedDynamoDbClient().send(ddbCreateCommandUser);
+}
+async function ddbCreateClub(clubId: string, clubName: string) {
+  const user = marshall({
+    id: clubId,
+    name: clubName,
+    createdAt: new Date().toJSON(),
+  });
+  const ddbCreateCommandClub = new PutItemCommand({
+    TableName: requiredEnvVar("CLUBS_TABLE"),
+    Item: user,
+    ConditionExpression: "attribute_not_exists(id)",
+  });
+  return cachedDynamoDbClient().send(ddbCreateCommandClub);
+}
 
+export const main = async (event: PostConfirmationTriggerEvent) => {
+  console.log(`confirm-user-signup done been called`);
+  if (event.triggerSource !== "PostConfirmation_ConfirmSignUp") {
+    return event;
+  }
+  const email = event.request.userAttributes["email"];
+  const tenantId = event.request.userAttributes["custom:tenantId"];
+  const clubName = event.request.userAttributes["custom:initialClubName"];
+  await Promise.all([
+    lcd(ddbCreateUser(event.userName, email), "Done creating user"),
+    lcd(ddbCreateClub(tenantId, clubName), "Done creating club"),
+  ]);
   return event;
 };
