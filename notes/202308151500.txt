@@ -1,0 +1,23 @@
+What I'd like the tests to look like for this:
+
+type Query {
+  exampleLambdaDataSource(
+    input: ExampleLambdaDataSourceInput
+  ): ExampleLambdaDataSourceOutput!
+  @aws_cognito_user_pools(cognito_groups: [])
+}
+
+type Mutation {
+  unexpectedError: UnexpectedErrorResponse!
+  @aws_api_key
+  @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+
+  addClub(input: AddClubInput!): AddClubResponse!
+  @aws_api_key
+  @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+
+  removeClubAndAdmin(input: RemoveClubAndAdminInput!): RemoveClubAndAdminResponse!
+  @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
+}
+
+actually n/m.  be simple.

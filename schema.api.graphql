@@ -3,10 +3,12 @@ schema {
   mutation: Mutation
 }
 
+# ignore for now; Query simply has to be present
 type Query {
   exampleLambdaDataSource(
     input: ExampleLambdaDataSourceInput
   ): ExampleLambdaDataSourceOutput!
+  @aws_cognito_user_pools(cognito_groups: [])
 }
 
 input ExampleLambdaDataSourceInput {
@@ -26,7 +28,8 @@ type Mutation {
   addClub(input: AddClubInput!): AddClubResponse!
   @aws_api_key
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
-
+  
+  # tested in cloud but not present yet in webapp
   removeClubAndAdmin(input: RemoveClubAndAdminInput!): RemoveClubAndAdminResponse!
   @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 }
