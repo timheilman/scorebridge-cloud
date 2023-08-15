@@ -19,6 +19,7 @@ console.log(
       "STAGE",
       "PORTAL_URL",
       "SB_TEST_AWS_CLI_PROFILE",
+      "COGNITO_USER_POOL_CLIENT_ID_WEB",
       "SES_SANDBOX_SQS_QUEUE_URL",
     ].reduce((acc, v) => {
       acc[v] = req(v);
