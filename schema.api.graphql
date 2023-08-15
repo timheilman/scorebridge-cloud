@@ -27,9 +27,7 @@ type Mutation {
   @aws_api_key
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
-  removeClubAndAdmin(
-    input: RemoveClubAndAdminInput!
-  ): RemoveClubAndAdminResponse!
+  removeClubAndAdmin(input: RemoveClubAndAdminInput!): RemoveClubAndAdminResponse!
   @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 }
 
