@@ -95,7 +95,7 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
       userPoolId: {
         Ref: "CognitoUserPool",
       },
-      defaultAction: "ALLOW",
+      defaultAction: "DENY",
     },
   },
   additionalAuthentications: [{ type: "API_KEY" }],
