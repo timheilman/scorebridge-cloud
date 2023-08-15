@@ -1,22 +1,22 @@
 schema {
-#  query: Query
+  query: Query
   mutation: Mutation
 }
 
-#type Query {
-#  exampleLambdaDataSource(
-#    input: ExampleLambdaDataSourceInput
-#  ): ExampleLambdaDataSourceOutput!
-#}
+type Query {
+  exampleLambdaDataSource(
+    input: ExampleLambdaDataSourceInput
+  ): ExampleLambdaDataSourceOutput!
+}
 
-#input ExampleLambdaDataSourceInput {
-#  extension: String!
-#  contentType: String
-#}
-#
-#type ExampleLambdaDataSourceOutput {
-#  exampleOutputField: String!
-#}
+input ExampleLambdaDataSourceInput {
+  extension: String!
+  contentType: String
+}
+
+type ExampleLambdaDataSourceOutput {
+  exampleOutputField: String!
+}
 
 type Mutation {
   unexpectedError: UnexpectedErrorResponse!
