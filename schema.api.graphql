@@ -35,7 +35,7 @@ type Mutation {
 }
 
 type UnexpectedErrorResponse {
-  neverGetsReturned: String! @aws_api_key
+  neverGetsReturned: String! @aws_api_key @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 }
 
 input AddClubInput {
@@ -45,8 +45,8 @@ input AddClubInput {
 }
 
 type AddClubResponse {
-  userId: String! @aws_api_key
-  clubId: String! @aws_api_key
+  userId: String! @aws_api_key @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+  clubId: String! @aws_api_key @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 }
 
 input RemoveClubAndAdminInput {
