@@ -25,7 +25,7 @@ function cachedDdbClient() {
   return dynamoDbClient;
 }
 
-async function destroyCognitoUser(userId: string) {
+export async function cognitoDestroyUser(userId: string) {
   const deleteUserParams = {
     UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
     Username: userId,
@@ -33,6 +33,15 @@ async function destroyCognitoUser(userId: string) {
 
   const deleteUserCommand = new AdminDeleteUserCommand(deleteUserParams);
   return await cachedCognitoIdpClient().send(deleteUserCommand);
+}
+
+export function deleteItemFromTable(tableName: string, userId: string) {
+  return cachedDdbClient().send(
+    new DeleteItemCommand({
+      TableName: tableName,
+      Key: marshall({ id: userId }),
+    }),
+  );
 }
 
 export const main: AppSyncResolverHandler<
@@ -43,27 +52,17 @@ export const main: AppSyncResolverHandler<
 ): Promise<RemoveClubAndAdminResponse> => {
   const { clubId } = event.arguments.input;
   const promises: Promise<unknown>[] = [];
-  promises.push(destroyCognitoUser(event.arguments.input.userId));
+  promises.push(cognitoDestroyUser(event.arguments.input.userId));
 
   promises.push(
-    cachedDdbClient().send(
-      new DeleteItemCommand({
-        TableName: requiredEnvVar("USERS_TABLE"),
-        Key: marshall({ id: event.arguments.input.userId }),
-      }),
+    deleteItemFromTable(
+      requiredEnvVar("USERS_TABLE"),
+      event.arguments.input.userId,
     ),
   );
   console.log("Ddb user deleted successfully.");
 
-  promises.push(
-    cachedDdbClient().send(
-      new DeleteItemCommand({
-        TableName: requiredEnvVar("CLUBS_TABLE"),
-        Key: { id: { S: clubId } },
-      }),
-    ),
-  );
-
+  promises.push(deleteItemFromTable(requiredEnvVar("CLUBS_TABLE"), clubId));
   await Promise.all(promises);
 
   return {
