@@ -4,13 +4,6 @@ import { fromEnv } from "@aws-sdk/credential-providers";
 import fromSsoUsingProfileFromEnv from "./from-sso-using-profile-from-env";
 import requiredEnvVar from "./requiredEnvVar";
 
-export function createCognitoIdentityProviderClient() {
-  return new CognitoIdentityProviderClient({
-    region: requiredEnvVar("AWS_REGION"),
-    credentials: fromEnv(),
-  });
-}
-
 let cognitoIdpClient: CognitoIdentityProviderClient;
 export function cachedCognitoIdpClient(): CognitoIdentityProviderClient {
   if (cognitoIdpClient) {

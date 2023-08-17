@@ -37,7 +37,7 @@ const getCognitoUser = async (email: string) => {
   return await cachedCognitoIdpClient().send(getUserCommand);
 };
 
-async function cognitoCreateUser(
+export async function cognitoCreateUser(
   email: string,
   invitationEmailAction: "SUPPRESS" | "RESEND" | undefined,
 ) {
@@ -89,7 +89,7 @@ const updateClubName = async (
   return await cachedDynamoDbClient().send(updateClubDdbCommand);
 };
 
-async function ddbCreateClub(clubId: string, clubName: string) {
+export async function ddbCreateClub(clubId: string, clubName: string) {
   const club = marshall({
     id: clubId,
     name: clubName,
@@ -103,7 +103,7 @@ async function ddbCreateClub(clubId: string, clubName: string) {
   await cachedDynamoDbClient().send(createClubDdbCommand);
 }
 
-async function ddbCreateUser(userId: string, email: string) {
+export async function ddbCreateUser(userId: string, email: string) {
   const user = marshall({
     id: userId,
     email,
@@ -118,9 +118,9 @@ async function ddbCreateUser(userId: string, email: string) {
   await cachedDynamoDbClient().send(createUserDdbCommand);
 }
 
-async function cognitoAddUserToGroup(userId: string) {
+export async function cognitoAddUserToGroup(userId: string, groupName: string) {
   const params = {
-    GroupName: "adminClub",
+    GroupName: groupName,
     UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
     Username: userId, // note: email also works here
   };
@@ -129,7 +129,10 @@ async function cognitoAddUserToGroup(userId: string) {
   console.log("User added to the adminClub group successfully");
 }
 
-async function cognitoUpdateUserTenantId(clubId: string, userId: string) {
+export async function cognitoUpdateUserTenantId(
+  userId: string,
+  clubId: string,
+) {
   const updateUserParams: AdminUpdateUserAttributesCommandInput = {
     UserAttributes: [{ Name: "custom:tenantId", Value: clubId }],
     UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
@@ -198,11 +201,11 @@ async function handleNoSuchCognitoUser({
   // the ddbClub creation and remaining userId-dependent promises can be awaited in parallel
   await Promise.all([
     lcd(
-      cognitoUpdateUserTenantId(clubId, userId),
+      cognitoUpdateUserTenantId(userId, clubId),
       "Cognito user tenantId set successfully",
     ),
     lcd(
-      cognitoAddUserToGroup(userId),
+      cognitoAddUserToGroup(userId, "adminClub"),
       "Cognito user added to clubAdmin group successfully",
     ),
     lcd(ddbCreateUser(userId, newAdminEmail), "Ddb user created successfully"),
