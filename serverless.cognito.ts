@@ -109,4 +109,24 @@ export default {
       ],
     },
   },
+  UserPoolClientTableDevice: {
+    Type: "AWS::Cognito::UserPoolClient",
+    Properties: {
+      UserPoolId: {
+        Ref: "CognitoUserPool",
+      },
+      ClientName: "tableDevice",
+      ExplicitAuthFlows: [
+        "ALLOW_USER_SRP_AUTH",
+        "ALLOW_USER_PASSWORD_AUTH",
+        "ALLOW_REFRESH_TOKEN_AUTH",
+      ],
+      TokenValidityUnits: {
+        AccessToken: "hours",
+        IdToken: "hours",
+        RefreshToken: "days",
+      },
+      RefreshTokenValidity: 3650,
+    },
+  },
 };
