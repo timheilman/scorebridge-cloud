@@ -74,11 +74,11 @@ export default {
       GroupName: "adminClub",
     },
   },
-  TabletTableGroup: {
+  ClubDeviceGroup: {
     Type: "AWS::Cognito::UserPoolGroup",
     Properties: {
       UserPoolId: { Ref: "CognitoUserPool" },
-      GroupName: "tabletTable",
+      GroupName: "clubDevice",
     },
   },
   UserPoolClientWeb: {
@@ -95,7 +95,7 @@ export default {
       ],
     },
   },
-  UserPoolClientAutomatedTests: {
+  UserPoolClientAutomatedTest: {
     Type: "AWS::Cognito::UserPoolClient",
     Properties: {
       UserPoolId: {
@@ -109,13 +109,13 @@ export default {
       ],
     },
   },
-  UserPoolClientTableDevice: {
+  UserPoolClientClubDevice: {
     Type: "AWS::Cognito::UserPoolClient",
     Properties: {
       UserPoolId: {
         Ref: "CognitoUserPool",
       },
-      ClientName: "tableDevice",
+      ClientName: "clubDevice",
       ExplicitAuthFlows: [
         "ALLOW_USER_SRP_AUTH",
         "ALLOW_USER_PASSWORD_AUTH",
