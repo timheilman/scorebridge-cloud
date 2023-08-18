@@ -1,14 +1,7 @@
-import fs from "fs";
+import readRelativeUtf8FileSync from "@libs/readRelativeUtf8FileSync";
 import Handlebars from "handlebars";
-import path from "path";
-function readFileSync(filePath: string): string {
-  return fs.readFileSync(filePath, "utf8");
-}
-const templateContext = readFileSync(
-  path.join(
-    __dirname,
-    "serverless.cognito.inviteMessageTemplate.html.cognito.hbs",
-  ),
+const templateContext = readRelativeUtf8FileSync(
+  "serverless.cognito.inviteMessageTemplate.html.cognito.hbs",
 );
 const template = Handlebars.compile(templateContext);
 

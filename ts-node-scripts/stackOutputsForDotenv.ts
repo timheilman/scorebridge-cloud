@@ -1,5 +1,7 @@
 import { exec } from "child_process";
 
+import { logFn } from "../src/libs/logging";
+const log = logFn(__filename);
 function camelToScreamingSnake(str: string): string {
   return str.replace(/([a-z])([A-Z])/g, "$1_$2").toUpperCase();
 }
@@ -62,10 +64,11 @@ function graphQlApiUrl(slsInfoLines: string[]) {
 
 exec("npx sls info --verbose", (error, stdout /* , stderr */) => {
   if (error) {
-    console.log(
+    log(
+      "error",
       `build error: unable to pull stack outputs from serverless framework`,
     );
-    console.log(`build error: ${error.message}`);
+    log("error", `build error: ${error.message}`);
   }
   // stderr expected and ignored
   const slsInfoLines = stdout.split("\n");

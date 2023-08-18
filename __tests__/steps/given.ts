@@ -3,7 +3,9 @@ import chance from "chance";
 import { config as dotenvConfig } from "dotenv";
 
 import { cachedCognitoIdpClient } from "../../src/libs/cognito";
+import { logFn } from "../../src/libs/logging";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
+const log = logFn(__filename);
 
 dotenvConfig();
 const lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
@@ -47,7 +49,7 @@ export const aLoggedInUser = async (email: string, password: string) => {
     }),
   );
 
-  console.log(`[${email}] - signed in`);
+  log("debug", `[${email}] - signed in`);
 
   return {
     idToken: auth.AuthenticationResult.IdToken,

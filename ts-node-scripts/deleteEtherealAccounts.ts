@@ -7,9 +7,11 @@ import {
   cognitoDestroyUser,
   deleteItemFromTable,
 } from "@functions/remove-club-and-admin/handler";
+import { logFn } from "@libs/logging";
 
 import { cachedCognitoIdpClient } from "../src/libs/cognito";
 import requiredEnvVar from "../src/libs/requiredEnvVar";
+const log = logFn(__filename);
 
 async function cognitoListUsers(paginationToken?: string) {
   const input: ListUsersCommandInput = {
@@ -65,5 +67,5 @@ async function deleteEtherealAccounts() {
 }
 
 deleteEtherealAccounts()
-  .then(() => console.log("done"))
-  .catch((e) => console.error("problem", e));
+  .then(() => log("info", "done"))
+  .catch((e) => log("error", "problem", e));

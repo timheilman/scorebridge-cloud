@@ -17,7 +17,8 @@ import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
 import { UserAlreadyExistsError } from "@libs/errors/user-already-exists-error";
 import { middyWithErrorHandling } from "@libs/lambda";
-import { logCompletionDecorator as lcd } from "@libs/log-completion-decorator";
+import { getLogCompletionDecorator } from "@libs/log-completion-decorator";
+import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
@@ -28,7 +29,8 @@ import {
   AddClubResponse,
   MutationAddClubArgs,
 } from "../../../appsync";
-
+const log = logFn(__filename);
+const lcd = getLogCompletionDecorator(__filename, "debug");
 const getCognitoUser = async (email: string) => {
   const getUserCommand = new AdminGetUserCommand({
     UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
@@ -68,7 +70,7 @@ const getNullableUser = async (email: string) => {
     if (problem.__type === "UserNotFoundException") {
       return null;
     }
-    console.error("unexpected problem!", problem);
+    log("error", "unexpected problem!", problem);
     throw problem;
   }
 };
@@ -126,7 +128,7 @@ export async function cognitoAddUserToGroup(userId: string, groupName: string) {
   };
   const command = new AdminAddUserToGroupCommand(params);
   await cachedCognitoIdpClient().send(command);
-  console.log("User added to the adminClub group successfully");
+  log("debug", "User added to the adminClub group successfully");
 }
 
 export async function cognitoUpdateUserTenantId(
@@ -156,7 +158,7 @@ async function readdClub(input: AddClubInput, user: AdminGetUserCommandOutput) {
           lcd(
             reinviteUser(input.newAdminEmail),
             "Reinvited user email successfully",
-          ),
+          ) as Promise<AdminCreateUserCommandOutput>,
         ];
   await Promise.all([
     lcd(clubUpdatePromise, "Updated club to new club name successfully"),
@@ -193,10 +195,10 @@ async function handleNoSuchCognitoUser({
   const ddbCreateClubPromise = ddbCreateClub(clubId, newClubName);
 
   // everything else needs teh userId, so await its creation
-  const createdUser = await lcd(
+  const createdUser = (await lcd(
     cogCreateUserPromise,
     "Cognito user created successfully",
-  );
+  )) as AdminCreateUserCommandOutput; // I do not understand why this cast is needed
   const userId = createdUser.User.Username;
   // the ddbClub creation and remaining userId-dependent promises can be awaited in parallel
   await Promise.all([
@@ -221,10 +223,10 @@ const almostMain: AppSyncResolverHandler<
 > = async (
   event: AppSyncResolverEvent<MutationAddClubArgs>,
 ): Promise<AddClubResponse> => {
-  const user = await lcd(
+  const user = (await lcd(
     getNullableUser(event.arguments.input.newAdminEmail),
     "Discovered cognito user existence successfully",
-  );
+  )) as AdminGetUserCommandOutput; // again I do not understand why this is needed
   if (user) {
     return await handleFoundCognitoUser(user, event.arguments.input);
   } else {

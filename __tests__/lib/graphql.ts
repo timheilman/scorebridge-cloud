@@ -1,5 +1,9 @@
 import axios, { AxiosResponse } from "axios";
 
+import { logFn } from "../../src/libs/logging";
+
+const log = logFn(__filename);
+
 const throwOnErrors = ({
   query,
   variables,
@@ -35,7 +39,7 @@ const graphQl = async (
   }
 
   try {
-    console.log("Posting raw-dogged GQL");
+    log("info", "Posting raw-dogged GQL");
     const resp: AxiosResponse<
       Record<"data" | "errors", Record<string, unknown>>
     > = await axios.post(
@@ -46,14 +50,13 @@ const graphQl = async (
       },
       { headers },
     );
-    console.log("Done posting raw-dogged GQL");
+    log("debug", "Done posting raw-dogged GQL");
 
     const { data, errors } = resp.data;
     throwOnErrors({ query, variables, errors });
     return data;
   } catch (err) {
-    console.log("Did I throwOnErrors?");
-    console.log(err);
+    log("debug", "Did I throwOnErrors?", [err]);
     throw err;
   }
 };

@@ -8,7 +8,6 @@ const req = (s: string) => {
   return process.env[s];
 };
 
-// console.log(JSON.stringify({
 console.log(
   JSON.stringify(
     [

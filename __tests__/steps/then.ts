@@ -8,8 +8,9 @@ import { config as dotenvConfig } from "dotenv";
 
 import { cachedCognitoIdpClient } from "../../src/libs/cognito";
 import { cachedDynamoDbClient } from "../../src/libs/ddb";
+import { logFn } from "../../src/libs/logging";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
-
+const log = logFn(__filename);
 dotenvConfig();
 
 const getUserCognito = async (
@@ -44,12 +45,18 @@ async function getUserDdb(id: string) {
       }),
     }),
   );
-  console.log("getUserDdb returning Item from", response);
+  log(
+    "debug",
+    `getUserDdb returning Item from ${JSON.stringify(response, null, 2)}`,
+  );
   return response.Item;
 }
 
 export const userExistsInUsersTable = async (id: string) => {
-  console.log(`looking for user [${id}] in table [${process.env.USERS_TABLE}]`);
+  log(
+    "debug",
+    `looking for user [${id}] in table [${process.env.USERS_TABLE}]`,
+  );
   const item = await getUserDdb(id);
 
   if (item) {
@@ -78,7 +85,10 @@ async function getClubDdb(id: string) {
 }
 
 export const clubExistsInClubsTable = async (id: string) => {
-  console.log(`looking for club [${id}] in table [${process.env.CLUBS_TABLE}]`);
+  log(
+    "debug",
+    `looking for club [${id}] in table [${process.env.CLUBS_TABLE}]`,
+  );
   const item = await getClubDdb(id);
 
   if (item) {

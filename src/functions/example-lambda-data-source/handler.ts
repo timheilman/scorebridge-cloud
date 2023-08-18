@@ -1,6 +1,7 @@
+import { logFn } from "@libs/logging";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
-
+const log = logFn(__filename);
 import {
   ExampleLambdaDataSourceOutput,
   QueryExampleLambdaDataSourceArgs,
@@ -14,9 +15,10 @@ export const main: AppSyncResolverHandler<
 ): Promise<ExampleLambdaDataSourceOutput> => {
   const ct = event.arguments.input.contentType;
   const ext = event.arguments.input.extension;
-  console.log(
+  log(
+    "debug",
     `Hello World!  I found strongly-typed content-type ${ct} and extension ${ext}`,
   );
-  console.log(JSON.stringify(event, null, 2));
+  log("debug", JSON.stringify(event, null, 2));
   return { exampleOutputField: JSON.stringify(event, null, 2) };
 };

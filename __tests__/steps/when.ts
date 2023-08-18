@@ -8,15 +8,16 @@ import {
   RemoveClubAndAdminResponse,
 } from "../../appsync";
 import { main as exampleLambdaDataSource } from "../../src/functions/example-lambda-data-source/handler";
+import { logFn } from "../../src/libs/logging";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
 import GraphQL from "../lib/graphql";
-
+const log = logFn(__filename);
 dotenvConfig();
 
 export const weInvokeExampleLambdaDataSource = async (
   extension: string,
   contentType: string,
-): Promise<void | ExampleLambdaDataSourceOutput> => {
+): Promise<ExampleLambdaDataSourceOutput> => {
   const minimalEvent: AppSyncResolverEvent<QueryExampleLambdaDataSourceArgs> = {
     arguments: {
       input: {
@@ -66,7 +67,11 @@ export const weInvokeExampleLambdaDataSource = async (
       throw new Error("Function not implemented.");
     },
   };
-  return exampleLambdaDataSource(minimalEvent, minimalContext, null);
+  const result = exampleLambdaDataSource(minimalEvent, minimalContext, null);
+  if (!result) {
+    throw new Error("typescript was right");
+  }
+  return result;
 };
 
 export const anUnknownUserAddsAClubViaApiKey = async (
@@ -99,7 +104,8 @@ export const anUnknownUserAddsAClubViaApiKey = async (
   );
   const output = data.addClub as AddClubResponse;
 
-  console.log(
+  log(
+    "debug",
     `added club. newUserId: ${output.userId}; newClubId: ${output.clubId}`,
   );
   return output;
@@ -130,7 +136,7 @@ export const aUserCallsRemoveClubAndAdmin = async (
   );
   const output = data.removeClubAndAdmin as RemoveClubAndAdminResponse;
 
-  console.log(`removed club and admin. status: ${output.status}`);
+  log("debug", `removed club and admin. status: ${output.status}`);
   return output;
 };
 
@@ -168,7 +174,7 @@ export const aUserCallsGetMyProfile = async (user: {
   );
   const profile = data.getMyProfile;
 
-  console.log(`[${user.username}] - fetched profile`);
+  log("debug", `[${user.username}] - fetched profile`);
 
   return profile;
 };
@@ -211,7 +217,7 @@ export const aUserCallsEditMyProfile = async (
   );
   const profile = data.editMyProfile;
 
-  console.log(`[${user.username}] - fetched profile`);
+  log("debug", `[${user.username}] - fetched profile`);
 
   return profile;
 };

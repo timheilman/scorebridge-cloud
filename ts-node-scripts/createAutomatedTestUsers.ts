@@ -1,7 +1,11 @@
-import { AdminSetUserPasswordCommand } from "@aws-sdk/client-cognito-identity-provider";
+import {
+  AdminCreateUserCommandOutput,
+  AdminSetUserPasswordCommand,
+} from "@aws-sdk/client-cognito-identity-provider";
 import { CreateSecretCommand } from "@aws-sdk/client-secrets-manager";
 import { cachedCognitoIdpClient } from "@libs/cognito";
-import { logCompletionDecorator as lcd } from "@libs/log-completion-decorator";
+import { getLogCompletionDecorator } from "@libs/log-completion-decorator";
+import { logFn } from "@libs/logging";
 import chance from "chance";
 import { config as dotenvConfig } from "dotenv";
 import { ulid } from "ulid";
@@ -15,6 +19,8 @@ import {
 } from "../src/functions/add-club/handler";
 import requiredEnvVar from "../src/libs/requiredEnvVar";
 import { cachedSecretsManagerClient } from "./secretsManager";
+const log = logFn(__filename);
+const lcd = getLogCompletionDecorator(__filename, "debug");
 
 dotenvConfig();
 
@@ -63,11 +69,11 @@ async function createAutomatedTestUsers(): Promise<void> {
       lcd(
         cognitoCreateUser(emailAdminSuper, "SUPPRESS"),
         `Created ${emailAdminSuper} in cognito`,
-      ),
+      ) as Promise<AdminCreateUserCommandOutput>,
       lcd(
         cognitoCreateUser(emailAdminClub, "SUPPRESS"),
         `Created ${emailAdminClub} in cognito`,
-      ),
+      ) as Promise<AdminCreateUserCommandOutput>,
     ]);
   const userIdAdminSuper = createUserResultAdminSuper.User.Username;
   const userIdAdminClub = createUserResultAdminClub.User.Username;
@@ -87,5 +93,5 @@ async function createAutomatedTestUsers(): Promise<void> {
 }
 
 createAutomatedTestUsers()
-  .then(() => console.log("done"))
-  .catch((e) => console.error("problem", e));
+  .then(() => log("info", "done"))
+  .catch((e) => log("error", "problem", e));

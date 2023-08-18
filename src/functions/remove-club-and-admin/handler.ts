@@ -3,6 +3,7 @@ import { DeleteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { fromEnv } from "@aws-sdk/credential-providers";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
+import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
@@ -11,7 +12,7 @@ import {
   MutationRemoveClubAndAdminArgs,
   RemoveClubAndAdminResponse,
 } from "../../../appsync";
-
+const log = logFn(__filename);
 let dynamoDbClient: DynamoDBClient;
 
 function cachedDdbClient() {
@@ -60,7 +61,7 @@ export const main: AppSyncResolverHandler<
       event.arguments.input.userId,
     ),
   );
-  console.log("Ddb user deleted successfully.");
+  log("debug", "Ddb user deleted successfully.");
 
   promises.push(deleteItemFromTable(requiredEnvVar("CLUBS_TABLE"), clubId));
   await Promise.all(promises);
