@@ -8,7 +8,7 @@ import {
 import readRelativeUtf8FileSync from "./readRelativeUtf8FileSync";
 
 const config = JSON.parse(
-  readRelativeUtf8FileSync("loggingConfig.json"),
+  readRelativeUtf8FileSync(__dirname, "loggingConfig.json"),
 ) as LoggingConfig;
 
 const getCloudPrintFn = (message: string, ...addlParams: unknown[]) => {

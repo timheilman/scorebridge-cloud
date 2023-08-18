@@ -1,6 +1,7 @@
 import readRelativeUtf8FileSync from "@libs/readRelativeUtf8FileSync";
 import Handlebars from "handlebars";
 const templateContext = readRelativeUtf8FileSync(
+  __dirname,
   "serverless.cognito.inviteMessageTemplate.html.cognito.hbs",
 );
 const template = Handlebars.compile(templateContext);
