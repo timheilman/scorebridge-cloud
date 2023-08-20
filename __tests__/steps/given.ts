@@ -49,7 +49,7 @@ export const aLoggedInUser = async (email: string, password: string) => {
     }),
   );
 
-  log("debug", `[${email}] - signed in`);
+  log(".aLoggedInUser.signInSuccess", "debug", { email });
 
   return {
     idToken: auth.AuthenticationResult.IdToken,

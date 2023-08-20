@@ -64,11 +64,7 @@ function graphQlApiUrl(slsInfoLines: string[]) {
 
 exec("npx sls info --verbose", (error, stdout /* , stderr */) => {
   if (error) {
-    log(
-      "error",
-      `build error: unable to pull stack outputs from serverless framework`,
-    );
-    log("error", `build error: ${error.message}`);
+    log(".npxSlsInfoVerbose.error", "error", error);
   }
   // stderr expected and ignored
   const slsInfoLines = stdout.split("\n");

@@ -1,5 +1,5 @@
 // We want to be able to log from anyfile like this:
-// log("DEBUG", "message")
+// log(".descriptive.suffix", "DEBUG", "message")
 
 // but to help locate which file is doing the logging, we want per-file:
 // const log = logFn(__filename)
@@ -63,7 +63,7 @@ export function genericLogger(loggingConfig: LoggingConfig) {
       "",
     );
     const matchingConfigLevel =
-      matchingConfigKey === ""
+      matchingConfigKey === "" && !loggingConfig[matchingConfigKey]
         ? "extinction"
         : loggingConfig[matchingConfigKey];
     if (levelToInt[logLevel] >= levelToInt[matchingConfigLevel]) {
@@ -79,17 +79,18 @@ export function genericLogger(loggingConfig: LoggingConfig) {
 
 export function withConfigProvideLogFn(
   config: LoggingConfig,
-  printFnProvider: (
-    message: string,
-    ...addlParams: unknown[]
-  ) => (PrintFnParams) => void,
+  printFnProvider: (...addlParams: unknown[]) => (PrintFnParams) => void,
 ) {
   return (key: string) => {
-    return (logLevel: LogLevel, message: string, ...addlParams: unknown[]) => {
+    return (
+      keySuffix: string,
+      logLevel: LogLevel,
+      ...addlParams: unknown[]
+    ) => {
       genericLogger(config)(
-        key,
+        key + keySuffix,
         logLevel,
-        printFnProvider(message, addlParams),
+        printFnProvider(addlParams),
       );
     };
   };

@@ -70,7 +70,7 @@ const getNullableUser = async (email: string) => {
     if (problem.__type === "UserNotFoundException") {
       return null;
     }
-    log("error", "unexpected problem!", problem);
+    log(".getNullableUser", "error", problem);
     throw problem;
   }
 };
@@ -128,7 +128,7 @@ export async function cognitoAddUserToGroup(userId: string, groupName: string) {
   };
   const command = new AdminAddUserToGroupCommand(params);
   await cachedCognitoIdpClient().send(command);
-  log("debug", "User added to the adminClub group successfully");
+  log(".cognitoAddUserToGroup.success", "debug");
 }
 
 export async function cognitoUpdateUserTenantId(

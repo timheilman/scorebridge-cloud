@@ -93,5 +93,5 @@ async function createAutomatedTestUsers(): Promise<void> {
 }
 
 createAutomatedTestUsers()
-  .then(() => log("info", "done"))
-  .catch((e) => log("error", "problem", e));
+  .then(() => log("createAutomatedTestUsers.success", "info"))
+  .catch((e) => log("createAutomatedTestUsers", "error", e));

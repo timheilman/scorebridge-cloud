@@ -104,10 +104,10 @@ export const anUnknownUserAddsAClubViaApiKey = async (
   );
   const output = data.addClub as AddClubResponse;
 
-  log(
-    "debug",
-    `added club. newUserId: ${output.userId}; newClubId: ${output.clubId}`,
-  );
+  log(".anUnknownUserAddsAClubViaApiKey.end", "debug", {
+    userId: output.userId,
+    clubId: output.clubId,
+  });
   return output;
 };
 
@@ -136,7 +136,7 @@ export const aUserCallsRemoveClubAndAdmin = async (
   );
   const output = data.removeClubAndAdmin as RemoveClubAndAdminResponse;
 
-  log("debug", `removed club and admin. status: ${output.status}`);
+  log("aUserCallsRemoveClubAndAdmin", "debug", { output });
   return output;
 };
 
@@ -174,7 +174,7 @@ export const aUserCallsGetMyProfile = async (user: {
   );
   const profile = data.getMyProfile;
 
-  log("debug", `[${user.username}] - fetched profile`);
+  log(".aUserCallsGetMyProfile.end", "debug", { user });
 
   return profile;
 };
@@ -217,7 +217,7 @@ export const aUserCallsEditMyProfile = async (
   );
   const profile = data.editMyProfile;
 
-  log("debug", `[${user.username}] - fetched profile`);
+  log(".aUserCallsEditMyProfile.end", "debug", { user });
 
   return profile;
 };

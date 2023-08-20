@@ -61,7 +61,7 @@ export const main: AppSyncResolverHandler<
       event.arguments.input.userId,
     ),
   );
-  log("debug", "Ddb user deleted successfully.");
+  log(".main.ddbUserDeletion.success", "debug");
 
   promises.push(deleteItemFromTable(requiredEnvVar("CLUBS_TABLE"), clubId));
   await Promise.all(promises);

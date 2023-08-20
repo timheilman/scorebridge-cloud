@@ -67,5 +67,5 @@ async function deleteEtherealAccounts() {
 }
 
 deleteEtherealAccounts()
-  .then(() => log("info", "done"))
-  .catch((e) => log("error", "problem", e));
+  .then(() => log(".deleteEtherealAccounts.success", "info"))
+  .catch((e) => log(".deleteEtherealAccounts.error", "error", e));

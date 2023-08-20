@@ -39,7 +39,7 @@ const graphQl = async (
   }
 
   try {
-    log("debug", "Posting raw-dogged GQL");
+    log(".gql.axiosPost.start", "debug");
     const resp: AxiosResponse<
       Record<"data" | "errors", Record<string, unknown>>
     > = await axios.post(
@@ -50,13 +50,13 @@ const graphQl = async (
       },
       { headers },
     );
-    log("debug", "Done posting raw-dogged GQL");
+    log(".gql.axiosPost.endSuccess", "debug");
 
     const { data, errors } = resp.data;
     throwOnErrors({ query, variables, errors });
     return data;
   } catch (err) {
-    log("debug", "Did I throwOnErrors?", [err]);
+    log(".gql.axiosPost.endError", "error", err);
     throw err;
   }
 };

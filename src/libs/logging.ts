@@ -12,7 +12,7 @@ const configString = process.env["SB_LOGGING_CONFIG"]
 const config = JSON.parse(configString) as LoggingConfig;
 console.log(`Using logging config:\n${configString}`);
 
-const getCloudPrintFn = (message: string, ...addlParams: unknown[]) => {
+const getCloudPrintFn = (...addlParams: unknown[]) => {
   return ({
     matchingConfigKey,
     matchingConfigLevel,
@@ -23,7 +23,7 @@ const getCloudPrintFn = (message: string, ...addlParams: unknown[]) => {
     console.log(
       `${new Date().toJSON()} ${requestedLogLevel.toLocaleUpperCase()} ` +
         `(${matchingConfigKey}@${matchingConfigLevel.toLocaleUpperCase()})` +
-        `${remainingKey} ${message}`,
+        `${remainingKey}`,
       ...addlParams,
     );
   };
@@ -31,7 +31,7 @@ const getCloudPrintFn = (message: string, ...addlParams: unknown[]) => {
 
 export function logFn(
   filename: string,
-): (logLevel: LogLevel, message: string, ...addlParams: unknown[]) => void {
+): (keySuffix: string, logLevel: LogLevel, ...addlParams: unknown[]) => void {
   let key = filename.slice(rootDirName.length);
   if (key.startsWith("/")) {
     key = key.slice(1);

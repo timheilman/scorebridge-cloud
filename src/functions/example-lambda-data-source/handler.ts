@@ -16,10 +16,6 @@ export const main: AppSyncResolverHandler<
 ): Promise<ExampleLambdaDataSourceOutput> => {
   const ct = event.arguments.input.contentType;
   const ext = event.arguments.input.extension;
-  log(
-    "debug",
-    `Hello World!  I found strongly-typed content-type ${ct} and extension ${ext}`,
-  );
-  log("debug", JSON.stringify(event, null, 2));
+  log(".main", "debug", { ct, ext, event });
   return { exampleOutputField: JSON.stringify(event, null, 2) };
 };

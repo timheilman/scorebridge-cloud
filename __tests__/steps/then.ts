@@ -45,18 +45,15 @@ async function getUserDdb(id: string) {
       }),
     }),
   );
-  log(
-    "debug",
-    `getUserDdb returning Item from ${JSON.stringify(response, null, 2)}`,
-  );
+  log(".getUserDdb.success", "debug", { response });
   return response.Item;
 }
 
 export const userExistsInUsersTable = async (id: string) => {
-  log(
-    "debug",
-    `looking for user [${id}] in table [${process.env.USERS_TABLE}]`,
-  );
+  log(".userExistsInUsersTable.start", "debug", {
+    id,
+    usersTable: process.env.USERS_TABLE,
+  });
   const item = await getUserDdb(id);
 
   if (item) {
@@ -85,10 +82,10 @@ async function getClubDdb(id: string) {
 }
 
 export const clubExistsInClubsTable = async (id: string) => {
-  log(
-    "debug",
-    `looking for club [${id}] in table [${process.env.CLUBS_TABLE}]`,
-  );
+  log(".clubExistsInClubsTable.start", "debug", {
+    id,
+    clubsTable: process.env.CLUBS_TABLE,
+  });
   const item = await getClubDdb(id);
 
   if (item) {
