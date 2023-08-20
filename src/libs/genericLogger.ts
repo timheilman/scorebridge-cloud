@@ -2,7 +2,7 @@
 // log("DEBUG", "message")
 
 // but to help locate which file is doing the logging, we want per-file:
-// const log = logFn(`${__dirname}/filename`)
+// const log = logFn(__filename)
 // to then use in the above message
 
 // But we want to configure only once:

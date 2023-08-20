@@ -4,7 +4,7 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { CreateSecretCommand } from "@aws-sdk/client-secrets-manager";
 import { cachedCognitoIdpClient } from "@libs/cognito";
-import { getLogCompletionDecorator } from "@libs/log-completion-decorator";
+import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import chance from "chance";
 import { config as dotenvConfig } from "dotenv";

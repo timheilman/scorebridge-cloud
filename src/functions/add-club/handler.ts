@@ -17,7 +17,7 @@ import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
 import { UserAlreadyExistsError } from "@libs/errors/user-already-exists-error";
 import { middyWithErrorHandling } from "@libs/lambda";
-import { getLogCompletionDecorator } from "@libs/log-completion-decorator";
+import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { AppSyncResolverEvent } from "aws-lambda";
