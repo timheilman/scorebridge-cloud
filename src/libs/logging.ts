@@ -5,30 +5,30 @@ import {
   PrintFnParams,
   withConfigProvideLogFn,
 } from "./genericLogger";
-import readRelativeUtf8FileSync from "./readRelativeUtf8FileSync";
 
-const config = JSON.parse(
-  readRelativeUtf8FileSync(__dirname, "loggingConfig.json"),
-) as LoggingConfig;
+const configString = process.env["SB_LOGGING_CONFIG"]
+  ? process.env["SB_LOGGING_CONFIG"]
+  : '{"": "info"}';
+const config = JSON.parse(configString) as LoggingConfig;
+console.log(`Using logging config:\n${configString}`);
 
 const getCloudPrintFn = (message: string, ...addlParams: unknown[]) => {
   return ({
-    matchingConfigLine,
+    matchingConfigKey,
+    matchingConfigLevel,
     requestedLogLevel,
     requestedKey,
   }: PrintFnParams) => {
-    const remainingKey = requestedKey.slice(
-      matchingConfigLine.keyPrefix.length,
-    );
+    const remainingKey = requestedKey.slice(matchingConfigKey.length);
     console.log(
-      `${new Date().toJSON()} ${requestedLogLevel.toLocaleUpperCase()} (${
-        matchingConfigLine.keyPrefix
-      }@${matchingConfigLine.logLevel.toLocaleUpperCase()})${remainingKey} ${message}`,
+      `${new Date().toJSON()} ${requestedLogLevel.toLocaleUpperCase()} ` +
+        `(${matchingConfigKey}@${matchingConfigLevel.toLocaleUpperCase()})` +
+        `${remainingKey} ${message}`,
       ...addlParams,
     );
   };
 };
-console.log(`Found filesystem logging config:\n${JSON.stringify(config)}`);
+
 export function logFn(
   filename: string,
 ): (logLevel: LogLevel, message: string, ...addlParams: unknown[]) => void {

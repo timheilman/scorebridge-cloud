@@ -1,6 +1,4 @@
-[
-  {
-    "keyPrefix": "__tests__",
-    "logLevel": "debug"
-  }
-]
+{
+  "__tests__":  "debug",
+  "": "info"
+}

@@ -39,7 +39,7 @@ const graphQl = async (
   }
 
   try {
-    log("info", "Posting raw-dogged GQL");
+    log("debug", "Posting raw-dogged GQL");
     const resp: AxiosResponse<
       Record<"data" | "errors", Record<string, unknown>>
     > = await axios.post(

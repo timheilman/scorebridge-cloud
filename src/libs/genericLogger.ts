@@ -31,16 +31,16 @@ const levelToInt = {
   warn: 400,
   error: 500,
   fatal: 600,
+  extinction: 700,
 };
 export type LogLevel = keyof typeof levelToInt;
-type LoggingConfigLine = {
-  keyPrefix: string;
-  logLevel: LogLevel;
+export type LoggingConfig = {
+  [keyPrefix: string]: LogLevel;
 };
-export type LoggingConfig = LoggingConfigLine[];
 
 export interface PrintFnParams {
-  matchingConfigLine: LoggingConfigLine;
+  matchingConfigKey: string;
+  matchingConfigLevel: LogLevel;
   requestedLogLevel: LogLevel;
   requestedKey: string;
 }
@@ -51,20 +51,25 @@ export function genericLogger(loggingConfig: LoggingConfig) {
     logLevel: LogLevel,
     printFn: (p: PrintFnParams) => void,
   ) => {
-    const matchingConfigLine = loggingConfig.reduce<LoggingConfigLine>(
-      (acc, configLine) => {
-        if (key.startsWith(configLine.keyPrefix)) {
-          if (acc.keyPrefix.length <= configLine.keyPrefix.length) {
-            return configLine;
+    const matchingConfigKey = Object.keys(loggingConfig).reduce<string>(
+      (acc, configKey) => {
+        if (key.startsWith(configKey)) {
+          if (acc.length <= configKey.length) {
+            return configKey;
           }
         }
         return acc;
       },
-      { keyPrefix: "", logLevel: "fatal" },
+      "",
     );
-    if (levelToInt[logLevel] >= levelToInt[matchingConfigLine.logLevel]) {
+    const matchingConfigLevel =
+      matchingConfigKey === ""
+        ? "extinction"
+        : loggingConfig[matchingConfigKey];
+    if (levelToInt[logLevel] >= levelToInt[matchingConfigLevel]) {
       printFn({
-        matchingConfigLine,
+        matchingConfigKey,
+        matchingConfigLevel,
         requestedLogLevel: logLevel,
         requestedKey: key,
       });

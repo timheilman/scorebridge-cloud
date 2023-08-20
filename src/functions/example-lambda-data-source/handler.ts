@@ -1,6 +1,7 @@
-import { logFn } from "@libs/logging";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
+
+import { logFn } from "../../libs/logging";
 const log = logFn(__filename);
 import {
   ExampleLambdaDataSourceOutput,
