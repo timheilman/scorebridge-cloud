@@ -8,7 +8,7 @@ import {
 
 const configString = process.env["SB_LOGGING_CONFIG"]
   ? process.env["SB_LOGGING_CONFIG"]
-  : '{"": "info"}';
+  : '{"": "debug"}';
 const config = JSON.parse(configString) as LoggingConfig;
 console.log(`Using logging config:\n${configString}`);
 

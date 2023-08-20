@@ -90,7 +90,7 @@ export function withConfigProvideLogFn(
       genericLogger(config)(
         key + keySuffix,
         logLevel,
-        printFnProvider(addlParams),
+        printFnProvider(...addlParams),
       );
     };
   };
