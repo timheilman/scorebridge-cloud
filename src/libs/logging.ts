@@ -2,27 +2,25 @@ import { Configuration, configure, getLogger, isConfigured } from "log4js";
 
 import rootDirName from "../../rootDirName";
 
+const layoutType = process.env["NODE_ENV"] === "test" ? "colored" : "basic";
+
 const configString = process.env["SB_LOGGING_CONFIG"]
   ? process.env["SB_LOGGING_CONFIG"]
   : `{
   "appenders": {
-    "out": {
+    "stdout": {
       "type": "stdout",
-      "layout": { "type": "colored" }
+      "layout": { "type": "${layoutType}" }
     },
-    "err": {
-      "type": "stderr",
-      "layout": { "type": "basic" }
-    }
   },
   "categories": {
     "default": {
-      "appenders": ["out"],
+      "appenders": ["stdout"],
       "level": "debug"
     },
     "__test__": {
-      "appenders": ["out"],
-      "level": "debug"
+      "appenders": ["stdout"],
+      "level": "trace"
     }
   }
 }`;
