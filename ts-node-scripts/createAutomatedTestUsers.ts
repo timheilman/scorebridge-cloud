@@ -70,11 +70,13 @@ async function createAutomatedTestUsers(): Promise<void> {
     await Promise.all([
       lcd(
         cognitoCreateUser(emailAdminSuper, "SUPPRESS"),
-        `Created ${emailAdminSuper} in cognito`,
+        `cognitoCreateUser.success`,
+        { emailAdminSuper },
       ) as Promise<AdminCreateUserCommandOutput>,
       lcd(
         cognitoCreateUser(emailAdminClub, "SUPPRESS"),
-        `Created ${emailAdminClub} in cognito`,
+        `cognitoCreateUser.success`,
+        { emailAdminClub },
       ) as Promise<AdminCreateUserCommandOutput>,
     ]);
   const userIdAdminSuper = createUserResultAdminSuper.User.Username;

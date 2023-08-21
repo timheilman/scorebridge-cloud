@@ -29,6 +29,7 @@ import {
   AddClubResponse,
   MutationAddClubArgs,
 } from "../../../appsync";
+
 const catPrefix = "src.functions.add-club.handler.";
 const log = logFn(catPrefix);
 const lcd = getLogCompletionDecorator(catPrefix, "debug");
@@ -151,20 +152,21 @@ async function readdClub(input: AddClubInput, user: AdminGetUserCommandOutput) {
   const clubId = user.UserAttributes.find(
     (at) => at.Name === "custom:tenantId",
   ).Value;
-  const clubUpdatePromise = updateClubName(clubId, input.newClubName);
-  const addlPromises: Promise<AdminCreateUserCommandOutput>[] =
-    input.suppressInvitationEmail
-      ? []
-      : [
-          lcd(
-            reinviteUser(input.newAdminEmail),
-            "Reinvited user email successfully",
-          ) as Promise<AdminCreateUserCommandOutput>,
-        ];
-  await Promise.all([
-    lcd(clubUpdatePromise, "Updated club to new club name successfully"),
-    ...addlPromises,
-  ]);
+  const promises: Promise<unknown>[] = [];
+  promises.push(
+    lcd(updateClubName(clubId, input.newClubName), "updateClubName.success", {
+      clubId,
+      newClubName: input.newClubName,
+    }),
+  );
+  if (!input.suppressInvitationEmail) {
+    promises.push(
+      lcd(reinviteUser(input.newAdminEmail), "reinviteUser.success", {
+        newAdminEmail: input.newAdminEmail,
+      }) as Promise<AdminCreateUserCommandOutput>,
+    );
+  }
+  await Promise.all(promises);
   return { userId: user.Username, clubId: clubId };
 }
 
@@ -187,32 +189,31 @@ async function handleNoSuchCognitoUser({
   newClubName,
 }: AddClubInput) {
   const clubId = ulid();
-  // start user creation first since its userId generation is canonical and needed later
-  const cogCreateUserPromise = cognitoCreateUser(
-    newAdminEmail,
-    suppressInvitationEmail ? "SUPPRESS" : undefined,
-  );
   // start club creation in parallel since it does not need userId
   const ddbCreateClubPromise = ddbCreateClub(clubId, newClubName);
 
-  // everything else needs teh userId, so await its creation
+  // everything else needs the userId, so await its creation
   const createdUser = (await lcd(
-    cogCreateUserPromise,
-    "Cognito user created successfully",
+    cognitoCreateUser(
+      newAdminEmail,
+      suppressInvitationEmail ? "SUPPRESS" : undefined,
+    ),
+    "cognitoCreateUser.success",
+    { newAdminEmail, suppressInvitationEmail },
   )) as AdminCreateUserCommandOutput; // I do not understand why this cast is needed
   const userId = createdUser.User.Username;
   // the ddbClub creation and remaining userId-dependent promises can be awaited in parallel
   await Promise.all([
     lcd(
       cognitoUpdateUserTenantId(userId, clubId),
-      "Cognito user tenantId set successfully",
+      "cognitoUpdateUserTenantId.success",
     ),
     lcd(
       cognitoAddUserToGroup(userId, "adminClub"),
-      "Cognito user added to clubAdmin group successfully",
+      "cognitoAddUserToGroup.success",
     ),
-    lcd(ddbCreateUser(userId, newAdminEmail), "Ddb user created successfully"),
-    lcd(ddbCreateClubPromise, "Ddb club created successfully"),
+    lcd(ddbCreateUser(userId, newAdminEmail), "ddbCreateUser.success"),
+    lcd(ddbCreateClubPromise, "ddbCreateClubPromise.success"),
   ]);
 
   return { userId: userId, clubId: clubId };
@@ -226,7 +227,8 @@ const almostMain: AppSyncResolverHandler<
 ): Promise<AddClubResponse> => {
   const user = (await lcd(
     getNullableUser(event.arguments.input.newAdminEmail),
-    "Discovered cognito user existence successfully",
+    "getNullableUser.success",
+    { newAdminEmail: event.arguments.input.newAdminEmail },
   )) as AdminGetUserCommandOutput; // again I do not understand why this is needed
   if (user) {
     return await handleFoundCognitoUser(user, event.arguments.input);

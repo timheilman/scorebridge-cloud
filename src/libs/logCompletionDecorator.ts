@@ -4,8 +4,14 @@ export function getLogCompletionDecorator<T>(
   catPrefix: string,
   logLevel: string,
 ) {
-  return (promise: Promise<T>, catSuffix: string) =>
-    logCompletionDecorator<T>(promise, catSuffix, catPrefix, logLevel);
+  return (promise: Promise<T>, catSuffix: string, ...addlArgs: unknown[]) =>
+    logCompletionDecorator<T>(
+      promise,
+      catSuffix,
+      catPrefix,
+      logLevel,
+      addlArgs,
+    );
 }
 
 async function logCompletionDecorator<T>(
@@ -13,8 +19,9 @@ async function logCompletionDecorator<T>(
   catSuffix: string,
   catPrefix: string,
   logLevel: string,
+  ...addlArgs: unknown[]
 ) {
   const r = await promise;
-  logFn(catPrefix)(catSuffix, logLevel);
+  logFn(catPrefix)(catSuffix, logLevel, addlArgs);
   return r;
 }
