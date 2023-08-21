@@ -10,7 +10,7 @@ export function getLogCompletionDecorator<T>(
       catSuffix,
       catPrefix,
       logLevel,
-      addlArgs,
+      ...addlArgs,
     );
 }
 
@@ -22,6 +22,6 @@ async function logCompletionDecorator<T>(
   ...addlArgs: unknown[]
 ) {
   const r = await promise;
-  logFn(catPrefix)(catSuffix, logLevel, addlArgs);
+  logFn(catPrefix)(catSuffix, logLevel, ...addlArgs);
   return r;
 }
