@@ -1,4 +1,4 @@
-import { Configuration, configure, getLogger } from "log4js";
+import { Configuration, configure, getLogger, isConfigured } from "log4js";
 
 import rootDirName from "../../rootDirName";
 
@@ -28,15 +28,13 @@ const configString = process.env["SB_LOGGING_CONFIG"]
 }`;
 const config = JSON.parse(configString) as Configuration;
 
-// if (!log4js.isConfigured()) {
-console.log(`Using logging config:\n${configString}`);
-configure(config);
-getLogger().info("Successfully configured log4js");
-// } else {
-//   log4js
-//     .getLogger()
-//     .warn(`log4js was already configured; skipping configuration`);
-// }
+if (!isConfigured()) {
+  console.log(`Using logging config:\n${configString}`);
+  configure(config);
+  getLogger().info("Successfully configured log4js");
+} else {
+  getLogger().warn(`log4js was already configured; skipping configuration`);
+}
 
 // want to leave files alone, so they can say:
 // import { logFn } from "logging";
