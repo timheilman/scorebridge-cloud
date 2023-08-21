@@ -1,22 +1,20 @@
-import { LogLevel } from "@libs/genericLogger";
-
 import { logFn } from "./logging";
 
 export function getLogCompletionDecorator<T>(
   filename: string,
-  logLevel: LogLevel,
+  logLevel: string,
 ) {
-  return (promise: Promise<T>, message: string) =>
-    logCompletionDecorator<T>(promise, message, filename, logLevel);
+  return (promise: Promise<T>, catSuffix: string) =>
+    logCompletionDecorator<T>(promise, catSuffix, filename, logLevel);
 }
 
 async function logCompletionDecorator<T>(
   promise: Promise<T>,
-  message: string,
+  catSuffix: string,
   filename: string,
-  logLevel: LogLevel,
+  logLevel: string,
 ) {
   const r = await promise;
-  logFn(filename)(logLevel, message);
+  logFn(filename)(catSuffix, logLevel);
   return r;
 }

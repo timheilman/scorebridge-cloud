@@ -1,40 +1,60 @@
+import log4js, { Configuration } from "log4js";
+
 import rootDirName from "../../rootDirName";
-import {
-  LoggingConfig,
-  LogLevel,
-  PrintFnParams,
-  withConfigProvideLogFn,
-} from "./genericLogger";
 
 const configString = process.env["SB_LOGGING_CONFIG"]
   ? process.env["SB_LOGGING_CONFIG"]
-  : '{"": "debug"}';
-const config = JSON.parse(configString) as LoggingConfig;
-console.log(`Using logging config:\n${configString}`);
+  : `{
+  "appenders": {
+    "out": {
+      "type": "stdout",
+      "layout": { "type": "colored" }
+    },
+    "err": {
+      "type": "stderr",
+      "layout": { "type": "basic" }
+    }
+  },
+  "categories": {
+    "default": {
+      "appenders": ["out"],
+      "level": "debug"
+    },
+    "__test__": {
+      "appenders": ["out"],
+      "level": "debug"
+    }
+  }
+}`;
+const config = JSON.parse(configString) as Configuration;
 
-const getCloudPrintFn = (...addlParams: unknown[]) => {
-  return ({
-    matchingConfigKey,
-    matchingConfigLevel,
-    requestedLogLevel,
-    requestedKey,
-  }: PrintFnParams) => {
-    const remainingKey = requestedKey.slice(matchingConfigKey.length);
-    console.log(
-      `${new Date().toJSON()} ${requestedLogLevel.toLocaleUpperCase()} ` +
-        `(${matchingConfigKey}@${matchingConfigLevel.toLocaleUpperCase()})` +
-        `${remainingKey}`,
-      ...addlParams,
-    );
-  };
-};
+if (!log4js.isConfigured()) {
+  console.log(`Using logging config:\n${configString}`);
+  log4js.configure(config);
+  log4js.getLogger().info("Successfully configured log4js");
+} else {
+  log4js
+    .getLogger()
+    .warn(`log4js was already configured; skipping configuration`);
+}
+
+// want to leave files alone, so they can say:
+// import { logFn } from "logging";
+// const log = logFn(__filename);
+// log(".main", "debug", { stuff: "here" })
+
+// translates to:
+// log4js.getLogger(filename + ".main").debug("", { stuff: "here" })
+// or maybe the empty-string is not necessary
 
 export function logFn(
   filename: string,
-): (keySuffix: string, logLevel: LogLevel, ...addlParams: unknown[]) => void {
-  let key = filename.slice(rootDirName.length);
-  if (key.startsWith("/")) {
-    key = key.slice(1);
+): (catSuffix: string, logLevel: string, ...addlParams: unknown[]) => void {
+  let catPrefix = filename.slice(rootDirName.length);
+  if (catPrefix.startsWith("/")) {
+    catPrefix = catPrefix.slice(1);
   }
-  return withConfigProvideLogFn(config, getCloudPrintFn)(key);
+  return (catSuffix: string, logLevel: string, ...addlParams: unknown[]) => {
+    log4js.getLogger(catPrefix + catSuffix).log(logLevel, ...addlParams);
+  };
 }
