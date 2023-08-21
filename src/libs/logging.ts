@@ -7,18 +7,18 @@ const configString = process.env["SB_LOGGING_CONFIG"]
   : JSON.stringify(
       {
         appenders: {
-          stdout: {
-            type: "stdout",
+          console: {
+            type: "console",
             layout: { type: layoutType },
           },
         },
         categories: {
           default: {
-            appenders: ["stdout"],
+            appenders: ["console"],
             level: "debug",
           },
           __test__: {
-            appenders: ["stdout"],
+            appenders: ["console"],
             level: "trace",
           },
         },
