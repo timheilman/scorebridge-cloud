@@ -28,12 +28,15 @@ const configString = process.env["SB_LOGGING_CONFIG"]
     );
 const config = JSON.parse(configString) as Configuration;
 
+const catPrefix = "src.libs.logging.";
 if (!isConfigured()) {
   console.log(`Using logging config:\n${configString}`);
   configure(config);
-  getLogger().info("Successfully configured log4js");
+  logFn(catPrefix)("notIsConfigured.configure.success", "info");
 } else {
-  getLogger().warn(`log4js was already configured; skipping configuration`);
+  logFn(catPrefix)("isConfigured.skipWarning", "warn", {
+    message: `log4js was already configured; skipping configuration`,
+  });
 }
 
 export function logFn(
