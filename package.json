@@ -30,8 +30,7 @@
   "dependencies": {
     "@middy/core": "^3.4.0",
     "@middy/http-json-body-parser": "^3.4.0",
-    "chance": "^1.1.11",
-    "log4js": "^6.9.1"
+    "chance": "^1.1.11"
   },
   "devDependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.363.0",
@@ -61,6 +60,7 @@
     "handlebars": "^4.7.8",
     "jest": "^29.5.0",
     "json-schema-to-ts": "^1.5.0",
+    "log4js": "^6.9.1",
     "prettier": "^3.0.0",
     "serverless": "^3.0.0",
     "serverless-appsync-plugin": "^2.2.1",
