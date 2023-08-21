@@ -1,11 +1,11 @@
 import {
-  AdminGetUserCommandOutput,
   AdminSetUserPasswordCommand,
   AdminSetUserPasswordCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
 
 import { cachedCognitoIdpClient } from "../../../src/libs/cognito";
 import requiredEnvVar from "../../../src/libs/requiredEnvVar";
+import { cognitoUserAttributeValue } from "../../lib/cognito";
 import { aLoggedInUser, aRandomClubName, aRandomUser } from "../../steps/given";
 import {
   clubDoesNotExistInClubsTable,
@@ -17,15 +17,9 @@ import {
 } from "../../steps/then";
 import {
   anUnknownUserAddsAClubViaApiKey,
+  aUserCallsAddClub,
   aUserCallsRemoveClubAndAdmin,
 } from "../../steps/when";
-
-function cognitoUserAttributeValue(
-  cognitoUser: AdminGetUserCommandOutput,
-  attributeKey: string,
-) {
-  return cognitoUser.UserAttributes.find((a) => a.Name === attributeKey).Value;
-}
 
 const timestampFormat =
   /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g;
@@ -77,6 +71,17 @@ describe("When an unknown user adds a club via API key", () => {
 
     const cognitoUserPasswordChanged = await userExistsInCognito(userId);
     expect(cognitoUserPasswordChanged.UserStatus).toEqual("CONFIRMED");
+  });
+  it("but cannot call addClub", async () => {
+    const { accessToken } = await aLoggedInUser(email, password);
+    try {
+      await aUserCallsAddClub(email, clubName, accessToken);
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      expect(e.message).toContain(
+        "Not Authorized to access addClub on type Mutation",
+      );
+    }
   });
   it("Then removing the club (and user) via normal login succeeds in cognito and ddb", async () => {
     const { accessToken } = await aLoggedInUser(email, password);

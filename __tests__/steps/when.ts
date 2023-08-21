@@ -73,6 +73,12 @@ export const weInvokeExampleLambdaDataSource = async (
   }
   return result;
 };
+const addClubGql = `mutation addClub($input: AddClubInput!) {
+    addClub(input: $input) {
+      clubId
+      userId
+    }
+  }`;
 
 export const anUnknownUserAddsAClubViaApiKey = async (
   newAdminEmail: string,
@@ -81,12 +87,6 @@ export const anUnknownUserAddsAClubViaApiKey = async (
   clubId: string;
   userId: string;
 }> => {
-  const addClub = `mutation addClub($input: AddClubInput!) {
-    addClub(input: $input) {
-      clubId
-      userId
-    }
-  }`;
   const variables = {
     input: {
       newAdminEmail,
@@ -97,10 +97,10 @@ export const anUnknownUserAddsAClubViaApiKey = async (
 
   const data = await GraphQL(
     requiredEnvVar("API_URL"),
-    addClub,
+    addClubGql,
     variables,
     null,
-    requiredEnvVar("ADD_CLUB_API_KEY"), // TODO: SCOR-66 use secrets manager instead
+    requiredEnvVar("ADD_CLUB_API_KEY"),
   );
   const output = data.addClub as AddClubResponse;
 
@@ -137,6 +137,31 @@ export const aUserCallsRemoveClubAndAdmin = async (
   const output = data.removeClubAndAdmin as RemoveClubAndAdminResponse;
 
   log("aUserCallsRemoveClubAndAdmin", "debug", { output });
+  return output;
+};
+
+export const aUserCallsAddClub = async (
+  newAdminEmail: string,
+  newClubName: string,
+  accessToken: string,
+): Promise<AddClubResponse> => {
+  const variables = {
+    input: {
+      newAdminEmail,
+      newClubName,
+      suppressInvitationEmail: true, // only for testing, due to email quota
+    },
+  };
+
+  const data = await GraphQL(
+    requiredEnvVar("API_URL"),
+    addClubGql,
+    variables,
+    accessToken,
+  );
+  const output = data.addClub as AddClubResponse;
+
+  log("aUserCallsAddClub", "debug", { output });
   return output;
 };
 
