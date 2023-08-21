@@ -12,7 +12,7 @@ import {
   MutationRemoveClubAndAdminArgs,
   RemoveClubAndAdminResponse,
 } from "../../../appsync";
-const log = logFn(__filename);
+const log = logFn("src.functions.remove-club-and-admin.handler.");
 let dynamoDbClient: DynamoDBClient;
 
 function cachedDdbClient() {
@@ -61,7 +61,7 @@ export const main: AppSyncResolverHandler<
       event.arguments.input.userId,
     ),
   );
-  log(".main.ddbUserDeletion.success", "debug");
+  log("main.ddbUserDeletion.success", "debug");
 
   promises.push(deleteItemFromTable(requiredEnvVar("CLUBS_TABLE"), clubId));
   await Promise.all(promises);

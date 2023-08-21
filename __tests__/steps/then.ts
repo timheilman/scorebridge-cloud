@@ -10,7 +10,7 @@ import { cachedCognitoIdpClient } from "../../src/libs/cognito";
 import { cachedDynamoDbClient } from "../../src/libs/ddb";
 import { logFn } from "../../src/libs/logging";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
-const log = logFn(__filename);
+const log = logFn("__tests__.steps.then.");
 dotenvConfig();
 
 const getUserCognito = async (
@@ -45,12 +45,12 @@ async function getUserDdb(id: string) {
       }),
     }),
   );
-  log(".getUserDdb.success", "debug", { response });
+  log("getUserDdb.success", "debug", { response });
   return response.Item;
 }
 
 export const userExistsInUsersTable = async (id: string) => {
-  log(".userExistsInUsersTable.start", "debug", {
+  log("userExistsInUsersTable.start", "debug", {
     id,
     usersTable: process.env.USERS_TABLE,
   });
@@ -82,7 +82,7 @@ async function getClubDdb(id: string) {
 }
 
 export const clubExistsInClubsTable = async (id: string) => {
-  log(".clubExistsInClubsTable.start", "debug", {
+  log("clubExistsInClubsTable.start", "debug", {
     id,
     clubsTable: process.env.CLUBS_TABLE,
   });

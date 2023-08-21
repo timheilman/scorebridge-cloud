@@ -11,7 +11,7 @@ import { logFn } from "@libs/logging";
 
 import { cachedCognitoIdpClient } from "../src/libs/cognito";
 import requiredEnvVar from "../src/libs/requiredEnvVar";
-const log = logFn(__filename);
+const log = logFn("ts-node-scripts.deleteEtherealAccounts.");
 
 async function cognitoListUsers(paginationToken?: string) {
   const input: ListUsersCommandInput = {
@@ -67,5 +67,5 @@ async function deleteEtherealAccounts() {
 }
 
 deleteEtherealAccounts()
-  .then(() => log(".deleteEtherealAccounts.success", "info"))
-  .catch((e) => log(".deleteEtherealAccounts.error", "error", e));
+  .then(() => log("deleteEtherealAccounts.success", "info"))
+  .catch((e) => log("deleteEtherealAccounts.error", "error", e));

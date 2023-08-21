@@ -1,7 +1,5 @@
 import { Configuration, configure, getLogger, isConfigured } from "log4js";
 
-import rootDirName from "../../rootDirName";
-
 const layoutType = process.env["NODE_ENV"] === "test" ? "colored" : "basic";
 
 const configString = process.env["SB_LOGGING_CONFIG"]
@@ -39,13 +37,8 @@ if (!isConfigured()) {
 }
 
 export function logFn(
-  filename: string,
+  catPrefix: string,
 ): (catSuffix: string, logLevel: string, ...addlParams: unknown[]) => void {
-  console.log("****** rootDirName in cloud", { rootDirName });
-  let catPrefix = filename.slice(rootDirName.length);
-  if (catPrefix.startsWith("/")) {
-    catPrefix = catPrefix.slice(1);
-  }
   return (catSuffix: string, logLevel: string, ...addlParams: unknown[]) => {
     getLogger(catPrefix + catSuffix).log(logLevel, ...addlParams);
   };

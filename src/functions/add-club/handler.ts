@@ -29,8 +29,9 @@ import {
   AddClubResponse,
   MutationAddClubArgs,
 } from "../../../appsync";
-const log = logFn(__filename);
-const lcd = getLogCompletionDecorator(__filename, "debug");
+const catPrefix = "src.functions.add-club.handler.";
+const log = logFn(catPrefix);
+const lcd = getLogCompletionDecorator(catPrefix, "debug");
 const getCognitoUser = async (email: string) => {
   const getUserCommand = new AdminGetUserCommand({
     UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
@@ -70,7 +71,7 @@ const getNullableUser = async (email: string) => {
     if (problem.__type === "UserNotFoundException") {
       return null;
     }
-    log(".getNullableUser", "error", problem);
+    log("getNullableUser", "error", problem);
     throw problem;
   }
 };
@@ -128,7 +129,7 @@ export async function cognitoAddUserToGroup(userId: string, groupName: string) {
   };
   const command = new AdminAddUserToGroupCommand(params);
   await cachedCognitoIdpClient().send(command);
-  log(".cognitoAddUserToGroup.success", "debug");
+  log("cognitoAddUserToGroup.success", "debug");
 }
 
 export async function cognitoUpdateUserTenantId(

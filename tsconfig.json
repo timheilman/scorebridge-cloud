@@ -16,7 +16,6 @@
     "__tests__/**/*.ts",
     "src/**/*.ts",
     "serverless.ts",
-    "rootDirName.ts",
     "serverless.*.ts",
     "ts-node-scripts/*.ts"
   ],

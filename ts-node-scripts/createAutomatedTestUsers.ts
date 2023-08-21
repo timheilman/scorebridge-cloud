@@ -19,8 +19,10 @@ import {
 } from "../src/functions/add-club/handler";
 import requiredEnvVar from "../src/libs/requiredEnvVar";
 import { cachedSecretsManagerClient } from "./secretsManager";
-const log = logFn(__filename);
-const lcd = getLogCompletionDecorator(__filename, "debug");
+
+const catPrefix = "ts-node-scripts.createAutomatedTestUsers.";
+const log = logFn(catPrefix);
+const lcd = getLogCompletionDecorator(catPrefix, "debug");
 
 dotenvConfig();
 

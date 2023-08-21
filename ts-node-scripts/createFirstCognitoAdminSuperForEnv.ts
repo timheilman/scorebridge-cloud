@@ -5,7 +5,7 @@ import {
   cognitoAddUserToGroup,
   cognitoCreateUser,
 } from "../src/functions/add-club/handler";
-const log = logFn(__filename);
+const log = logFn("ts-node-scripts.createFirstCognitoAdminSuperForEnv.");
 
 dotenvConfig();
 
@@ -22,11 +22,11 @@ const email = process.argv[2];
 
 // Check if both email and club slug are provided as command-line arguments
 if (!email) {
-  log(".emailNotPresent", "error", {
+  log("emailNotPresent", "error", {
     message: "Please provide the email as a command-line argument.",
   });
   process.exit(1);
 }
 createFirstCognitoAdminSuperForEnv(email)
-  .then(() => log(".createFirstCognitoAdminSuperForEnv.success", "info"))
-  .catch((e) => log(".createFirstCognitoAdminSuperForEnv.error", "error", e));
+  .then(() => log("createFirstCognitoAdminSuperForEnv.success", "info"))
+  .catch((e) => log("createFirstCognitoAdminSuperForEnv.error", "error", e));

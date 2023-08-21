@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 
 import { logFn } from "../src/libs/logging";
-const log = logFn(__filename);
+const log = logFn("ts-node-scripts.stackOutputsForDotenv.");
 function camelToScreamingSnake(str: string): string {
   return str.replace(/([a-z])([A-Z])/g, "$1_$2").toUpperCase();
 }
@@ -64,7 +64,7 @@ function graphQlApiUrl(slsInfoLines: string[]) {
 
 exec("npx sls info --verbose", (error, stdout /* , stderr */) => {
   if (error) {
-    log(".npxSlsInfoVerbose.error", "error", error);
+    log("npxSlsInfoVerbose.error", "error", error);
   }
   // stderr expected and ignored
   const slsInfoLines = stdout.split("\n");

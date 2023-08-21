@@ -5,7 +5,7 @@ import { config as dotenvConfig } from "dotenv";
 import { cachedCognitoIdpClient } from "../../src/libs/cognito";
 import { logFn } from "../../src/libs/logging";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
-const log = logFn(__filename);
+const log = logFn("__tests__.steps.given.");
 
 dotenvConfig();
 const lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
@@ -49,7 +49,7 @@ export const aLoggedInUser = async (email: string, password: string) => {
     }),
   );
 
-  log(".aLoggedInUser.signInSuccess", "debug", { email });
+  log("aLoggedInUser.signInSuccess", "debug", { email });
 
   return {
     idToken: auth.AuthenticationResult.IdToken,

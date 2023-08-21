@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 
 import { logFn } from "../../src/libs/logging";
 
-const log = logFn(__filename);
+const log = logFn("__tests__.lib.graphql.");
 
 const throwOnErrors = ({
   query,
@@ -39,7 +39,7 @@ const graphQl = async (
   }
 
   try {
-    log(".gql.axiosPost.start", "debug");
+    log("gql.axiosPost.start", "debug");
     const resp: AxiosResponse<
       Record<"data" | "errors", Record<string, unknown>>
     > = await axios.post(
@@ -50,13 +50,13 @@ const graphQl = async (
       },
       { headers },
     );
-    log(".gql.axiosPost.endSuccess", "debug");
+    log("gql.axiosPost.endSuccess", "debug");
 
     const { data, errors } = resp.data;
     throwOnErrors({ query, variables, errors });
     return data;
   } catch (err) {
-    log(".gql.axiosPost.endError", "error", err);
+    log("gql.axiosPost.endError", "error", err);
     throw err;
   }
 };

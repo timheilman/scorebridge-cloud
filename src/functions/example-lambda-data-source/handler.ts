@@ -2,7 +2,7 @@ import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 
 import { logFn } from "../../libs/logging";
-const log = logFn(__filename);
+const log = logFn("src.functions.example-lambda-data-source.handler.");
 import {
   ExampleLambdaDataSourceOutput,
   QueryExampleLambdaDataSourceArgs,
@@ -16,6 +16,6 @@ export const main: AppSyncResolverHandler<
 ): Promise<ExampleLambdaDataSourceOutput> => {
   const ct = event.arguments.input.contentType;
   const ext = event.arguments.input.extension;
-  log(".main", "debug", { ct, ext, event });
+  log("main", "debug", { ct, ext, event });
   return { exampleOutputField: JSON.stringify(event, null, 2) };
 };

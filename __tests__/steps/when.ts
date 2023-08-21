@@ -11,7 +11,7 @@ import { main as exampleLambdaDataSource } from "../../src/functions/example-lam
 import { logFn } from "../../src/libs/logging";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
 import GraphQL from "../lib/graphql";
-const log = logFn(__filename);
+const log = logFn("__tests__.steps.when.");
 dotenvConfig();
 
 export const weInvokeExampleLambdaDataSource = async (
@@ -104,7 +104,7 @@ export const anUnknownUserAddsAClubViaApiKey = async (
   );
   const output = data.addClub as AddClubResponse;
 
-  log(".anUnknownUserAddsAClubViaApiKey.end", "debug", {
+  log("anUnknownUserAddsAClubViaApiKey.end", "debug", {
     userId: output.userId,
     clubId: output.clubId,
   });
@@ -174,7 +174,7 @@ export const aUserCallsGetMyProfile = async (user: {
   );
   const profile = data.getMyProfile;
 
-  log(".aUserCallsGetMyProfile.end", "debug", { user });
+  log("aUserCallsGetMyProfile.end", "debug", { user });
 
   return profile;
 };
@@ -217,7 +217,7 @@ export const aUserCallsEditMyProfile = async (
   );
   const profile = data.editMyProfile;
 
-  log(".aUserCallsEditMyProfile.end", "debug", { user });
+  log("aUserCallsEditMyProfile.end", "debug", { user });
 
   return profile;
 };
