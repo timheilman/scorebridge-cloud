@@ -2,7 +2,11 @@ import {
   AdminCreateUserCommandOutput,
   AdminSetUserPasswordCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { CreateSecretCommand } from "@aws-sdk/client-secrets-manager";
+import {
+  CreateSecretCommand,
+  ResourceExistsException,
+  UpdateSecretCommand,
+} from "@aws-sdk/client-secrets-manager";
 import { cachedCognitoIdpClient } from "@libs/cognito";
 import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
@@ -42,13 +46,28 @@ async function secretsManagerRecordPassword(email: string, password: string) {
   if (email.match(/[^/_+=.@\-A-Za-z0-9]/)) {
     throw new Error("Cannot set secret for id including disallowed characters");
   }
-  const input = {
+  const SecretId = `${requiredEnvVar(
+    "STAGE",
+  )}.automatedTestUserPassword.${email}`;
+  const SecretString = `{"password":"${password}"}`;
+  const command = new CreateSecretCommand({
     Description: "Automated test user password",
-    Name: `${requiredEnvVar("STAGE")}.automatedTestUserPassword.${email}`,
-    SecretString: `{"password":"${password}"}`,
-  };
-  const command = new CreateSecretCommand(input);
-  return cachedSecretsManagerClient().send(command);
+    Name: SecretId,
+    SecretString,
+  });
+  try {
+    return await cachedSecretsManagerClient().send(command);
+  } catch (e) {
+    if (e instanceof ResourceExistsException) {
+      const changeCommand = new UpdateSecretCommand({
+        SecretId,
+        SecretString,
+      });
+      return await cachedSecretsManagerClient().send(changeCommand);
+    } else {
+      throw e;
+    }
+  }
 }
 
 async function createAutomatedTestUsers(): Promise<void> {

@@ -4,6 +4,7 @@ import { config as dotenvConfig } from "dotenv";
 import {
   cognitoAddUserToGroup,
   cognitoCreateUser,
+  ddbCreateUser,
 } from "../src/functions/add-club/handler";
 const log = logFn("ts-node-scripts.createFirstCognitoAdminSuperForEnv.");
 
@@ -13,8 +14,12 @@ async function createFirstCognitoAdminSuperForEnv(
   email: string,
 ): Promise<void> {
   const createUserResult = await cognitoCreateUser(email, undefined);
-  await cognitoAddUserToGroup(createUserResult.User.Username, "adminSuper");
-  log(".createFirstCognitoAdminSuperForEnv.success", "info");
+  const userId = createUserResult.User.Username;
+  await Promise.all([
+    cognitoAddUserToGroup(userId, "adminSuper"),
+    ddbCreateUser(userId, email),
+  ]);
+  log("createFirstCognitoAdminSuperForEnv.success", "info");
 }
 
 // Retrieve the email and club slug from command-line arguments
