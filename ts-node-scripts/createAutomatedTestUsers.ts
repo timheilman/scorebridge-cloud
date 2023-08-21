@@ -55,44 +55,68 @@ async function createAutomatedTestUsers(): Promise<void> {
   const emailAdminSuper = `scorebridge8+${requiredEnvVar(
     "STAGE",
   )}-testUser-adminSuper@gmail.com`;
-  const emailAdminClub = `scorebridge8+${requiredEnvVar(
+  const emailAdminClub00 = `scorebridge8+${requiredEnvVar(
     "STAGE",
-  )}-testUser-adminClub@gmail.com`;
+  )}-testUser-adminClub-club00@gmail.com`;
+  const emailAdminClub01 = `scorebridge8+${requiredEnvVar(
+    "STAGE",
+  )}-testUser-adminClub-club01@gmail.com`;
   const passAdminSuper = `${chance().string({ length: 18 })}`;
-  const passAdminClub = `${chance().string({ length: 18 })}`;
+  const passAdminClub00 = `${chance().string({ length: 18 })}`;
+  const passAdminClub01 = `${chance().string({ length: 18 })}`;
 
-  const clubId = ulid();
-  const ddbCreateClubPromise = ddbCreateClub(
-    clubId,
-    "Club for automated testing",
+  const clubId0 = ulid();
+  const clubId1 = ulid();
+  const ddbCreateClubPromise0 = ddbCreateClub(
+    clubId0,
+    "Club 00 for automated testing",
   );
-  const [createUserResultAdminSuper, createUserResultAdminClub] =
-    await Promise.all([
-      lcd(
-        cognitoCreateUser(emailAdminSuper, "SUPPRESS"),
-        `cognitoCreateUser.success`,
-        { emailAdminSuper },
-      ) as Promise<AdminCreateUserCommandOutput>,
-      lcd(
-        cognitoCreateUser(emailAdminClub, "SUPPRESS"),
-        `cognitoCreateUser.success`,
-        { emailAdminClub },
-      ) as Promise<AdminCreateUserCommandOutput>,
-    ]);
+  const ddbCreateClubPromise1 = ddbCreateClub(
+    clubId1,
+    "Club 01 for automated testing",
+  );
+  const [
+    createUserResultAdminSuper,
+    createUserResultAdminClub0,
+    createUserResultAdminClub1,
+  ] = await Promise.all([
+    lcd(
+      cognitoCreateUser(emailAdminSuper, "SUPPRESS"),
+      `cognitoCreateUser.success`,
+      { emailAdminSuper },
+    ) as Promise<AdminCreateUserCommandOutput>,
+    lcd(
+      cognitoCreateUser(emailAdminClub00, "SUPPRESS"),
+      `cognitoCreateUser.success`,
+      { emailAdminClub00 },
+    ) as Promise<AdminCreateUserCommandOutput>,
+    lcd(
+      cognitoCreateUser(emailAdminClub01, "SUPPRESS"),
+      `cognitoCreateUser.success`,
+      { emailAdminClub01 },
+    ) as Promise<AdminCreateUserCommandOutput>,
+  ]);
   const userIdAdminSuper = createUserResultAdminSuper.User.Username;
-  const userIdAdminClub = createUserResultAdminClub.User.Username;
+  const userIdAdminClub0 = createUserResultAdminClub0.User.Username;
+  const userIdAdminClub1 = createUserResultAdminClub1.User.Username;
 
   await Promise.all([
     cognitoAddUserToGroup(userIdAdminSuper, "adminSuper"),
-    cognitoAddUserToGroup(userIdAdminClub, "adminClub"),
-    cognitoUpdateUserTenantId(userIdAdminClub, clubId),
+    cognitoAddUserToGroup(userIdAdminClub0, "adminClub"),
+    cognitoAddUserToGroup(userIdAdminClub1, "adminClub"),
+    cognitoUpdateUserTenantId(userIdAdminClub0, clubId0),
+    cognitoUpdateUserTenantId(userIdAdminClub1, clubId1),
     cognitoSetNewPassword(userIdAdminSuper, passAdminSuper),
-    cognitoSetNewPassword(userIdAdminClub, passAdminClub),
+    cognitoSetNewPassword(userIdAdminClub0, passAdminClub00),
+    cognitoSetNewPassword(userIdAdminClub1, passAdminClub01),
     secretsManagerRecordPassword(emailAdminSuper, passAdminSuper),
-    secretsManagerRecordPassword(emailAdminClub, passAdminClub),
+    secretsManagerRecordPassword(emailAdminClub00, passAdminClub00),
+    secretsManagerRecordPassword(emailAdminClub01, passAdminClub01),
     ddbCreateUser(userIdAdminSuper, emailAdminSuper),
-    ddbCreateUser(userIdAdminClub, emailAdminClub),
-    ddbCreateClubPromise,
+    ddbCreateUser(userIdAdminClub0, emailAdminClub00),
+    ddbCreateUser(userIdAdminClub1, emailAdminClub01),
+    ddbCreateClubPromise0,
+    ddbCreateClubPromise1,
   ]);
 }
 
