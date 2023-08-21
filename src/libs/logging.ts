@@ -6,24 +6,28 @@ const layoutType = process.env["NODE_ENV"] === "test" ? "colored" : "basic";
 
 const configString = process.env["SB_LOGGING_CONFIG"]
   ? process.env["SB_LOGGING_CONFIG"]
-  : `{
-  "appenders": {
-    "stdout": {
-      "type": "stdout",
-      "layout": { "type": "${layoutType}" }
-    },
-  },
-  "categories": {
-    "default": {
-      "appenders": ["stdout"],
-      "level": "debug"
-    },
-    "__test__": {
-      "appenders": ["stdout"],
-      "level": "trace"
-    }
-  }
-}`;
+  : JSON.stringify(
+      {
+        appenders: {
+          stdout: {
+            type: "stdout",
+            layout: { type: layoutType },
+          },
+        },
+        categories: {
+          default: {
+            appenders: ["stdout"],
+            level: "debug",
+          },
+          __test__: {
+            appenders: ["stdout"],
+            level: "trace",
+          },
+        },
+      },
+      null,
+      2,
+    );
 const config = JSON.parse(configString) as Configuration;
 
 if (!isConfigured()) {
@@ -33,15 +37,6 @@ if (!isConfigured()) {
 } else {
   getLogger().warn(`log4js was already configured; skipping configuration`);
 }
-
-// want to leave files alone, so they can say:
-// import { logFn } from "logging";
-// const log = logFn(__filename);
-// log(".main", "debug", { stuff: "here" })
-
-// translates to:
-// log4js.getLogger(filename + ".main").debug("", { stuff: "here" })
-// or maybe the empty-string is not necessary
 
 export function logFn(
   filename: string,
