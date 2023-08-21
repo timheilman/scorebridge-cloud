@@ -41,6 +41,7 @@ if (!isConfigured()) {
 export function logFn(
   filename: string,
 ): (catSuffix: string, logLevel: string, ...addlParams: unknown[]) => void {
+  console.log("****** rootDirName in cloud", { rootDirName });
   let catPrefix = filename.slice(rootDirName.length);
   if (catPrefix.startsWith("/")) {
     catPrefix = catPrefix.slice(1);
