@@ -144,7 +144,7 @@ export const anUnknownUserCallsRemoveClubAndAdmin = async (
 export const aUserCallsRemoveClubAndAdmin = async (
   userId: string,
   clubId: string,
-  accessToken: string,
+  idToken: string,
 ): Promise<RemoveClubAndAdminResponse> => {
   const variables = {
     input: {
@@ -157,7 +157,7 @@ export const aUserCallsRemoveClubAndAdmin = async (
     requiredEnvVar("API_URL"),
     removeClubAndAdminGql,
     variables,
-    accessToken,
+    idToken,
   );
   const output = data.removeClubAndAdmin as RemoveClubAndAdminResponse;
 
@@ -168,7 +168,7 @@ export const aUserCallsRemoveClubAndAdmin = async (
 export const aUserCallsAddClub = async (
   newAdminEmail: string,
   newClubName: string,
-  accessToken: string,
+  idToken: string,
 ): Promise<AddClubResponse> => {
   const variables = {
     input: {
@@ -182,7 +182,7 @@ export const aUserCallsAddClub = async (
     requiredEnvVar("API_URL"),
     addClubGql,
     variables,
-    accessToken,
+    idToken,
   );
   const output = data.addClub as AddClubResponse;
 
@@ -191,7 +191,7 @@ export const aUserCallsAddClub = async (
 };
 
 export const aUserCallsGetMyProfile = async (user: {
-  accessToken: string;
+  idToken: string;
   username: string;
 }) => {
   const getMyProfile = `query getMyProfile {
@@ -220,7 +220,7 @@ export const aUserCallsGetMyProfile = async (user: {
     process.env.API_URL,
     getMyProfile,
     {},
-    user.accessToken,
+    user.idToken,
   );
   const profile = data.getMyProfile;
 
@@ -230,7 +230,7 @@ export const aUserCallsGetMyProfile = async (user: {
 };
 
 export const aUserCallsEditMyProfile = async (
-  user: { username: string; accessToken: string },
+  user: { username: string; idToken: string },
   input,
 ) => {
   const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
@@ -263,7 +263,7 @@ export const aUserCallsEditMyProfile = async (
     process.env.API_URL,
     editMyProfile,
     variables,
-    user.accessToken,
+    user.idToken,
   );
   const profile = data.editMyProfile;
 

@@ -84,9 +84,9 @@ describe("When an unknown user adds a club via API key", () => {
     expect(cognitoUserPasswordChanged.UserStatus).toEqual("CONFIRMED");
   });
   it("but cannot call addClub", async () => {
-    const { accessToken } = await aLoggedInUser(email, password);
+    const { idToken } = await aLoggedInUser(email, password);
     try {
-      await aUserCallsAddClub(email, clubName, accessToken);
+      await aUserCallsAddClub(email, clubName, idToken);
       throw new Error("failed");
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -114,37 +114,29 @@ describe("When an unknown user adds a club via API key", () => {
   }
 
   it("Then removing the club (and user) via normal login succeeds in cognito and ddb", async () => {
-    const { accessToken } = await aLoggedInUser(email, password);
-    const result = await aUserCallsRemoveClubAndAdmin(
-      userId,
-      clubId,
-      accessToken,
-    );
+    const { idToken } = await aLoggedInUser(email, password);
+    const result = await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
     expect(result.status).toEqual("OK");
     await verifyUserGone();
   });
   it("But also adminSuper is permitted to removeClubAndAdmin", async () => {
-    const { accessToken } = await aLoggedInAdminSuper();
+    const { idToken } = await aLoggedInAdminSuper();
     const { userId, clubId } = await anUnknownUserAddsAClubViaApiKey(
       email,
       clubName,
     );
-    const actual = await aUserCallsRemoveClubAndAdmin(
-      userId,
-      clubId,
-      accessToken,
-    );
+    const actual = await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
     expect(actual.status).toEqual("OK");
     await verifyUserGone();
   });
   it("Whereas a clubAdmin of a different club is not permitted", async () => {
-    const { accessToken } = await aLoggedInAdminClub();
+    const { idToken } = await aLoggedInAdminClub();
     const { userId, clubId } = await anUnknownUserAddsAClubViaApiKey(
       email,
       clubName,
     );
     try {
-      await aUserCallsRemoveClubAndAdmin(userId, clubId, accessToken);
+      await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
       throw new Error("failed");
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
