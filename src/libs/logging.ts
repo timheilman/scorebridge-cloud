@@ -1,7 +1,5 @@
 import { Configuration, configure, getLogger, isConfigured } from "log4js";
 
-const layoutType = process.env["NODE_ENV"] === "test" ? "colored" : "basic";
-
 const configString = process.env["SB_LOGGING_CONFIG"]
   ? process.env["SB_LOGGING_CONFIG"]
   : JSON.stringify(
@@ -9,7 +7,11 @@ const configString = process.env["SB_LOGGING_CONFIG"]
         appenders: {
           console: {
             type: "console",
-            layout: { type: layoutType },
+            layout: {
+              ...(process.env["NODE_ENV"] === "test"
+                ? { type: "colored" }
+                : { type: "pattern", pattern: "%p %c %m" }), // better for cloudwatch
+            },
           },
         },
         categories: {
