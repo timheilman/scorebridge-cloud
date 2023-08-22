@@ -146,12 +146,7 @@ export const aUserCallsRemoveClubAndAdmin = async (
   clubId: string,
   idToken: string,
 ): Promise<RemoveClubAndAdminResponse> => {
-  const variables = {
-    input: {
-      userId,
-      clubId,
-    },
-  };
+  const variables = { input: { userId, clubId } };
 
   const data = await GraphQL(
     requiredEnvVar("API_URL"),
