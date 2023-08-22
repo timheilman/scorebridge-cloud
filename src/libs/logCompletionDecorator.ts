@@ -21,7 +21,8 @@ async function logCompletionDecorator<T>(
   logLevel: string,
   ...addlArgs: unknown[]
 ) {
+  logFn(catPrefix)(`${catSuffix}.begin`, logLevel, ...addlArgs);
   const r = await promise;
-  logFn(catPrefix)(catSuffix, logLevel, ...addlArgs);
+  logFn(catPrefix)(`${catSuffix}.end`, logLevel, ...addlArgs);
   return r;
 }

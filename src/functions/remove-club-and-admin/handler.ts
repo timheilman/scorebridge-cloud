@@ -3,6 +3,7 @@ import { DeleteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { fromEnv } from "@aws-sdk/credential-providers";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
+import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { AppSyncResolverEvent } from "aws-lambda";
@@ -12,7 +13,9 @@ import {
   MutationRemoveClubAndAdminArgs,
   RemoveClubAndAdminResponse,
 } from "../../../appsync";
-const log = logFn("src.functions.remove-club-and-admin.handler.");
+const catPrefix = "src.functions.remove-club-and-admin.handler.";
+const lcd = getLogCompletionDecorator(catPrefix, "debug");
+const log = logFn(catPrefix);
 let dynamoDbClient: DynamoDBClient;
 
 function cachedDdbClient() {
@@ -53,17 +56,33 @@ export const main: AppSyncResolverHandler<
 ): Promise<RemoveClubAndAdminResponse> => {
   const { clubId } = event.arguments.input;
   const promises: Promise<unknown>[] = [];
-  promises.push(cognitoDestroyUser(event.arguments.input.userId));
+  promises.push(
+    lcd(
+      cognitoDestroyUser(event.arguments.input.userId),
+      "cognitoDestroyUser",
+      { userId: event.arguments.input.userId },
+    ),
+  );
 
   promises.push(
-    deleteItemFromTable(
-      requiredEnvVar("USERS_TABLE"),
-      event.arguments.input.userId,
+    lcd(
+      deleteItemFromTable(
+        requiredEnvVar("USERS_TABLE"),
+        event.arguments.input.userId,
+      ),
+      "deleteItemFromTable",
+      { userId: event.arguments.input.userId },
     ),
   );
   log("main.ddbUserDeletion.success", "debug");
 
-  promises.push(deleteItemFromTable(requiredEnvVar("CLUBS_TABLE"), clubId));
+  promises.push(
+    lcd(
+      deleteItemFromTable(requiredEnvVar("CLUBS_TABLE"), clubId),
+      "deleteItemFromTable",
+      { clubId },
+    ),
+  );
   await Promise.all(promises);
 
   return {
