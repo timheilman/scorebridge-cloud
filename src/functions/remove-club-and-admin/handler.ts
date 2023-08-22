@@ -1,8 +1,8 @@
 import { AdminDeleteUserCommand } from "@aws-sdk/client-cognito-identity-provider";
-import { DeleteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { fromEnv } from "@aws-sdk/credential-providers";
+import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
+import { cachedDynamoDbClient } from "@libs/ddb";
 import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
@@ -17,18 +17,6 @@ import {
 const catPrefix = "src.functions.remove-club-and-admin.handler.";
 const lcd = getLogCompletionDecorator(catPrefix, "debug");
 const log = logFn(catPrefix);
-let dynamoDbClient: DynamoDBClient;
-
-function cachedDdbClient() {
-  if (dynamoDbClient) {
-    return dynamoDbClient;
-  }
-  dynamoDbClient = new DynamoDBClient({
-    region: requiredEnvVar("AWS_REGION"),
-    credentials: fromEnv(),
-  });
-  return dynamoDbClient;
-}
 
 export async function cognitoDestroyUser(userId: string) {
   return cachedCognitoIdpClient().send(
@@ -40,7 +28,7 @@ export async function cognitoDestroyUser(userId: string) {
 }
 
 export function deleteItemFromTable(tableName: string, userId: string) {
-  return cachedDdbClient().send(
+  return cachedDynamoDbClient().send(
     new DeleteItemCommand({
       TableName: tableName,
       Key: marshall({ id: userId }),
