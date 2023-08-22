@@ -119,29 +119,28 @@ describe("When an unknown user adds a club via API key", () => {
     expect(result.status).toEqual("OK");
     await verifyUserGone();
   });
-  it("But also adminSuper is permitted to removeClubAndAdmin", async () => {
-    const { idToken } = await aLoggedInAdminSuper();
-    const { userId, clubId } = await anUnknownUserAddsAClubViaApiKey(
-      email,
-      clubName,
-    );
-    const actual = await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
-    expect(actual.status).toEqual("OK");
-    await verifyUserGone();
-  });
   it("Whereas a clubAdmin of a different club is not permitted", async () => {
     const { idToken } = await aLoggedInAdminClub();
-    const { userId, clubId } = await anUnknownUserAddsAClubViaApiKey(
-      email,
-      clubName,
-    );
+    const result = await anUnknownUserAddsAClubViaApiKey(email, clubName);
+    userId = result.userId;
+    clubId = result.clubId;
     try {
       await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
       throw new Error("failed");
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      expect(e.message).toContain("sdfaks");
+      expect(e.message).toContain(
+        "Can only remove a club that one is an admin of",
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      expect(e.message).toContain("401: Invalid Club Id");
     }
     await verifyAddUserBackendEffects();
+  });
+  it("But an adminSuper is permitted to removeClubAndAdmin", async () => {
+    const { idToken } = await aLoggedInAdminSuper();
+    const actual = await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
+    expect(actual.status).toEqual("OK");
+    await verifyUserGone();
   });
 });
