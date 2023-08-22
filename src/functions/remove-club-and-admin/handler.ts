@@ -13,6 +13,7 @@ import {
   MutationRemoveClubAndAdminArgs,
   RemoveClubAndAdminResponse,
 } from "../../../appsync";
+
 const catPrefix = "src.functions.remove-club-and-admin.handler.";
 const lcd = getLogCompletionDecorator(catPrefix, "debug");
 const log = logFn(catPrefix);
@@ -30,13 +31,12 @@ function cachedDdbClient() {
 }
 
 export async function cognitoDestroyUser(userId: string) {
-  const deleteUserParams = {
-    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-    Username: userId,
-  };
-
-  const deleteUserCommand = new AdminDeleteUserCommand(deleteUserParams);
-  return await cachedCognitoIdpClient().send(deleteUserCommand);
+  return cachedCognitoIdpClient().send(
+    new AdminDeleteUserCommand({
+      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+      Username: userId,
+    }),
+  );
 }
 
 export function deleteItemFromTable(tableName: string, userId: string) {
@@ -56,6 +56,7 @@ export const main: AppSyncResolverHandler<
 ): Promise<RemoveClubAndAdminResponse> => {
   const { clubId } = event.arguments.input;
   const promises: Promise<unknown>[] = [];
+  /*
   promises.push(
     lcd(
       cognitoDestroyUser(event.arguments.input.userId),
@@ -63,6 +64,7 @@ export const main: AppSyncResolverHandler<
       { userId: event.arguments.input.userId },
     ),
   );
+*/
 
   promises.push(
     lcd(
