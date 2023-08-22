@@ -79,6 +79,11 @@ const addClubGql = `mutation addClub($input: AddClubInput!) {
       userId
     }
   }`;
+const removeClubAndAdminGql = `mutation removeClubAndAdmin($input: RemoveClubAndAdminInput!) {
+    removeClubAndAdmin(input: $input) {
+      status
+    }
+  }`;
 
 export const anUnknownUserAddsAClubViaApiKey = async (
   newAdminEmail: string,
@@ -111,16 +116,11 @@ export const anUnknownUserAddsAClubViaApiKey = async (
   return output;
 };
 
-export const aUserCallsRemoveClubAndAdmin = async (
+// TODO: refactor out the duplication with the next two functions
+export const anUnknownUserCallsRemoveClubAndAdmin = async (
   userId: string,
   clubId: string,
-  accessToken: string,
 ): Promise<RemoveClubAndAdminResponse> => {
-  const removeClubAndAdmin = `mutation removeClubAndAdmin($input: RemoveClubAndAdminInput!) {
-    removeClubAndAdmin(input: $input) {
-      status
-    }
-  }`;
   const variables = {
     input: {
       userId,
@@ -130,7 +130,32 @@ export const aUserCallsRemoveClubAndAdmin = async (
 
   const data = await GraphQL(
     requiredEnvVar("API_URL"),
-    removeClubAndAdmin,
+    removeClubAndAdminGql,
+    variables,
+    null,
+    requiredEnvVar("ADD_CLUB_API_KEY"),
+  );
+  const output = data.removeClubAndAdmin as RemoveClubAndAdminResponse;
+
+  log("anUnknownUserCallsRemoveClubAndAdmin", "debug", { output });
+  return output;
+};
+
+export const aUserCallsRemoveClubAndAdmin = async (
+  userId: string,
+  clubId: string,
+  accessToken: string,
+): Promise<RemoveClubAndAdminResponse> => {
+  const variables = {
+    input: {
+      userId,
+      clubId,
+    },
+  };
+
+  const data = await GraphQL(
+    requiredEnvVar("API_URL"),
+    removeClubAndAdminGql,
     variables,
     accessToken,
   );

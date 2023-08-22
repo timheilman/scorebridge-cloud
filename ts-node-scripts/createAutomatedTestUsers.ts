@@ -1,5 +1,6 @@
 import {
   AdminCreateUserCommandOutput,
+  AdminGetUserCommand,
   AdminSetUserPasswordCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import {
@@ -30,9 +31,11 @@ const lcd = getLogCompletionDecorator(catPrefix, "debug");
 
 dotenvConfig();
 
+const UserPoolId = requiredEnvVar("COGNITO_USER_POOL_ID");
+
 async function cognitoSetNewPassword(userId: string, newPassword: string) {
   const params = {
-    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+    UserPoolId,
     Username: userId,
     Password: newPassword,
     Permanent: true,
@@ -80,6 +83,7 @@ async function createAutomatedTestUsers(): Promise<void> {
   const emailAdminClub01 = `scorebridge8+${requiredEnvVar(
     "STAGE",
   )}-testUser-adminClub-club01@gmail.com`;
+  const emails = [emailAdminSuper, emailAdminClub00, emailAdminClub01];
   const passAdminSuper = `${chance().string({ length: 18 })}`;
   const passAdminClub00 = `${chance().string({ length: 18 })}`;
   const passAdminClub01 = `${chance().string({ length: 18 })}`;
@@ -94,11 +98,7 @@ async function createAutomatedTestUsers(): Promise<void> {
     clubId1,
     "Club 01 for automated testing",
   );
-  const [
-    createUserResultAdminSuper,
-    createUserResultAdminClub0,
-    createUserResultAdminClub1,
-  ] = await Promise.all([
+  const settledCogUserCreateResults = await Promise.allSettled([
     lcd(
       cognitoCreateUser(emailAdminSuper, "SUPPRESS"),
       `cognitoCreateUser.success`,
@@ -115,28 +115,42 @@ async function createAutomatedTestUsers(): Promise<void> {
       { emailAdminClub01 },
     ) as Promise<AdminCreateUserCommandOutput>,
   ]);
-  const userIdAdminSuper = createUserResultAdminSuper.User.Username;
-  const userIdAdminClub0 = createUserResultAdminClub0.User.Username;
-  const userIdAdminClub1 = createUserResultAdminClub1.User.Username;
+  const [userIdAdminSuper, userIdAdminClub0, userIdAdminClub1] =
+    await Promise.all(
+      settledCogUserCreateResults.map((settled, index) => {
+        if (settled.status === "fulfilled") {
+          return Promise.resolve(settled.value.User.Username);
+        }
+        return cachedCognitoIdpClient()
+          .send(
+            new AdminGetUserCommand({ UserPoolId, Username: emails[index] }),
+          )
+          .then((r) => r.Username);
+      }),
+    );
 
-  await Promise.all([
-    cognitoAddUserToGroup(userIdAdminSuper, "adminSuper"),
-    cognitoAddUserToGroup(userIdAdminClub0, "adminClub"),
-    cognitoAddUserToGroup(userIdAdminClub1, "adminClub"),
-    cognitoUpdateUserTenantId(userIdAdminClub0, clubId0),
-    cognitoUpdateUserTenantId(userIdAdminClub1, clubId1),
-    cognitoSetNewPassword(userIdAdminSuper, passAdminSuper),
-    cognitoSetNewPassword(userIdAdminClub0, passAdminClub00),
-    cognitoSetNewPassword(userIdAdminClub1, passAdminClub01),
-    secretsManagerRecordPassword(emailAdminSuper, passAdminSuper),
-    secretsManagerRecordPassword(emailAdminClub00, passAdminClub00),
-    secretsManagerRecordPassword(emailAdminClub01, passAdminClub01),
-    ddbCreateUser(userIdAdminSuper, emailAdminSuper),
-    ddbCreateUser(userIdAdminClub0, emailAdminClub00),
-    ddbCreateUser(userIdAdminClub1, emailAdminClub01),
-    ddbCreateClubPromise0,
-    ddbCreateClubPromise1,
-  ]);
+  log(
+    "endResult",
+    "info",
+    await Promise.allSettled([
+      cognitoAddUserToGroup(userIdAdminSuper, "adminSuper"),
+      cognitoAddUserToGroup(userIdAdminClub0, "adminClub"),
+      cognitoAddUserToGroup(userIdAdminClub1, "adminClub"),
+      cognitoUpdateUserTenantId(userIdAdminClub0, clubId0),
+      cognitoUpdateUserTenantId(userIdAdminClub1, clubId1),
+      cognitoSetNewPassword(userIdAdminSuper, passAdminSuper),
+      cognitoSetNewPassword(userIdAdminClub0, passAdminClub00),
+      cognitoSetNewPassword(userIdAdminClub1, passAdminClub01),
+      secretsManagerRecordPassword(emailAdminSuper, passAdminSuper),
+      secretsManagerRecordPassword(emailAdminClub00, passAdminClub00),
+      secretsManagerRecordPassword(emailAdminClub01, passAdminClub01),
+      ddbCreateUser(userIdAdminSuper, emailAdminSuper),
+      ddbCreateUser(userIdAdminClub0, emailAdminClub00),
+      ddbCreateUser(userIdAdminClub1, emailAdminClub01),
+      ddbCreateClubPromise0,
+      ddbCreateClubPromise1,
+    ]),
+  );
 }
 
 createAutomatedTestUsers()

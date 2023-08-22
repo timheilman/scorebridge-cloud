@@ -1,10 +1,13 @@
 import { InitiateAuthCommand } from "@aws-sdk/client-cognito-identity-provider";
+import { GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import chance from "chance";
 import { config as dotenvConfig } from "dotenv";
 
 import { cachedCognitoIdpClient } from "../../src/libs/cognito";
 import { logFn } from "../../src/libs/logging";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
+import { cachedSecretsManagerClient } from "../../ts-node-scripts/secretsManager";
+
 const log = logFn("__tests__.steps.given.");
 
 dotenvConfig();
@@ -55,4 +58,39 @@ export const aLoggedInUser = async (email: string, password: string) => {
     idToken: auth.AuthenticationResult.IdToken,
     accessToken: auth.AuthenticationResult.AccessToken,
   };
+};
+
+async function fetchSecret(SecretId: string) {
+  const result = await cachedSecretsManagerClient().send(
+    new GetSecretValueCommand({
+      SecretId: SecretId,
+    }),
+  );
+  return result.SecretString;
+}
+
+async function getAutomatedTestUserPassword(premadeTestAcctEmail: string) {
+  const SecretId = `${requiredEnvVar(
+    "STAGE",
+  )}.automatedTestUserPassword.${premadeTestAcctEmail}`;
+  const result = await fetchSecret(SecretId);
+  const password = (JSON.parse(result) as Record<"password", string>)[
+    "password"
+  ];
+  return password;
+}
+
+export const aLoggedInAdminSuper = async () => {
+  const premadeAdminSuperEmail =
+    "scorebridge8+dev-testUser-adminSuper@gmail.com";
+  const password = await getAutomatedTestUserPassword(premadeAdminSuperEmail);
+  log("aLoggedInAdminSuper.end", "info", { password });
+  return aLoggedInUser(premadeAdminSuperEmail, password);
+};
+
+export const aLoggedInAdminClub = async () => {
+  const premadeAdminSuperEmail =
+    "scorebridge8+dev-testUser-adminClub-club00@gmail.com";
+  const password = await getAutomatedTestUserPassword(premadeAdminSuperEmail);
+  return aLoggedInUser(premadeAdminSuperEmail, password);
 };

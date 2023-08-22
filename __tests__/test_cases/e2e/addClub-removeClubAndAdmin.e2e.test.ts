@@ -6,7 +6,13 @@ import {
 import { cachedCognitoIdpClient } from "../../../src/libs/cognito";
 import requiredEnvVar from "../../../src/libs/requiredEnvVar";
 import { cognitoUserAttributeValue } from "../../lib/cognito";
-import { aLoggedInUser, aRandomClubName, aRandomUser } from "../../steps/given";
+import {
+  aLoggedInAdminClub,
+  aLoggedInAdminSuper,
+  aLoggedInUser,
+  aRandomClubName,
+  aRandomUser,
+} from "../../steps/given";
 import {
   clubDoesNotExistInClubsTable,
   clubExistsInClubsTable,
@@ -17,6 +23,7 @@ import {
 } from "../../steps/then";
 import {
   anUnknownUserAddsAClubViaApiKey,
+  anUnknownUserCallsRemoveClubAndAdmin,
   aUserCallsAddClub,
   aUserCallsRemoveClubAndAdmin,
 } from "../../steps/when";
@@ -29,12 +36,8 @@ describe("When an unknown user adds a club via API key", () => {
   let clubName: string;
   let userId: string;
   let clubId: string;
-  it("The user and club should be saved in DynamoDB and Cognito", async () => {
-    const user = aRandomUser();
-    password = user.password;
-    email = user.email;
-    clubName = aRandomClubName();
 
+  async function verifyAddUserBackendEffects() {
     const result = await anUnknownUserAddsAClubViaApiKey(email, clubName);
     userId = result.userId;
     clubId = result.clubId;
@@ -57,6 +60,14 @@ describe("When an unknown user adds a club via API key", () => {
     expect(cognitoUser.Username).toEqual(userId);
     expect(cognitoUser.UserStatus).toEqual("FORCE_CHANGE_PASSWORD");
     expect(cognitoUser.UserCreateDate.toJSON()).toMatch(timestampFormat);
+  }
+
+  it("The user and club should be saved in DynamoDB and Cognito", async () => {
+    const user = aRandomUser();
+    password = user.password;
+    email = user.email;
+    clubName = aRandomClubName();
+    await verifyAddUserBackendEffects();
   });
   it("Once the user resets their password their status changes to CONFIRMED", async () => {
     const input: AdminSetUserPasswordCommandInput = {
@@ -76,6 +87,7 @@ describe("When an unknown user adds a club via API key", () => {
     const { accessToken } = await aLoggedInUser(email, password);
     try {
       await aUserCallsAddClub(email, clubName, accessToken);
+      throw new Error("failed");
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(e.message).toContain(
@@ -83,6 +95,24 @@ describe("When an unknown user adds a club via API key", () => {
       );
     }
   });
+  it("nor can call removeClubAndAdmin with the API key", async () => {
+    try {
+      await anUnknownUserCallsRemoveClubAndAdmin(userId, clubId);
+      throw new Error("failed");
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      expect(e.message).toContain(
+        "Not Authorized to access removeClubAndAdmin on type Mutation",
+      );
+    }
+  });
+
+  async function verifyUserGone() {
+    await userDoesNotExistInCognito(userId);
+    await userDoesNotExistInUsersTable(userId);
+    await clubDoesNotExistInClubsTable(clubId);
+  }
+
   it("Then removing the club (and user) via normal login succeeds in cognito and ddb", async () => {
     const { accessToken } = await aLoggedInUser(email, password);
     const result = await aUserCallsRemoveClubAndAdmin(
@@ -91,8 +121,35 @@ describe("When an unknown user adds a club via API key", () => {
       accessToken,
     );
     expect(result.status).toEqual("OK");
-    await userDoesNotExistInCognito(userId);
-    await userDoesNotExistInUsersTable(userId);
-    await clubDoesNotExistInClubsTable(clubId);
+    await verifyUserGone();
+  });
+  it("But also adminSuper is permitted to removeClubAndAdmin", async () => {
+    const { accessToken } = await aLoggedInAdminSuper();
+    const { userId, clubId } = await anUnknownUserAddsAClubViaApiKey(
+      email,
+      clubName,
+    );
+    const actual = await aUserCallsRemoveClubAndAdmin(
+      userId,
+      clubId,
+      accessToken,
+    );
+    expect(actual.status).toEqual("OK");
+    await verifyUserGone();
+  });
+  it("Whereas a clubAdmin of a different club is not permitted", async () => {
+    const { accessToken } = await aLoggedInAdminClub();
+    const { userId, clubId } = await anUnknownUserAddsAClubViaApiKey(
+      email,
+      clubName,
+    );
+    try {
+      await aUserCallsRemoveClubAndAdmin(userId, clubId, accessToken);
+      throw new Error("failed");
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      expect(e.message).toContain("sdfaks");
+    }
+    await verifyAddUserBackendEffects();
   });
 });
