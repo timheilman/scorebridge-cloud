@@ -1,5 +1,5 @@
 #set($clubId = $ctx.arguments.input.clubId)
-#set($groupsOfMine = $util.defaultIfNullOrEmpty($ctx.identity.claims['cognito:groups'], []))
+#set($groupsOfMine = $util.defaultIfNull($ctx.identity.claims['cognito:groups'], []))
 #set($isAdminSuper = $groupsOfMine.contains('adminSuper'))
 #set($allThree = [$groupsOfMine, $isAdminSuper, $ctx.identity.claims])
 #if(!$isAdminSuper && $clubId != $ctx.identity.claims['custom:tenantId'])
