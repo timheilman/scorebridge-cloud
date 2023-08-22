@@ -69,7 +69,8 @@ describe("When an unknown user adds a club via API key", () => {
     clubName = aRandomClubName();
     await verifyAddUserBackendEffects();
   });
-  it("Once the user resets their password their status changes to CONFIRMED", async () => {
+
+  async function updatePassword() {
     const input: AdminSetUserPasswordCommandInput = {
       // AdminSetUserPasswordRequest
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
@@ -78,7 +79,12 @@ describe("When an unknown user adds a club via API key", () => {
       Permanent: true,
     };
     const command = new AdminSetUserPasswordCommand(input);
-    /* const response = */ await cachedCognitoIdpClient().send(command);
+    /* const response = */
+    await cachedCognitoIdpClient().send(command);
+  }
+
+  it("Once the user resets their password their status changes to CONFIRMED", async () => {
+    await updatePassword();
 
     const cognitoUserPasswordChanged = await userExistsInCognito(userId);
     expect(cognitoUserPasswordChanged.UserStatus).toEqual("CONFIRMED");
@@ -139,6 +145,30 @@ describe("When an unknown user adds a club via API key", () => {
   });
   it("But an adminSuper is permitted to removeClubAndAdmin", async () => {
     const { idToken } = await aLoggedInAdminSuper();
+    const actual = await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
+    expect(actual.status).toEqual("OK");
+    await verifyUserGone();
+  });
+  it("Sneaky sneaky, if the clubId matches but the userId does not, should fail", async () => {
+    const userResult = aRandomUser();
+    email = userResult.email;
+    password = userResult.password;
+    const result = await anUnknownUserAddsAClubViaApiKey(email, clubName);
+    userId = result.userId;
+    clubId = result.clubId;
+    await updatePassword();
+    const { idToken } = await aLoggedInUser(email, password);
+    try {
+      await aUserCallsRemoveClubAndAdmin("Some_other_UserID", clubId, idToken);
+      throw new Error("failed");
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      expect(e.message).toContain("Can only remove one's self, not others");
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      expect(e.message).toContain("401: Invalid User Id");
+    }
+    await verifyAddUserBackendEffects();
+    // cleanup:
     const actual = await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
     expect(actual.status).toEqual("OK");
     await verifyUserGone();
