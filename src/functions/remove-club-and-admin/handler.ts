@@ -56,7 +56,6 @@ export const main: AppSyncResolverHandler<
 ): Promise<RemoveClubAndAdminResponse> => {
   const { clubId } = event.arguments.input;
   const promises: Promise<unknown>[] = [];
-  /*
   promises.push(
     lcd(
       cognitoDestroyUser(event.arguments.input.userId),
@@ -64,7 +63,6 @@ export const main: AppSyncResolverHandler<
       { userId: event.arguments.input.userId },
     ),
   );
-*/
 
   promises.push(
     lcd(
