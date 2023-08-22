@@ -2,11 +2,12 @@
 #set($groupsOfMine = $ctx.defaultIfNullOrEmpty($ctx.identity.claims['cognito:groups'], []))
 #set($isAdminSuper = $groupsOfMine.contains('adminSuper'))
 ##if(!$isAdminSuper && $tenantId != $ctx.identity.claims.tenantId)
+#if(!$isAdminSuper)
   $util.error("Can only remove a club that one is an admin of", "401: Invalid Club Id")
-##else
+#else
 {
     "version": "2018-05-29",
     "operation": "Invoke",
     "payload": $util.toJson($context)
 }
-##end
+#end

@@ -89,8 +89,8 @@ export const aLoggedInAdminSuper = async () => {
 };
 
 export const aLoggedInAdminClub = async () => {
-  const premadeAdminSuperEmail =
+  const premadeAdminClubEmail =
     "scorebridge8+dev-testUser-adminClub-club00@gmail.com";
-  const password = await getAutomatedTestUserPassword(premadeAdminSuperEmail);
-  return aLoggedInUser(premadeAdminSuperEmail, password);
+  const password = await getAutomatedTestUserPassword(premadeAdminClubEmail);
+  return aLoggedInUser(premadeAdminClubEmail, password);
 };
