@@ -24,7 +24,8 @@
     ".serverless/**/*",
     ".webpack/**/*",
     "_warmup/**/*",
-    ".vscode/**/*"
+    ".vscode/**/*",
+    "src/mapping-templates/**/*"
   ],
   "ts-node": {
     "require": ["tsconfig-paths/register"]

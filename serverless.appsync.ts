@@ -21,16 +21,23 @@ const lambdaResolvers = [
 // Derived:
 const ddbDataSources = [...new Set(ddbResolvers.map((v) => v[2]))];
 
-const resolverDefinition = (
-  endpointType,
-  endpointName,
-  dataSource: string,
-) => ({
-  request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
-  response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
-  kind: "UNIT",
-  dataSource,
-});
+const resolverDefinition = (endpointType, endpointName, dataSource: string) => {
+  if (endpointName === "addClub") {
+    return {
+      template: `src/mapping-templates/generated_appsync_js_resolvers/Mutation.addClub.js`,
+      kind: "UNIT",
+      dataSource,
+      runtime: { name: "APPSYNC_JS", runtimeVersion: "1.0" },
+    };
+  } else {
+    return {
+      request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
+      response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
+      kind: "UNIT",
+      dataSource,
+    };
+  }
+};
 
 function customAppSyncResolvers() {
   return {
