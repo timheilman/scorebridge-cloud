@@ -41,7 +41,7 @@ function customAppSyncResolvers() {
       return acc;
     }, {}),
     ...lambdaResolvers.reduce((acc, typeName) => {
-      if (typeName[0] === "addClub") {
+      if (typeName[1] === "addClub") {
         acc[`${typeName[0]}.${typeName[1]}`] = {
           request: `src/mapping-templates/generated_appsync_js_resolvers/Mutation.addClub.js`,
           response: `src/mapping-templates/generated_appsync_js_resolvers/Mutation.addClub.js`,

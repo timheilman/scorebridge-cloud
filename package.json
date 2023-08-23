@@ -7,7 +7,7 @@
   "scripts": {
     "codegen-gql-types": "graphql-codegen",
     "sls": "sls",
-    "deploy": "ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=`ts-node ts-node-scripts/printRolloverEpochSeconds.ts` sls deploy",
+    "deploy": "ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=`ts-node ts-node-scripts/printRolloverEpochSeconds.ts` sls deploy --verbose",
     "package": "sls package",
     "createFirstCognitoAdminSuperForEnv": "ts-node ts-node-scripts/createFirstCognitoAdminSuperForEnv.ts",
     "createAutomatedTestUsers": "ts-node ts-node-scripts/createAutomatedTestUsers.ts",
