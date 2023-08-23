@@ -21,14 +21,16 @@ const lambdaResolvers = [
 // Derived:
 const ddbDataSources = [...new Set(ddbResolvers.map((v) => v[2]))];
 
-const resolverDefinition = (endpointType, endpointName, dataSource: string) => {
-  return {
-    request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
-    response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
-    kind: "UNIT",
-    dataSource,
-  };
-};
+const resolverDefinition = (
+  endpointType: string,
+  endpointName: string,
+  dataSource: string,
+) => ({
+  request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
+  response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
+  kind: "UNIT",
+  dataSource,
+});
 
 function customAppSyncResolvers() {
   return {
@@ -41,22 +43,11 @@ function customAppSyncResolvers() {
       return acc;
     }, {}),
     ...lambdaResolvers.reduce((acc, typeName) => {
-      if (typeName[1] === "addClub") {
-        acc[`${typeName[0]}.${typeName[1]}`] = {
-          request: `src/mapping-templates/generated_appsync_js_resolvers/Mutation.addClub.js`,
-          response: `src/mapping-templates/generated_appsync_js_resolvers/Mutation.addClub.js`,
-          kind: "UNIT",
-          dataSource: typeName[1],
-          runtime: { name: "APPSYNC_JS", runtimeVersion: "1.0" },
-        };
-      } else {
-        acc[`${typeName[0]}.${typeName[1]}`] = {
-          request: `src/mapping-templates/${typeName[0]}.${typeName[1]}.request.vtl`,
-          response: `src/mapping-templates/${typeName[0]}.${typeName[1]}.response.vtl`,
-          kind: "UNIT",
-          dataSource: typeName[1],
-        };
-      }
+      acc[`${typeName[0]}.${typeName[1]}`] = resolverDefinition(
+        typeName[0],
+        typeName[1],
+        typeName[1] /* lambdas always get their own same-named datasource */,
+      );
       return acc;
     }, {}),
   };
