@@ -1,5 +1,7 @@
 import { Context, LambdaRequest, util } from "@aws-appsync/utils";
 
+import { logFn } from "../libs/logging";
+const log = logFn("src.mapping-templates-ts.mappingTemplateUtils.");
 export function lambdaPassThroughInvoke<ARGS>(
   ctx: Context<ARGS>,
 ): LambdaRequest {
@@ -19,6 +21,7 @@ export function lambdaErrorHandlingResponse<ARGS, RESPONSE>(
     RESPONSE & { error?: { message: string; type: string } }
   >,
 ) {
+  log("lambdaErrorHandlingResponse.start", "debug", { ctx });
   if (ctx.result.error) {
     util.error(ctx.result.error.message, ctx.result.error.type);
   }
