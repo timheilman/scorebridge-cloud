@@ -57,7 +57,7 @@ const resolverDefnUnitVtl = (d: DdbResolver) => ({
 const fnDefnPipelineJs = (l: LambdaResolver) => {
   return {
     dataSource: l.endpointNameAndDataSource,
-    code: `src/mapping-templates-ts/${l.endpointType}.${l.endpointNameAndDataSource}.ts`,
+    code: `src/mapping-templates-js/${l.endpointType}.${l.endpointNameAndDataSource}.js`,
     kind: "PIPELINE",
   };
 };
