@@ -39,9 +39,9 @@ const ddbResolvers: DdbResolver[] = [
 // Unlike DynamoDb resolvers, lambdas always have a datasource named the same
 const lambdaResolvers = [
   lr("Query", "exampleLambdaDataSource"),
-  // lr("Mutation", "addClub"),
-  // lr("Mutation", "removeClubAndAdmin"),
-  // lr("Mutation", "unexpectedError"),
+  lr("Mutation", "addClub"),
+  lr("Mutation", "removeClubAndAdmin"),
+  lr("Mutation", "unexpectedError"),
 ];
 
 // Derived:

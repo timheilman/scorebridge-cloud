@@ -4,7 +4,6 @@ import {
   MutationRemoveClubAndAdminArgs,
   RemoveClubAndAdminResponse,
 } from "../../appsync";
-import { lambdaErrorHandlingResponse } from "./mappingTemplateUtils";
 
 export function request(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -13,7 +12,18 @@ export function request(
   util.error("what the ever living fuck");
 }
 
-export const response = lambdaErrorHandlingResponse<
-  MutationRemoveClubAndAdminArgs,
-  RemoveClubAndAdminResponse
->;
+export const response = (
+  ctx: Context<
+    MutationRemoveClubAndAdminArgs,
+    object,
+    object,
+    object,
+    RemoveClubAndAdminResponse
+  >,
+) => {
+  if (ctx.error) {
+    util.error(ctx.error.message, ctx.error.type);
+  }
+
+  return ctx.result;
+};
