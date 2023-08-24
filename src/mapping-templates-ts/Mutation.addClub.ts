@@ -11,8 +11,8 @@ export const request = (ctx: Context<MutationAddClubArgs>): LambdaRequest => {
   };
 };
 
-export const response = function <ARGS, RESPONSE>(
-  ctx: Context<ARGS, object, object, object, RESPONSE>,
+export const response = function (
+  ctx: Context<MutationAddClubArgs, object, object, object, AddClubResponse>,
 ) {
   if (ctx.error) {
     util.error(ctx.error.message, ctx.error.type);
@@ -28,4 +28,4 @@ export const response = function <ARGS, RESPONSE>(
   /* eslint-enable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
 
   return ctx.result;
-}<MutationAddClubArgs, AddClubResponse>;
+};
