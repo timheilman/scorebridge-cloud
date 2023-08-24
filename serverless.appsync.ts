@@ -21,7 +21,7 @@ const lambdaResolvers = [
 // Derived:
 const ddbDataSources = [...new Set(ddbResolvers.map((v) => v[2]))];
 
-const resolverDefinition = (
+const resolverDefnVtl = (
   endpointType: string,
   endpointName: string,
   dataSource: string,
@@ -32,10 +32,20 @@ const resolverDefinition = (
   dataSource,
 });
 
+const resolverDefnJs = (
+  endpointType: string,
+  endpointName: string,
+  dataSource: string,
+) => ({
+  code: `mapping-templates-js/${endpointType}.${endpointName}.js`,
+  kind: "UNIT",
+  dataSource,
+});
+
 function customAppSyncResolvers() {
   return {
     ...ddbResolvers.reduce((acc, typeNameDs) => {
-      acc[`${typeNameDs[0]}.${typeNameDs[1]}`] = resolverDefinition(
+      acc[`${typeNameDs[0]}.${typeNameDs[1]}`] = resolverDefnVtl(
         typeNameDs[0],
         typeNameDs[1],
         typeNameDs[2],
@@ -43,7 +53,7 @@ function customAppSyncResolvers() {
       return acc;
     }, {}),
     ...lambdaResolvers.reduce((acc, typeName) => {
-      acc[`${typeName[0]}.${typeName[1]}`] = resolverDefinition(
+      acc[`${typeName[0]}.${typeName[1]}`] = resolverDefnJs(
         typeName[0],
         typeName[1],
         typeName[1] /* lambdas always get their own same-named datasource */,
