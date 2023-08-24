@@ -11,7 +11,7 @@ export const request = (ctx: Context<MutationAddClubArgs>): LambdaRequest => {
   };
 };
 
-export function middyErrorHandlingResponse<ARGS, RESPONSE>(
+export const response = function <ARGS, RESPONSE>(
   ctx: Context<ARGS, object, object, object, RESPONSE>,
 ) {
   if (ctx.error) {
@@ -28,8 +28,4 @@ export function middyErrorHandlingResponse<ARGS, RESPONSE>(
   /* eslint-enable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
 
   return ctx.result;
-}
-export const response = middyErrorHandlingResponse<
-  MutationAddClubArgs,
-  AddClubResponse
->;
+}<MutationAddClubArgs, AddClubResponse>;
