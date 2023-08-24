@@ -10,3 +10,6 @@ jspm_packages
 
 # dotenv mechanism to provide AWS-defined values to integration tests
 .env
+.DS_Store
+.idea
+src/mapping-templates-js/*
