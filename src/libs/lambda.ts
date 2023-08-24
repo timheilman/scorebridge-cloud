@@ -11,12 +11,17 @@ function errorMiddleware() {
   return {
     onError: (request: { error: Error; response: unknown }) => {
       log("errorMiddleware.onError", "debug", { request });
+      log("errorMiddleware.onError.instanceof", "debug", {
+        result: request.error instanceof Error,
+      });
       if (request.error instanceof Error) {
-        log("errorMiddleware.onError.instanceof", "debug", {
-          result: request.error instanceof Error,
-        });
         // the response vtl template handles this case
         // where the response is { error: { message, type } }
+        log("errorMiddleware.onError.settingResponse", "debug", {
+          message: request.error.message,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+          type: request.error.constructor.name,
+        });
         request.response = {
           error: {
             message: request.error.message,
