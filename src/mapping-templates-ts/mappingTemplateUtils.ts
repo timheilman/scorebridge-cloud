@@ -23,7 +23,7 @@ export function lambdaErrorHandlingResponse<ARGS, RESPONSE>(
 ) {
   log("lambdaErrorHandlingResponse.start", "debug", { ctx });
   if (ctx.result.error) {
-    util.error(ctx.result.error.message, ctx.result.error.type);
+    util.error(`${ctx.result.error.message}`, `${ctx.result.error.type}`);
   }
 
   return ctx.result;
