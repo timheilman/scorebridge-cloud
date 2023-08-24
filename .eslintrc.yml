@@ -14,6 +14,7 @@ plugins:
   - "simple-import-sort"
 ignorePatterns:
   - "jest.config.js"
+  - "src/mapping-templates-js"
 rules:
   "sort-imports": "off"
   "simple-import-sort/imports": "error"
