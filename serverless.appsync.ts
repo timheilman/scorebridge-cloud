@@ -21,7 +21,11 @@ const lambdaResolvers = [
 // Derived:
 const ddbDataSources = [...new Set(ddbResolvers.map((v) => v[2]))];
 
-const resolverDefnVtl = (
+const functionDefnPipelineVtl = (dataSource: string) => ({
+  dataSource,
+});
+
+const resolverDefnUnitVtl = (
   endpointType: string,
   endpointName: string,
   dataSource: string,
@@ -30,6 +34,10 @@ const resolverDefnVtl = (
   response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
   kind: "UNIT",
   dataSource,
+});
+
+const resolverDefnPipelineVtl = (pipelineFnName: string) => ({
+  functions: [pipelineFnName],
 });
 
 // const resolverDefnJs = (
@@ -41,27 +49,6 @@ const resolverDefnVtl = (
 //   code: `/Users/tdh/repos/scorebridge-cloud/src/mapping-templates-js/${endpointType}.${endpointName}.js`,
 //   dataSource,
 // });
-
-function customAppSyncResolvers() {
-  return {
-    ...ddbResolvers.reduce((acc, typeNameDs) => {
-      acc[`${typeNameDs[0]}.${typeNameDs[1]}`] = resolverDefnVtl(
-        typeNameDs[0],
-        typeNameDs[1],
-        typeNameDs[2],
-      );
-      return acc;
-    }, {}),
-    ...lambdaResolvers.reduce((acc, typeName) => {
-      acc[`${typeName[0]}.${typeName[1]}`] = resolverDefnVtl(
-        typeName[0],
-        typeName[1],
-        typeName[1] /* lambdas always get their own same-named datasource */,
-      );
-      return acc;
-    }, {}),
-  };
-}
 
 function customAppSyncLambdaDataSources() {
   return lambdaResolvers.reduce((acc, typeAndName) => {
@@ -95,6 +82,10 @@ function customAppSyncDataSources() {
   };
 }
 
+function pipelineFnName(queryOrMutation: string, fieldName: string) {
+  return `Pfn${queryOrMutation}${fieldName}`;
+}
+
 const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   name: "scorebridge-cloud",
   schema: "schema.api.graphql",
@@ -110,7 +101,33 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   },
   additionalAuthentications: [{ type: "API_KEY" }],
   dataSources: customAppSyncDataSources(),
-  resolvers: customAppSyncResolvers(),
+  resolvers: {
+    ...ddbResolvers.reduce((acc, typeNameDs) => {
+      acc[`${typeNameDs[0]}.${typeNameDs[1]}`] = resolverDefnUnitVtl(
+        typeNameDs[0],
+        typeNameDs[1],
+        typeNameDs[2],
+      );
+      return acc;
+    }, {}),
+    ...lambdaResolvers.reduce((acc, typeName) => {
+      acc[`${typeName[0]}.${typeName[1]}`] = resolverDefnPipelineVtl(
+        pipelineFnName(
+          typeName[0],
+          typeName[1] /* lambdas always get their own same-named datasource */,
+        ),
+      );
+      return acc;
+    }, {}),
+  },
+  pipelineFunctions: {
+    ...lambdaResolvers.reduce((acc, typeName) => {
+      acc[pipelineFnName(typeName[0], typeName[1])] = functionDefnPipelineVtl(
+        typeName[1],
+      );
+      return acc;
+    }, {}),
+  },
 };
 
 export default appsyncApi;
