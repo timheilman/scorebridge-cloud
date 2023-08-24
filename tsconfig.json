@@ -25,7 +25,6 @@
     ".webpack/**/*",
     "_warmup/**/*",
     ".vscode/**/*",
-    "src/mapping-templates-ts/**/*", // has its own tsconfig
   ],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
