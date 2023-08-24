@@ -31,5 +31,5 @@ const responseTempl = <ARGS, OUTPUT>(
 };
 const response = responseTempl<MutationAddClubArgs, AddClubResponse>;
 // The only thing changing is the implicit name of the function, so this should fix it
-Object.defineProperty(response.constructor, "name", { value: "response" });
+Object.defineProperty(response, "name", { value: "response" });
 export { response };
