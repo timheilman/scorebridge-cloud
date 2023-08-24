@@ -16,7 +16,6 @@ import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
 import { UserAlreadyExistsError } from "@libs/errors/user-already-exists-error";
-import { middyWithErrorHandling } from "@libs/lambda";
 import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
@@ -219,7 +218,7 @@ async function handleNoSuchCognitoUser({
   return { userId: userId, clubId: clubId };
 }
 
-const almostMain: AppSyncResolverHandler<
+export const main: AppSyncResolverHandler<
   MutationAddClubArgs,
   AddClubResponse
 > = async (
@@ -236,5 +235,3 @@ const almostMain: AppSyncResolverHandler<
     return await handleNoSuchCognitoUser(event.arguments.input);
   }
 };
-
-export const main = middyWithErrorHandling(almostMain);
