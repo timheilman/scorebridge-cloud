@@ -4,6 +4,7 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 
 import { cachedCognitoIdpClient } from "../../../src/libs/cognito";
+import { logFn } from "../../../src/libs/logging";
 import requiredEnvVar from "../../../src/libs/requiredEnvVar";
 import { cognitoUserAttributeValue } from "../../lib/cognito";
 import {
@@ -27,6 +28,7 @@ import {
   aUserCallsAddClub,
   aUserCallsRemoveClubAndAdmin,
 } from "../../steps/when";
+const log = logFn("__tests__/test_cases/e2e/addClub-removeClubAndAdmin.");
 
 const timestampFormat =
   /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g;
@@ -37,11 +39,7 @@ describe("When an unknown user adds a club via API key", () => {
   let userId: string;
   let clubId: string;
 
-  async function verifyAddUserBackendEffects() {
-    const result = await anUnknownUserAddsAClubViaApiKey(email, clubName);
-    userId = result.userId;
-    clubId = result.clubId;
-
+  async function verifyAddUserBackendEffects(expectedUserStatus: string) {
     const ddbUser = await userExistsInUsersTable(userId);
     expect(ddbUser.id).toBe(userId);
     expect(ddbUser.email).toBe(email);
@@ -58,7 +56,7 @@ describe("When an unknown user adds a club via API key", () => {
     );
     expect(cognitoUserAttributeValue(cognitoUser, "email")).toEqual(email);
     expect(cognitoUser.Username).toEqual(userId);
-    expect(cognitoUser.UserStatus).toEqual("FORCE_CHANGE_PASSWORD");
+    expect(cognitoUser.UserStatus).toEqual(expectedUserStatus);
     expect(cognitoUser.UserCreateDate.toJSON()).toMatch(timestampFormat);
   }
 
@@ -67,7 +65,10 @@ describe("When an unknown user adds a club via API key", () => {
     password = user.password;
     email = user.email;
     clubName = aRandomClubName();
-    await verifyAddUserBackendEffects();
+    const result = await anUnknownUserAddsAClubViaApiKey(email, clubName);
+    userId = result.userId;
+    clubId = result.clubId;
+    await verifyAddUserBackendEffects("FORCE_CHANGE_PASSWORD");
   });
 
   async function updatePassword() {
@@ -141,7 +142,7 @@ describe("When an unknown user adds a club via API key", () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(e.message).toContain("401: Invalid Club Id");
     }
-    await verifyAddUserBackendEffects();
+    await verifyAddUserBackendEffects("FORCE_CHANGE_PASSWORD");
   });
   it("But an adminSuper is permitted to removeClubAndAdmin", async () => {
     const { idToken } = await aLoggedInAdminSuper();
@@ -153,6 +154,8 @@ describe("When an unknown user adds a club via API key", () => {
     const userResult = aRandomUser();
     email = userResult.email;
     password = userResult.password;
+    log("sneaky random user", "debug", { userResult });
+    clubName = aRandomClubName();
     const result = await anUnknownUserAddsAClubViaApiKey(email, clubName);
     userId = result.userId;
     clubId = result.clubId;
@@ -167,7 +170,7 @@ describe("When an unknown user adds a club via API key", () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(e.message).toContain("401: Invalid User Id");
     }
-    await verifyAddUserBackendEffects();
+    await verifyAddUserBackendEffects("CONFIRMED");
     // cleanup:
     const actual = await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
     expect(actual.status).toEqual("OK");

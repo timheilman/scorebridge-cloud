@@ -1,0 +1,16 @@
+#set($clubId = $ctx.arguments.input.clubId)
+#set($groupsOfMine = $util.defaultIfNull($ctx.identity.claims['cognito:groups'], []))
+#set($isAdminSuper = $groupsOfMine.contains('adminSuper'))
+#if(!$isAdminSuper && $clubId != $ctx.identity.claims['custom:tenantId'])
+  $util.error("Can only remove a club that one is an admin of", "401: Invalid Club Id")
+#else
+ #if(!$isAdminSuper && $ctx.identity.claims['sub'] != $ctx.arguments.input.userId)
+   $util.error("Can only remove one's self, not others", "401: Invalid User Id")
+ #else
+{
+    "version": "2018-05-29",
+    "operation": "Invoke",
+    "payload": $util.toJson($context)
+}
+  #end
+#end

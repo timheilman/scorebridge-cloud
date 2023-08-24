@@ -32,15 +32,15 @@ const resolverDefnVtl = (
   dataSource,
 });
 
-const resolverDefnJs = (
-  endpointType: string,
-  endpointName: string,
-  dataSource: string,
-) => ({
-  functions:
-  code: `/Users/tdh/repos/scorebridge-cloud/src/mapping-templates-js/${endpointType}.${endpointName}.js`,
-  dataSource,
-});
+// const resolverDefnJs = (
+//   endpointType: string,
+//   endpointName: string,
+//   dataSource: string,
+// ) => ({
+//   functions:
+//   code: `/Users/tdh/repos/scorebridge-cloud/src/mapping-templates-js/${endpointType}.${endpointName}.js`,
+//   dataSource,
+// });
 
 function customAppSyncResolvers() {
   return {
@@ -49,6 +49,14 @@ function customAppSyncResolvers() {
         typeNameDs[0],
         typeNameDs[1],
         typeNameDs[2],
+      );
+      return acc;
+    }, {}),
+    ...lambdaResolvers.reduce((acc, typeName) => {
+      acc[`${typeName[0]}.${typeName[1]}`] = resolverDefnVtl(
+        typeName[0],
+        typeName[1],
+        typeName[1] /* lambdas always get their own same-named datasource */,
       );
       return acc;
     }, {}),
@@ -102,32 +110,7 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   },
   additionalAuthentications: [{ type: "API_KEY" }],
   dataSources: customAppSyncDataSources(),
-  resolvers: {
-    ...ddbResolvers.reduce((acc, typeNameDs) => {
-      acc[`${typeNameDs[0]}.${typeNameDs[1]}`] = resolverDefnVtl(
-        typeNameDs[0],
-        typeNameDs[1],
-        typeNameDs[2],
-      );
-      return acc;
-    }, {}),
-    ...lambdaResolvers.reduce((acc, typeName) => {
-      acc[`${typeName[0]}.${typeName[1]}`] = resolverDefnJs(
-        typeName[0],
-        typeName[1],
-        typeName[1] /* lambdas always get their own same-named datasource */,
-      );
-      return acc;
-    }, {}),
-  },
-  pipelineFunctions: {
-    ...lambdaResolvers.reduce((acc, typeName) => {
-      acc[`${typeName[0]}.${typeName[1]}.fn`] = {
-        dataSource: typeName[1],
-      };
-      return acc;
-    }, {}),
-  },
+  resolvers: customAppSyncResolvers(),
 };
 
 export default appsyncApi;
