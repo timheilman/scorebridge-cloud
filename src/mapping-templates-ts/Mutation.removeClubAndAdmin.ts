@@ -11,6 +11,7 @@ export function request(
   ctx: Context<MutationRemoveClubAndAdminArgs>,
 ): LambdaRequest {
   const clubId = ctx.arguments.input.clubId;
+  const userId = ctx.arguments.input.userId;
   if (!clubId) {
     util.error("No clubId", "No clubId");
   }
@@ -32,16 +33,27 @@ export function request(
       "Can only remove a club that one is an admin of",
       "401: Invalid Club Id",
     );
-  } else if (!isAdminSuper && cogIdentity.sub !== ctx.arguments.input.userId) {
-    util.error(
-      "Can only remove one's self, not others",
-      "401: Invalid User Id",
-    );
   } else {
-    return {
-      operation: "Invoke",
-      payload: ctx,
-    };
+    if (!isAdminSuper && cogIdentity.sub !== userId) {
+      util.error(
+        "Can only remove one's self, not others",
+        "401: Invalid User Id",
+      );
+    } else if (isAdminSuper) {
+      util.error("isAdminSuper", "isAdminSuper");
+    } else if (clubId === claims["custom:tenantId"]) {
+      util.error(
+        'clubId === claims["custom:tenantId"]',
+        'clubId === claims["custom:tenantId"]',
+      );
+    } else if (userId === cogIdentity.sub) {
+      util.error("userId === cogIdentity.sub", "userId === cogIdentity.sub");
+    } else {
+      return {
+        operation: "Invoke",
+        payload: ctx,
+      };
+    }
   }
 }
 
