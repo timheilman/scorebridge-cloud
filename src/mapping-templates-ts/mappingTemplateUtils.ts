@@ -13,17 +13,11 @@ export function lambdaPassThroughInvoke<ARGS>(
 }
 
 export function lambdaErrorHandlingResponse<ARGS, RESPONSE>(
-  ctx: Context<
-    ARGS,
-    object,
-    object,
-    object,
-    RESPONSE & { error?: { message: string; type: string } }
-  >,
+  ctx: Context<ARGS, object, object, object, RESPONSE>,
 ) {
   log("lambdaErrorHandlingResponse.start", "debug", { ctx });
-  if (ctx.result.error) {
-    util.error(`${ctx.result.error.message}`, `${ctx.result.error.type}`);
+  if (ctx.error) {
+    util.error(ctx.error.message, ctx.error.type);
   }
 
   return ctx.result;
