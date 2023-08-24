@@ -10,7 +10,7 @@
     "createAutomatedTestUsers": "ts-node ts-node-scripts/createAutomatedTestUsers.ts",
     "createFirstCognitoAdminSuperForEnv": "ts-node ts-node-scripts/createFirstCognitoAdminSuperForEnv.ts",
     "deleteTestRandomUsers": "ts-node ts-node-scripts/deleteTestRandomUserAccounts.ts",
-    "deploy": "ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=`ts-node ts-node-scripts/printRolloverEpochSeconds.ts` sls deploy --verbose",
+    "deploy": "npm run compileMappingTemplates && ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=`ts-node ts-node-scripts/printRolloverEpochSeconds.ts` sls deploy --verbose",
     "e2e-test": "jest --verbose ./__tests__/test_cases/e2e",
     "exportEnvDev": "sls export-env --all --overwrite && echo >> .env && ts-node ts-node-scripts/stackOutputsForDotenv.ts >> .env",
     "format": "prettier --write .",
