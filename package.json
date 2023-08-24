@@ -6,7 +6,7 @@
   "main": "serverless.ts",
   "scripts": {
     "codegen-gql-types": "graphql-codegen",
-    "compileMappingTemplates": "esbuild --bundle --sourcemap=inline --sources-content=false --target=esnext --platform=node --format=esm --external:@aws-appsync/utils --outdir=./src/mapping-templates-ts/ --tsconfig=./src/mapping-templates-ts/tsconfig.json ./src/mapping-templates-ts/*.ts",
+    "compileMappingTemplates": "esbuild --bundle --sourcemap=inline --sources-content=false --target=esnext --platform=node --format=esm --external:@aws-appsync/utils --outdir=./src/mapping-templates-js/ --tsconfig=./src/mapping-templates-ts/tsconfig.json ./src/mapping-templates-ts/*.ts",
     "createAutomatedTestUsers": "ts-node ts-node-scripts/createAutomatedTestUsers.ts",
     "createFirstCognitoAdminSuperForEnv": "ts-node ts-node-scripts/createFirstCognitoAdminSuperForEnv.ts",
     "deploy": "npm run compileMappingTemplates && ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=`ts-node ts-node-scripts/printRolloverEpochSeconds.ts` sls deploy --verbose",
