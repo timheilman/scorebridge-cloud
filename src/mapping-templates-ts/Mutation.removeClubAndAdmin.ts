@@ -38,15 +38,6 @@ export function request(
         "Can only remove one's self, not others",
         "401: Invalid User Id",
       );
-    } else if (isAdminSuper) {
-      util.error("isAdminSuper", "isAdminSuper");
-    } else if (clubId === claims["custom:tenantId"]) {
-      util.error(
-        'clubId === claims["custom:tenantId"]',
-        'clubId === claims["custom:tenantId"]',
-      );
-    } else if (userId === cogIdentity.sub) {
-      util.error("userId === cogIdentity.sub", "userId === cogIdentity.sub");
     } else {
       return {
         operation: "Invoke",
