@@ -1,13 +1,13 @@
-import { logFn } from "@libs/logging";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
-const log = logFn("src.functions.example-lambda-data-source.handler.");
-import { middyWithErrorHandling } from "@libs/lambda";
 
+import { logFn } from "../../libs/logging"; // cannot use @lib here because imported into e2e tests in-repo
+const log = logFn("src.functions.example-lambda-data-source.handler.");
 import {
   ExampleLambdaDataSourceOutput,
   QueryExampleLambdaDataSourceArgs,
 } from "../../../appsync";
+import { middyWithErrorHandling } from "../../libs/lambda"; // cannot use @lib here because imported into e2e tests in-repo
 const almostMain: AppSyncResolverHandler<
   QueryExampleLambdaDataSourceArgs,
   ExampleLambdaDataSourceOutput
