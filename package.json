@@ -11,7 +11,6 @@
     "createFirstCognitoAdminSuperForEnv": "ts-node ts-node-scripts/createFirstCognitoAdminSuperForEnv.ts",
     "deleteTestRandomUsers": "ts-node ts-node-scripts/deleteTestRandomUserAccounts.ts",
     "deploy": "npm run compileMappingTemplates && ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=`ts-node ts-node-scripts/printRolloverEpochSeconds.ts` sls deploy --verbose",
-    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e",
     "exportEnvDev": "sls export-env --all --overwrite && echo >> .env && ts-node ts-node-scripts/stackOutputsForDotenv.ts >> .env",
     "format": "prettier --write .",
     "integration-test": "jest --verbose ./__tests__/test_cases/integration",
@@ -22,7 +21,7 @@
     "provideGqlTypesToWebapp": "npm run codegen-gql-types && cp ./appsync.d.ts ${SCOREBRIDGE_WEBAPP_CLONE_LOCATION:-../scorebridge-webapp/}",
     "refreshDetailsToWebapp": "npm run exportEnvDev; npm run provideEnvEntriesToWebapp; npm run provideEnvEntriesToWebappCypress; npm run provideGqlTypesToWebapp",
     "sls": "sls",
-    "test": "jest --verbose ./__tests__/test_cases/unit",
+    "test": "jest --verbose ./__tests__/test_cases/e2e",
     "tidy": "npm run lint; npm run format",
     "verifyEmail": "aws ses verify-email-identity --email-address $@"
   },

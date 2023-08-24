@@ -1,78 +1,12 @@
-import { AppSyncResolverEvent, Context as AwsLambdaContext } from "aws-lambda";
 import { config as dotenvConfig } from "dotenv";
 
-import {
-  AddClubResponse,
-  ExampleLambdaDataSourceOutput,
-  QueryExampleLambdaDataSourceArgs,
-  RemoveClubAndAdminResponse,
-} from "../../appsync";
-import { main as exampleLambdaDataSource } from "../../src/functions/example-lambda-data-source/handler";
+import { AddClubResponse, RemoveClubAndAdminResponse } from "../../appsync";
 import { logFn } from "../../src/libs/logging";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
 import GraphQL from "../lib/graphql";
 const log = logFn("__tests__.steps.when.");
 dotenvConfig();
 
-export const weInvokeExampleLambdaDataSource = async (
-  extension: string,
-  contentType: string,
-): Promise<ExampleLambdaDataSourceOutput> => {
-  const minimalEvent: AppSyncResolverEvent<QueryExampleLambdaDataSourceArgs> = {
-    arguments: {
-      input: {
-        extension,
-        contentType,
-      },
-    },
-    source: undefined,
-    request: {
-      headers: undefined,
-      domainName: "",
-    },
-    info: {
-      selectionSetList: [],
-      selectionSetGraphQL: "",
-      parentTypeName: "",
-      fieldName: "",
-      variables: {},
-    },
-    prev: {
-      result: {},
-    },
-    stash: {},
-  };
-  const minimalContext: AwsLambdaContext = {
-    callbackWaitsForEmptyEventLoop: false,
-    functionName: "",
-    functionVersion: "",
-    invokedFunctionArn: "",
-    memoryLimitInMB: "",
-    awsRequestId: "",
-    logGroupName: "",
-    logStreamName: "",
-    getRemainingTimeInMillis(): number {
-      throw new Error("Function not implemented.");
-    },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    done(_error?: Error, _result?: unknown): void {
-      throw new Error("Function not implemented.");
-    },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fail(_error: string | Error): void {
-      throw new Error("Function not implemented.");
-    },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    succeed(_messageOrObject: unknown): void {
-      throw new Error("Function not implemented.");
-    },
-  };
-  const result = exampleLambdaDataSource(minimalEvent, minimalContext, null);
-  if (!result) {
-    throw new Error("typescript was right");
-  }
-  return result;
-};
 const addClubGql = `mutation addClub($input: AddClubInput!) {
     addClub(input: $input) {
       clubId
