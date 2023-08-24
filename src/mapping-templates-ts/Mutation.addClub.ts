@@ -11,9 +11,7 @@ export const request = (ctx: Context<MutationAddClubArgs>): LambdaRequest => {
   };
 };
 
-const responseTempl = <ARGS, OUTPUT>(
-  ctx: Context<ARGS, object, object, object, OUTPUT>,
-) => {
+export const response = (ctx: Context) => {
   if (ctx.error) {
     util.error(ctx.error.message, ctx.error.type);
   }
@@ -27,9 +25,6 @@ const responseTempl = <ARGS, OUTPUT>(
   }
   /* eslint-enable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return ctx.result;
 };
-const response = responseTempl<MutationAddClubArgs, AddClubResponse>;
-// The only thing changing is the implicit name of the function, so this should fix it
-Object.defineProperty(response, "name", { value: "response" });
-export { response };
