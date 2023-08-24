@@ -10,7 +10,7 @@ export function request(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _ctx: Context<MutationRemoveClubAndAdminArgs>,
 ): LambdaRequest {
-  util.error("Does Util.error work at all?", "what the hell");
+  util.error("what the ever living fuck");
 }
 
 export const response = lambdaErrorHandlingResponse<

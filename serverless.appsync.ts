@@ -38,7 +38,6 @@ const resolverDefnJs = (
   dataSource: string,
 ) => ({
   code: `mapping-templates-js/${endpointType}.${endpointName}.js`,
-  kind: "UNIT",
   dataSource,
 });
 
