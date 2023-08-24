@@ -11,8 +11,8 @@ export const request = (ctx: Context<MutationAddClubArgs>): LambdaRequest => {
   };
 };
 
-export const response = (
-  ctx: Context<MutationAddClubArgs, object, object, object, AddClubResponse>,
+const responseTempl = <ARGS, OUTPUT>(
+  ctx: Context<ARGS, object, object, object, OUTPUT>,
 ) => {
   if (ctx.error) {
     util.error(ctx.error.message, ctx.error.type);
@@ -29,3 +29,5 @@ export const response = (
 
   return ctx.result;
 };
+
+export const response = responseTempl<MutationAddClubArgs, AddClubResponse>;
