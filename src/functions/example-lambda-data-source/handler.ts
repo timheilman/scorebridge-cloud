@@ -1,7 +1,6 @@
+import { logFn } from "@libs/logging";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
-
-import { logFn } from "../../libs/logging";
 const log = logFn("src.functions.example-lambda-data-source.handler.");
 import { middyWithErrorHandling } from "@libs/lambda";
 
