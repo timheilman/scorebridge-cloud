@@ -12,11 +12,11 @@ type DdbResolver = {
   dataSource: string;
 };
 
-const ddr = (
-  endpointType: EndpointType,
-  endpointName: string,
-  dataSource: string,
-): DdbResolver => ({ endpointType, endpointName, dataSource });
+// const ddr = (
+//   endpointType: EndpointType,
+//   endpointName: string,
+//   dataSource: string,
+// ): DdbResolver => ({ endpointType, endpointName, dataSource });
 
 type LambdaResolver = {
   endpointType: "Query" | "Mutation";
@@ -32,16 +32,16 @@ const lr = (
 });
 
 const ddbResolvers: DdbResolver[] = [
-  ddr("Query", "getMyProfile", "usersTable"),
-  ddr("Mutation", "editMyProfile", "usersTable"),
+  // ddr("Query", "getMyProfile", "usersTable"),
+  // ddr("Mutation", "editMyProfile", "usersTable"),
 ];
 
 // Unlike DynamoDb resolvers, lambdas always have a datasource named the same
 const lambdaResolvers = [
   lr("Query", "exampleLambdaDataSource"),
-  lr("Mutation", "addClub"),
-  lr("Mutation", "removeClubAndAdmin"),
-  lr("Mutation", "unexpectedError"),
+  // lr("Mutation", "addClub"),
+  // lr("Mutation", "removeClubAndAdmin"),
+  // lr("Mutation", "unexpectedError"),
 ];
 
 // Derived:
