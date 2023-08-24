@@ -16,8 +16,8 @@ export const response = function <ARGS, RESPONSE>(
   >,
 ) {
   log("lambdaErrorHandlingResponse.start", "debug", { ctx });
-  if (ctx.result.error) {
-    util.error(`${ctx.result.error.message}`, `${ctx.result.error.type}`);
+  if (ctx.error) {
+    util.error(`${ctx.error.message}`, `${ctx.error.type}`);
   }
 
   return ctx.result;
