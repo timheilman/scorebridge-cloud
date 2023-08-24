@@ -21,18 +21,15 @@ const lambdaResolvers = [
 // Derived:
 const ddbDataSources = [...new Set(ddbResolvers.map((v) => v[2]))];
 
-const functionDefnPipelineVtl = (dataSource: string) => ({
-  dataSource,
-});
-
-const resolverDefnUnitVtl = (
+const resolverOrFnDefnVtl = (
   endpointType: string,
   endpointName: string,
   dataSource: string,
+  kind: "UNIT" | "PIPELINE",
 ) => ({
   request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
   response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
-  kind: "UNIT",
+  kind: kind,
   dataSource,
 });
 
@@ -103,10 +100,11 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   dataSources: customAppSyncDataSources(),
   resolvers: {
     ...ddbResolvers.reduce((acc, typeNameDs) => {
-      acc[`${typeNameDs[0]}.${typeNameDs[1]}`] = resolverDefnUnitVtl(
+      acc[`${typeNameDs[0]}.${typeNameDs[1]}`] = resolverOrFnDefnVtl(
         typeNameDs[0],
         typeNameDs[1],
         typeNameDs[2],
+        "UNIT",
       );
       return acc;
     }, {}),
@@ -122,8 +120,11 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   },
   pipelineFunctions: {
     ...lambdaResolvers.reduce((acc, typeName) => {
-      acc[pipelineFnName(typeName[0], typeName[1])] = functionDefnPipelineVtl(
+      acc[pipelineFnName(typeName[0], typeName[1])] = resolverOrFnDefnVtl(
+        typeName[0],
         typeName[1],
+        typeName[1],
+        "PIPELINE",
       );
       return acc;
     }, {}),
