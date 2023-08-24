@@ -3,11 +3,13 @@ import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 
 import { logFn } from "../../libs/logging";
 const log = logFn("src.functions.example-lambda-data-source.handler.");
+import { middyWithErrorHandling } from "@libs/lambda";
+
 import {
   ExampleLambdaDataSourceOutput,
   QueryExampleLambdaDataSourceArgs,
 } from "../../../appsync";
-export const main: AppSyncResolverHandler<
+const almostMain: AppSyncResolverHandler<
   QueryExampleLambdaDataSourceArgs,
   ExampleLambdaDataSourceOutput
 > = async (
@@ -19,3 +21,4 @@ export const main: AppSyncResolverHandler<
   log("main", "debug", { ct, ext, event });
   return { exampleOutputField: JSON.stringify(event, null, 2) };
 };
+export const main = middyWithErrorHandling(almostMain);

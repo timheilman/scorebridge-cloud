@@ -3,6 +3,7 @@ import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
+import { middyWithErrorHandling } from "@libs/lambda";
 import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
@@ -36,7 +37,7 @@ export function deleteItemFromTable(tableName: string, userId: string) {
   );
 }
 
-export const main: AppSyncResolverHandler<
+const almostMain: AppSyncResolverHandler<
   MutationRemoveClubAndAdminArgs,
   RemoveClubAndAdminResponse
 > = async (
@@ -77,3 +78,4 @@ export const main: AppSyncResolverHandler<
     status: "OK",
   };
 };
+export const main = middyWithErrorHandling(almostMain);

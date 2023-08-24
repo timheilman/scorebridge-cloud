@@ -1,10 +1,11 @@
 import { UnexpectedError } from "@libs/errors/unexpected-error";
+import { middyWithErrorHandling } from "@libs/lambda";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 
 import { UnexpectedErrorResponse } from "../../../appsync";
 
-export const main: AppSyncResolverHandler<void, UnexpectedErrorResponse> = (
+const almostMain: AppSyncResolverHandler<void, UnexpectedErrorResponse> = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _event: AppSyncResolverEvent<void>,
 ): Promise<UnexpectedErrorResponse> => {
@@ -14,3 +15,4 @@ export const main: AppSyncResolverHandler<void, UnexpectedErrorResponse> = (
     ),
   );
 };
+export const main = middyWithErrorHandling(almostMain);
