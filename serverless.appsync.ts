@@ -4,42 +4,60 @@ import { AWS } from "@serverless/typescript";
 // It seems the types for the custom appsync config are not provided by the serverless-appsync-plugin
 // at the time of writing, they seem to be defined here:
 // https://github.com/sid88in/serverless-appsync-plugin/blob/05164d8847a554d56bb73590fdc35bf0bda5198e/src/types/plugin.ts#L3
+type EndpointType = "Query" | "Mutation";
 
-const ddbResolvers = [
-  ["Query", "getMyProfile", "usersTable"],
-  ["Mutation", "editMyProfile", "usersTable"],
+type DdbResolver = {
+  endpointType: EndpointType;
+  endpointName: string;
+  dataSource: string;
+};
+
+const ddr = (
+  endpointType: EndpointType,
+  endpointName: string,
+  dataSource: string,
+): DdbResolver => ({ endpointType, endpointName, dataSource });
+
+type LambdaResolver = {
+  endpointType: "Query" | "Mutation";
+  endpointNameAndDataSource: string;
+};
+
+const lr = (
+  endpointType: EndpointType,
+  endpointNameAndDataSource: string,
+): LambdaResolver => ({
+  endpointType,
+  endpointNameAndDataSource,
+});
+
+const ddbResolvers: DdbResolver[] = [
+  ddr("Query", "getMyProfile", "usersTable"),
+  ddr("Mutation", "editMyProfile", "usersTable"),
 ];
 
 // Unlike DynamoDb resolvers, lambdas always have a datasource named the same
 const lambdaResolvers = [
-  ["Query", "exampleLambdaDataSource"],
-  ["Mutation", "addClub"],
-  ["Mutation", "removeClubAndAdmin"],
-  ["Mutation", "unexpectedError"],
+  lr("Query", "exampleLambdaDataSource"),
+  lr("Mutation", "addClub"),
+  lr("Mutation", "removeClubAndAdmin"),
+  lr("Mutation", "unexpectedError"),
 ];
 
 // Derived:
-const ddbDataSources = [...new Set(ddbResolvers.map((v) => v[2]))];
+const ddbDataSources = [...new Set(ddbResolvers.map((v) => v.dataSource))];
 
-const resolverDefnUnitVtl = (
-  endpointType: string,
-  endpointName: string,
-  dataSource: string,
-) => ({
-  request: `src/mapping-templates/${endpointType}.${endpointName}.request.vtl`,
-  response: `src/mapping-templates/${endpointType}.${endpointName}.response.vtl`,
+const resolverDefnUnitVtl = (d: DdbResolver) => ({
+  request: `src/mapping-templates/${d.endpointType}.${d.endpointName}.request.vtl`,
+  response: `src/mapping-templates/${d.endpointType}.${d.endpointName}.response.vtl`,
   kind: "UNIT",
-  dataSource,
+  dataSource: d.dataSource,
 });
 
-const fnDefnPipelineJs = (
-  endpointType: string,
-  endpointName: string,
-  dataSource: string,
-) => {
+const fnDefnPipelineJs = (l: LambdaResolver) => {
   return {
-    dataSource,
-    code: `src/mapping-templates-ts/${endpointType}.${endpointName}.ts`,
+    dataSource: l.endpointNameAndDataSource,
+    code: `src/mapping-templates-ts/${l.endpointType}.${l.endpointNameAndDataSource}.ts`,
     kind: "PIPELINE",
   };
 };
@@ -59,10 +77,10 @@ const resolverDefnPipelineVtl = (pipelineFnName: string) => ({
 // });
 
 function customAppSyncLambdaDataSources() {
-  return lambdaResolvers.reduce((acc, typeAndName) => {
-    acc[typeAndName[1]] = {
+  return lambdaResolvers.reduce((acc, lr) => {
+    acc[lr.endpointNameAndDataSource] = {
       type: "AWS_LAMBDA",
-      config: { functionName: typeAndName[1] },
+      config: { functionName: lr.endpointNameAndDataSource },
     };
     return acc;
   }, {});
@@ -90,8 +108,8 @@ function customAppSyncDataSources() {
   };
 }
 
-function pipelineFnName(queryOrMutation: string, fieldName: string) {
-  return `Pfn${queryOrMutation}${fieldName}`;
+function pipelineFnName(l: LambdaResolver) {
+  return `Pfn${l.endpointType}${l.endpointNameAndDataSource}`;
 }
 
 const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
@@ -110,31 +128,19 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   additionalAuthentications: [{ type: "API_KEY" }],
   dataSources: customAppSyncDataSources(),
   resolvers: {
-    ...ddbResolvers.reduce((acc, typeNameDs) => {
-      acc[`${typeNameDs[0]}.${typeNameDs[1]}`] = resolverDefnUnitVtl(
-        typeNameDs[0],
-        typeNameDs[1],
-        typeNameDs[2],
-      );
+    ...ddbResolvers.reduce((acc, dr) => {
+      acc[`${dr.endpointType}.${dr.endpointName}`] = resolverDefnUnitVtl(dr);
       return acc;
     }, {}),
-    ...lambdaResolvers.reduce((acc, typeName) => {
-      acc[`${typeName[0]}.${typeName[1]}`] = resolverDefnPipelineVtl(
-        pipelineFnName(
-          typeName[0],
-          typeName[1] /* lambdas always get their own same-named datasource */,
-        ),
-      );
+    ...lambdaResolvers.reduce((acc, lr) => {
+      acc[`${lr.endpointType}.${lr.endpointNameAndDataSource}`] =
+        resolverDefnPipelineVtl(pipelineFnName(lr));
       return acc;
     }, {}),
   },
   pipelineFunctions: {
-    ...lambdaResolvers.reduce((acc, typeName) => {
-      acc[pipelineFnName(typeName[0], typeName[1])] = fnDefnPipelineJs(
-        typeName[0],
-        typeName[1],
-        typeName[1],
-      );
+    ...lambdaResolvers.reduce((acc, lr) => {
+      acc[pipelineFnName(lr)] = fnDefnPipelineJs(lr);
       return acc;
     }, {}),
   },
