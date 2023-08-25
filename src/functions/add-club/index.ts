@@ -19,7 +19,7 @@ export default {
       Effect: "Allow",
       Action: "secretsmanager:GetSecretValue",
       Resource: {
-        "Fn::GetAtt": ["Recaptcha2Secret", "Arn"],
+        "Fn::GetAtt": ["Recaptcha2Secret", "Id"],
       },
     },
     {
