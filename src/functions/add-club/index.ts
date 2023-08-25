@@ -17,6 +17,13 @@ export default {
   iamRoleStatements: [
     {
       Effect: "Allow",
+      Action: "secretsmanager:GetSecretValue",
+      Resource: {
+        "Fn::GetAtt": ["Recaptcha2Secret", "Arn"],
+      },
+    },
+    {
+      Effect: "Allow",
       Action: "dynamodb:PutItem",
       Resource: {
         "Fn::GetAtt": ["UsersTable", "Arn"],

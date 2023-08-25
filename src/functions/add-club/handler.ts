@@ -234,7 +234,7 @@ const almostMain: AppSyncResolverHandler<
     (
       await cachedSecretsManagerClient().send(
         new GetSecretValueCommand({
-          SecretId: `${requiredEnvVar("STAGE")}.recaptchaSecret`,
+          SecretId: `${requiredEnvVar("STAGE")}.recaptcha2Secret`,
         }),
       )
     ).SecretString,

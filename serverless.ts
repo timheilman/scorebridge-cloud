@@ -6,6 +6,7 @@ import appSync from "./serverless.appsync";
 import { AdditionalAppSyncResources } from "./serverless.appsync";
 import CognitoResources from "./serverless.cognito";
 import DynamoDbTables from "./serverless.dynamodb";
+import SecretsManagerResources from "./serverless.secretsmanager";
 import SesResources from "./serverless.ses";
 import SnsResources from "./serverless.sns";
 import SqsResources from "./serverless.sqs";
@@ -105,6 +106,7 @@ const serverlessConfiguration: AWS & {
       ...SesResources,
       ...SnsResources,
       ...SqsResources,
+      ...SecretsManagerResources,
     },
     Outputs: {
       AddClubApiKey: { Value: { "Fn::GetAtt": ["AddClubApiKey", "ApiKey"] } },
