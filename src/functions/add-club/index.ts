@@ -12,6 +12,7 @@ export default {
     COGNITO_USER_POOL_ID: {
       Ref: "CognitoUserPool",
     },
+    STAGE: `\${sls:stage}`,
   },
   iamRoleStatements: [
     {
