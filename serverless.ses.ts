@@ -22,16 +22,6 @@ export default {
       },
     },
   },
-  SesSandboxVerifiedEmail: {
-    Type: "AWS::SES::EmailIdentity",
-    DependsOn: ["SesConfigSet"],
-    Properties: {
-      EmailIdentity: `\${self:custom.settings.SES_FROM_ADDRESS}`,
-      ConfigurationSetAttributes: {
-        ConfigurationSetName: { Ref: "SesConfigSet" },
-      },
-    },
-  },
   CognitoSesIntegrationRole: {
     Type: "AWS::IAM::Role",
     Properties: {

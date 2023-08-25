@@ -97,3 +97,14 @@ The project code base is mainly located within the `src` folder. This folder is 
 
 - See this file at repo tag SLS_CREATE_RESULT for information on good libraries for use with API Gateway, if and when a REST endpoint is needed.
 - [@serverless/typescript](https://github.com/serverless/typescript) - provides up-to-date TypeScript definitions for your `serverless.ts` service file
+
+
+## Setting up a new env
+
+Notes from doing it.  Problem: must verify "from" email address before cognito can use it in ses.
+
+1) first thing, go into SES (cli or console) and manually verify scorebridge8+<env>@gmail.com .  That requires clicking a link sent to that address.  No ConfigSet, yet.
+2) Deploy to the env. npm run deploy<Env>
+3) Go into secrets manager and set the nonprod or prod keys for recaptcha.  Unfortunately we do not want this set by default because it's bad if it goes to production that way. Non-prod credentials: siteKey: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
+secretKey: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
+4) Go into SES and connect the verified identity to the configSet created by the deploy.  This linkage cannot be made in serverless.ts because the creation of the cognito user pool resource tests the email-send and fails the resource creation if the address is not verified in SES, and we cannot pause the deployment to verify the address over at gmail.

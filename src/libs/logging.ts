@@ -32,7 +32,6 @@ const config = JSON.parse(configString) as Configuration;
 
 const catPrefix = "src.libs.logging.";
 if (!isConfigured()) {
-  console.log(`Using logging config:\n${configString}`);
   configure(config);
   logFn(catPrefix)("notIsConfigured.configure.success", "info");
 } else {

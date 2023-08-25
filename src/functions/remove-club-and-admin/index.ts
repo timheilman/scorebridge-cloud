@@ -13,6 +13,7 @@ export default {
       Ref: "CognitoUserPool",
     },
   },
+  iamRoleStatementsName: `removeClubAndAdminIamRoleStmts-\${sls:stage}`,
   iamRoleStatements: [
     {
       Effect: "Allow",

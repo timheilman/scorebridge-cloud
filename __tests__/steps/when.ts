@@ -31,6 +31,8 @@ export const anUnknownUserAddsAClubViaApiKey = async (
       newAdminEmail,
       newClubName,
       suppressInvitationEmail: true, // only for testing, due to email quota
+      recaptchaToken:
+        "always honored in test envs; cannot be automatedly-tested in prod",
     },
   };
 

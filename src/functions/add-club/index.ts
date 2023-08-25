@@ -14,6 +14,7 @@ export default {
     },
     STAGE: `\${sls:stage}`,
   },
+  iamRoleStatementsName: `addClubIamRoleStmts-\${sls:stage}`,
   iamRoleStatements: [
     {
       Effect: "Allow",

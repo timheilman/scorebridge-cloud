@@ -11,12 +11,34 @@ import SesResources from "./serverless.ses";
 import SnsResources from "./serverless.sns";
 import SqsResources from "./serverless.sqs";
 
+// Need to set up a role in IAM
+// permissionsPolicy: AdministratorAccess (AWS managed)
+// Trust relationships:
+// trusted entities:
+// {
+//     "Version": "2012-10-17",
+//     "Statement": [
+//         {
+//             "Effect": "Allow",
+//             "Principal": {
+//                 "AWS": "arn:aws:iam::486128539022:root"
+//             },
+//             "Action": "sts:AssumeRole",
+//             "Condition": {
+//                 "StringEquals": {
+//                     "sts:ExternalId": "ServerlessFramework-b75511f8-4e58-4eec-bf6d-0e489b7345c4" better star this
+//                 }
+//             }
+//         }
+//     ]
+// }
+
 const serverlessConfiguration: AWS & {
   appSync: unknown;
 } = {
   org: "theilman",
   app: "scorebridge-cloud-app",
-  service: "scorebridge-cloud-service",
+  service: `scorebridge-cloud-service-\${sls:stage}`,
   frameworkVersion: "3",
   plugins: [
     "serverless-esbuild",
@@ -67,6 +89,7 @@ const serverlessConfiguration: AWS & {
       },
       portalUrl: {
         dev: "https://dev.d2efhllh5f21k3.amplifyapp.com/",
+        staging: "https://release-0-0-0.d219lcfyhni2tt.amplifyapp.com/",
       },
       sesFromAddress: {
         dev: "scorebridge8+dev@gmail.com",
