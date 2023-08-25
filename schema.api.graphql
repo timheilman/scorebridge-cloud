@@ -42,6 +42,7 @@ input AddClubInput {
   newAdminEmail: AWSEmail!
   newClubName: String!
   suppressInvitationEmail: Boolean
+  recaptchaToken: String
 }
 
 type AddClubResponse {

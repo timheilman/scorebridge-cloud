@@ -12,16 +12,20 @@ import {
   UpdateItemCommand,
   UpdateItemCommandOutput,
 } from "@aws-sdk/client-dynamodb";
+import { GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { cachedCognitoIdpClient } from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
 import { UserAlreadyExistsError } from "@libs/errors/user-already-exists-error";
+import { UserIsBotError } from "@libs/errors/user-is-bot-error";
 import { middyWithErrorHandling } from "@libs/lambda";
 import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
+import { cachedSecretsManagerClient } from "@libs/secretsManager";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
+import axios from "axios";
 import { ulid } from "ulid";
 
 import {
@@ -225,15 +229,37 @@ const almostMain: AppSyncResolverHandler<
 > = async (
   event: AppSyncResolverEvent<MutationAddClubArgs>,
 ): Promise<AddClubResponse> => {
-  const user = (await lcd(
-    getNullableUser(event.arguments.input.newAdminEmail),
-    "getNullableUser.success",
-    { newAdminEmail: event.arguments.input.newAdminEmail },
-  )) as AdminGetUserCommandOutput; // again I do not understand why this is needed
-  if (user) {
-    return await handleFoundCognitoUser(user, event.arguments.input);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+  const recaptchaSecret = JSON.parse(
+    (
+      await cachedSecretsManagerClient().send(
+        new GetSecretValueCommand({
+          SecretId: `${requiredEnvVar("STAGE")}.recaptchaSecret`,
+        }),
+      )
+    ).SecretString,
+  ).password;
+  const response = await axios.post(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${event.arguments.input.recaptchaToken}`,
+  );
+  log("recaptchaV2Widget.validationResponse", "debug", { response });
+
+  // Check response status and send back to the client-side
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (response.data?.success) {
+    const user = (await lcd(
+      getNullableUser(event.arguments.input.newAdminEmail),
+      "getNullableUser.success",
+      { newAdminEmail: event.arguments.input.newAdminEmail },
+    )) as AdminGetUserCommandOutput; // again I do not understand why this is needed
+    if (user) {
+      return await handleFoundCognitoUser(user, event.arguments.input);
+    } else {
+      return await handleNoSuchCognitoUser(event.arguments.input);
+    }
   } else {
-    return await handleNoSuchCognitoUser(event.arguments.input);
+    log("recaptchaV2Widget.badRecaptchaResponse", "warn");
+    throw new UserIsBotError("Validation of recaptcha2 widget failed");
   }
 };
 export const main = middyWithErrorHandling(almostMain);

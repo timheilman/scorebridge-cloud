@@ -26,6 +26,7 @@ export type Scalars = {
 export type AddClubInput = {
   newAdminEmail: Scalars['AWSEmail']['input'];
   newClubName: Scalars['String']['input'];
+  recaptchaToken?: InputMaybe<Scalars['String']['input']>;
   suppressInvitationEmail?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
