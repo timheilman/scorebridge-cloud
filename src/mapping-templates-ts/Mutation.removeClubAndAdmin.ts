@@ -1,10 +1,8 @@
 import { Context, LambdaRequest, util } from "@aws-appsync/utils";
 import { AppSyncIdentityCognito } from "aws-lambda";
 
-import {
-  MutationRemoveClubAndAdminArgs,
-  RemoveClubAndAdminResponse,
-} from "../../appsync";
+import { MutationRemoveClubAndAdminArgs } from "../../appsync";
+export { middyOnErrorHandlingResponse as response } from "./mappingTemplateUtils";
 
 export function request(
   ctx: Context<MutationRemoveClubAndAdminArgs>,
@@ -46,27 +44,3 @@ export function request(
     }
   }
 }
-
-export const response = (
-  ctx: Context<
-    MutationRemoveClubAndAdminArgs,
-    object,
-    object,
-    object,
-    RemoveClubAndAdminResponse
-  >,
-) => {
-  if (ctx.error) {
-    util.error(ctx.error.message, ctx.error.type);
-  }
-  // this happens due to middy error handling middleware per Yan Cui
-  /* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
-  // @ts-ignore
-  if (ctx.result.error) {
-    // @ts-ignore
-    util.error(ctx.result.error.message, ctx.result.error.type);
-  }
-  /* eslint-enable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
-
-  return ctx.result;
-};
