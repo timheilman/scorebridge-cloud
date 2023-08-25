@@ -1,6 +1,6 @@
 import { Context } from "@aws-appsync/utils";
 
-export const response = (ctx: Context) => {
+export const errorHandlingResponse = (ctx: Context) => {
   if (ctx.error) {
     util.error(ctx.error.message, ctx.error.type);
   }
