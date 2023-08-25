@@ -238,7 +238,7 @@ const almostMain: AppSyncResolverHandler<
         }),
       )
     ).SecretString,
-  ).password;
+  ).secretKey;
   const response = await axios.post(
     `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${event.arguments.input.recaptchaToken}`,
   );

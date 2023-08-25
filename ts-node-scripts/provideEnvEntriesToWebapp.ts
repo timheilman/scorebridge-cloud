@@ -15,3 +15,10 @@ function convertToReactActVar(s: string) {
 ].forEach((webappDependentVar) => {
   console.log(convertToReactActVar(webappDependentVar));
 });
+// cannot automatically test captcha in prod
+if (process.env["STAGE"] !== "prod") {
+  // this is the test pass-thru site key
+  console.log(
+    `REACT_APP_RECAPTCHA2_SITE_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI`,
+  );
+}
