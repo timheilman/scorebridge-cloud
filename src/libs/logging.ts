@@ -30,19 +30,22 @@ const configString = process.env["SB_LOGGING_CONFIG"]
     );
 const config = JSON.parse(configString) as Configuration;
 
-const catPrefix = "src.libs.logging.";
-if (!isConfigured()) {
-  configure(config);
-  logFn(catPrefix)("notIsConfigured.configure.success", "info");
-} else {
-  logFn(catPrefix)("isConfigured.skipWarning", "warn", {
-    message: `log4js was already configured; skipping configuration`,
-  });
-}
+const metaLogCatPrefix = "src.libs.logging.";
 
 export function logFn(
   catPrefix: string,
+  metaLogLevel = "trace",
 ): (catSuffix: string, logLevel: string, ...addlParams: unknown[]) => void {
+  if (!isConfigured()) {
+    if (metaLogLevel !== "trace") {
+      // emit only at debug and above before init
+      console.log(`Using logging config:\n${configString}`);
+    }
+    configure(config);
+    getLogger(metaLogCatPrefix + "logFn.configure.success").log(metaLogLevel);
+  } else {
+    getLogger(metaLogCatPrefix + "logFn.preconfigured").log(metaLogLevel);
+  }
   return (catSuffix: string, logLevel: string, ...addlParams: unknown[]) => {
     getLogger(catPrefix + catSuffix).log(logLevel, ...addlParams);
   };

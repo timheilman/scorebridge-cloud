@@ -45,7 +45,7 @@ function linesBetweenPromptAndEmptyLine(slsInfoLines: string[]) {
 }
 
 function shellInputFormat(myStackOutputLines: string[]) {
-  return myStackOutputLines.map((stackOutputLine) => {
+  return myStackOutputLines.sort().map((stackOutputLine) => {
     const colonSpace = ": ";
     const keyAndRest = stackOutputLine.split(colonSpace);
     return `${camelToScreamingSnake(keyAndRest[0].trim())}="${keyAndRest
@@ -61,17 +61,25 @@ function graphQlApiUrl(slsInfoLines: string[]) {
   }
   return slsInfoLines[apiUrlIndex].match(/^ {2}graphql: (.*)$/)[1];
 }
+const stage = process.argv[2];
 
-exec("npx sls info --verbose", (error, stdout /* , stderr */) => {
-  if (error) {
-    log("npxSlsInfoVerbose.error", "error", error);
-  }
-  // stderr expected and ignored
-  const slsInfoLines = stdout.split("\n");
-  console.log(
-    `${shellInputFormat(linesBetweenPromptAndEmptyLine(slsInfoLines)).join(
-      "\n",
-    )}
-API_URL=${graphQlApiUrl(slsInfoLines)}\n`,
-  );
-});
+// Check if both email and club slug are provided as command-line arguments
+if (!stage) {
+  log("stageNotPresent", "error", {
+    message: "Please provide the stage as a command-line argument.",
+  });
+  process.exit(1);
+}
+exec(
+  `npx sls info --verbose --stage ${stage}`,
+  (error, stdout /* , stderr */) => {
+    if (error) {
+      log("npxSlsInfoVerbose.error", "error", error);
+    }
+    // stderr expected and ignored
+    const slsInfoLines = stdout.split("\n");
+    const stackOutputLines = linesBetweenPromptAndEmptyLine(slsInfoLines);
+    stackOutputLines.push(`  ApiUrl: ${graphQlApiUrl(slsInfoLines)}`);
+    console.log(shellInputFormat(stackOutputLines).join("\n"));
+  },
+);

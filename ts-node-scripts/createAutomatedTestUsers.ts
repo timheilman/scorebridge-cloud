@@ -99,21 +99,15 @@ async function createAutomatedTestUsers(): Promise<void> {
     "Club 01 for automated testing",
   );
   const settledCogUserCreateResults = await Promise.allSettled([
-    lcd(
-      cognitoCreateUser(emailAdminSuper, "SUPPRESS"),
-      `cognitoCreateUser.success`,
-      { emailAdminSuper },
-    ) as Promise<AdminCreateUserCommandOutput>,
-    lcd(
-      cognitoCreateUser(emailAdminClub00, "SUPPRESS"),
-      `cognitoCreateUser.success`,
-      { emailAdminClub00 },
-    ) as Promise<AdminCreateUserCommandOutput>,
-    lcd(
-      cognitoCreateUser(emailAdminClub01, "SUPPRESS"),
-      `cognitoCreateUser.success`,
-      { emailAdminClub01 },
-    ) as Promise<AdminCreateUserCommandOutput>,
+    lcd(cognitoCreateUser(emailAdminSuper, "SUPPRESS"), `cognitoCreateUser`, {
+      emailAdminSuper,
+    }) as Promise<AdminCreateUserCommandOutput>,
+    lcd(cognitoCreateUser(emailAdminClub00, "SUPPRESS"), `cognitoCreateUser`, {
+      emailAdminClub00,
+    }) as Promise<AdminCreateUserCommandOutput>,
+    lcd(cognitoCreateUser(emailAdminClub01, "SUPPRESS"), `cognitoCreateUser`, {
+      emailAdminClub01,
+    }) as Promise<AdminCreateUserCommandOutput>,
   ]);
   const [userIdAdminSuper, userIdAdminClub0, userIdAdminClub1] =
     await Promise.all(

@@ -22,7 +22,11 @@ async function logCompletionDecorator<T>(
   ...addlArgs: unknown[]
 ) {
   logFn(catPrefix)(`${catSuffix}.begin`, logLevel, ...addlArgs);
-  const r = await promise;
-  logFn(catPrefix)(`${catSuffix}.end`, logLevel, ...addlArgs);
-  return r;
+  try {
+    const r = await promise;
+    logFn(catPrefix)(`${catSuffix}.end.success`, logLevel, ...addlArgs);
+    return r;
+  } catch (e: unknown) {
+    logFn(catPrefix)(`${catSuffix}.end.error`, logLevel, ...[e, ...addlArgs]);
+  }
 }

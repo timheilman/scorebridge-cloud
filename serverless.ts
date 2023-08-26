@@ -38,13 +38,12 @@ const serverlessConfiguration: AWS & {
 } = {
   org: "theilman",
   app: "scorebridge-cloud-app",
-  service: `scorebridge-cloud-service-\${sls:stage}`,
+  service: `\${self:custom.settings.serverlessService.\${sls:stage}}`,
   frameworkVersion: "3",
   plugins: [
     "serverless-esbuild",
     "serverless-appsync-plugin",
     "serverless-iam-roles-per-function",
-    "serverless-export-env",
   ],
   provider: {
     name: "aws",
@@ -101,6 +100,10 @@ const serverlessConfiguration: AWS & {
         staging: "scorebridge8+staging-do-not-reply@gmail.com",
         prod: "scorebridge8+do-not-reply@gmail.com",
       },
+      serverlessService: {
+        dev: "sbc00", // short b/c every lambda fn name is extended by this and stage
+        staging: "sbc01",
+      },
       AWS_ACCOUNT_ID: `\${self:custom.settings.awsAcctId.\${sls:stage}}`,
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       COGNITO_USER_POOL_NAME: `ScoreBridgeCognitoUserPool-\${sls:stage}`,
@@ -133,7 +136,10 @@ const serverlessConfiguration: AWS & {
     },
     Outputs: {
       AddClubApiKey: { Value: { "Fn::GetAtt": ["AddClubApiKey", "ApiKey"] } },
+      ApiUrl: { Value: { "Fn::GetAtt": ["GraphQlApi", "GraphQLUrl"] } },
       AwsRegion: { Value: `\${aws:region}` },
+      ClubsTable: { Value: { Ref: "ClubsTable" } },
+      UsersTable: { Value: { Ref: "UsersTable" } },
       CognitoUserPoolClientIdAutomatedTest: {
         Value: { Ref: "UserPoolClientAutomatedTest" },
       },

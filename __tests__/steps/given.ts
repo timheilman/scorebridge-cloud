@@ -61,10 +61,9 @@ export const aLoggedInUser = async (email: string, password: string) => {
 };
 
 async function fetchSecret(SecretId: string) {
+  log("fetchSecret", "debug", { SecretId });
   const result = await cachedSecretsManagerClient().send(
-    new GetSecretValueCommand({
-      SecretId: SecretId,
-    }),
+    new GetSecretValueCommand({ SecretId }),
   );
   return result.SecretString;
 }
@@ -81,16 +80,18 @@ async function getAutomatedTestUserPassword(premadeTestAcctEmail: string) {
 }
 
 export const aLoggedInAdminSuper = async () => {
-  const premadeAdminSuperEmail =
-    "scorebridge8+dev-testUser-adminSuper@gmail.com";
+  const premadeAdminSuperEmail = `scorebridge8+${requiredEnvVar(
+    "STAGE",
+  )}-testUser-adminSuper@gmail.com`;
   const password = await getAutomatedTestUserPassword(premadeAdminSuperEmail);
   log("aLoggedInAdminSuper.end", "info", { password });
   return aLoggedInUser(premadeAdminSuperEmail, password);
 };
 
 export const aLoggedInAdminClub = async () => {
-  const premadeAdminClubEmail =
-    "scorebridge8+dev-testUser-adminClub-club00@gmail.com";
+  const premadeAdminClubEmail = `scorebridge8+${requiredEnvVar(
+    "STAGE",
+  )}-testUser-adminClub-club00@gmail.com`;
   const password = await getAutomatedTestUserPassword(premadeAdminClubEmail);
   return aLoggedInUser(premadeAdminClubEmail, password);
 };
