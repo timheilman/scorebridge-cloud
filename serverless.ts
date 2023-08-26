@@ -74,35 +74,42 @@ const serverlessConfiguration: AWS & {
       awsAcctId: {
         dev: "437893194722",
         staging: "655935885730",
+        tmpenv: "437893194722",
         prod: "515279954553",
       },
       inviteMessageSubject: {
         dev: "Welcome to the ScoreBridge-dev App",
         staging: "Welcome to the ScoreBridge-staging App",
+        tmpenv: "Welcome to the ScoreBridge-tmpenv App",
         prod: "Welcome to the ScoreBridge App",
       },
       portalName: {
         dev: "ScoreBridge-dev Admin Portal",
         staging: "ScoreBridge-staging Admin Portal",
+        tmpenv: "ScoreBridge-tmpenv Admin Portal",
         prod: "ScoreBridge Admin Portal",
       },
       portalUrl: {
         dev: "https://dev.d2efhllh5f21k3.amplifyapp.com/",
         staging: "https://release-0-0-0.d219lcfyhni2tt.amplifyapp.com/",
+        tmpenv: "https://tmpenv.d219lcfyhni2tt.amplifyapp.com/",
       },
       sesFromAddress: {
         dev: "scorebridge8+dev@gmail.com",
         staging: "scorebridge8+staging@gmail.com",
+        tmpenv: "scorebridge8+tmpenv@gmail.com",
         prod: "scorebridge8@gmail.com",
       },
       sesReplyToAddress: {
         dev: "scorebridge8+dev-do-not-reply@gmail.com",
         staging: "scorebridge8+staging-do-not-reply@gmail.com",
+        tmpenv: "scorebridge8+tmpenv-do-not-reply@gmail.com",
         prod: "scorebridge8+do-not-reply@gmail.com",
       },
       serverlessService: {
         dev: "sbc00", // short b/c every lambda fn name is extended by this and stage
         staging: "sbc01",
+        tmpenv: "sbc00",
       },
       AWS_ACCOUNT_ID: `\${self:custom.settings.awsAcctId.\${sls:stage}}`,
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",

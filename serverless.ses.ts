@@ -3,7 +3,7 @@ export default {
   SesConfigSet: {
     Condition: "StageIsNotProd",
     Type: "AWS::SES::ConfigurationSet",
-    Properties: { Name: "SesConfigSet" },
+    Properties: { Name: "SesConfigSet${sls:stage}" },
   },
   SesConfigSetEventDestination: {
     Type: "AWS::SES::ConfigurationSetEventDestination",

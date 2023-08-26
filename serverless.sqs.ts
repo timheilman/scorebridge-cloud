@@ -3,7 +3,7 @@ export default {
     Type: "AWS::SQS::Queue",
     Condition: "StageIsNotProd",
     Properties: {
-      QueueName: "SesSandboxQueue",
+      QueueName: `SesSandboxQueue\${sls:stage}`,
       RedrivePolicy: {
         deadLetterTargetArn: {
           "Fn::GetAtt": ["SesSandboxDlQueue", "Arn"],
@@ -16,7 +16,7 @@ export default {
     Type: "AWS::SQS::Queue",
     Condition: "StageIsNotProd",
     Properties: {
-      QueueName: "SesSandboxDlQueue",
+      QueueName: `SesSandboxDlQueue\${sls:stage}`,
     },
   },
   SesSandboxSnsSubscription: {
