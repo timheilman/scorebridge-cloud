@@ -5,10 +5,32 @@ schema {
 
 # ignore for now; Query simply has to be present
 type Query {
+  club(clubId: String!): Club
+  @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
+
+  tabletsForClub(clubId: String!): [Tablet]!
+  @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
+
   exampleLambdaDataSource(
-    input: ExampleLambdaDataSourceInput
+    input: ExampleLambdaDataSourceInput!
   ): ExampleLambdaDataSourceOutput!
   @aws_cognito_user_pools(cognito_groups: [])
+}
+
+type Club {
+  id: String
+  name: String
+  createdAt: AWSDateTime
+}
+
+type Tablet {
+  id: String
+  name: String
+  createdAt: AWSDateTime
+}
+
+type TabletsForClubOutput {
+  tablets: [Club]!
 }
 
 input ExampleLambdaDataSourceInput {
@@ -28,13 +50,39 @@ type Mutation {
   @aws_api_key
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
-  # tested in cloud but not present yet in webapp
   removeClubAndAdmin(input: RemoveClubAndAdminInput!): RemoveClubAndAdminResponse!
   @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
+
+  addTabletNonce(input: AddTabletNonceInput!): AddTabletNonceResponse!
+  @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+
+  addTablet(input: AddTabletInput!): AddTabletResponse!
+  @aws_api_key
+  @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+}
+
+input AddTabletNonceInput {
+  clubId: String!
+  tabletName: String!
+  nonce: String!
+}
+
+type AddTabletNonceResponse {
+  status: String!
+}
+
+input AddTabletInput {
+  clubId: String!
+  nonce: String!
+}
+
+type AddTabletResponse {
+  username: AWSEmail!
+  password: String!
 }
 
 type UnexpectedErrorResponse {
-  neverGetsReturned: String! @aws_api_key @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+  neverGetsReturned: String! @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 }
 
 input AddClubInput {
