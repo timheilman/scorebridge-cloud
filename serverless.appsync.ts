@@ -15,6 +15,7 @@ type DdbResolver = {
 const ddr = (
   endpointType: EndpointType,
   endpointName: string,
+  // logical resource name for table is the equivalent, capitalized, in serverless.dynamodb.ts:
   dataSource: string,
 ): DdbResolver => ({ endpointType, endpointName, dataSource });
 
@@ -33,6 +34,7 @@ const lr = (
 
 const ddbResolvers: DdbResolver[] = [
   ddr("Query", "getClub", "clubsTable"),
+  ddr("Query", "listClubDevices", "clubDevicesTable"),
   // ddr("Mutation", "editMyProfile", "usersTable"),
 ];
 

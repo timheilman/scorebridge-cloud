@@ -14,6 +14,9 @@ export function request(
     ctx,
     "Can only list one's own club's devices",
   );
+  if (limit > 50) {
+    util.error("Maximum limit is 50", "400: Bad Request");
+  }
   return {
     operation: "Query",
     query: {
