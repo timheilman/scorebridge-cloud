@@ -5,10 +5,10 @@ schema {
 
 # ignore for now; Query simply has to be present
 type Query {
-  club(clubId: String!): Club
+  getClub(clubId: String!): Club
   @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
-  tabletsForClub(clubId: String!): [Tablet]!
+  listClubDevices(input: ListClubDevicesInput): ListClubDevicesOutput!
   @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
   exampleLambdaDataSource(
@@ -17,19 +17,30 @@ type Query {
   @aws_cognito_user_pools(cognito_groups: [])
 }
 
+input ListClubDevicesInput {
+  clubId: String!
+  nextToken: String
+  limit:Int = 50
+}
+
+type ListClubDevicesOutput {
+  clubDevices: [ClubDevice]!
+  nextToken: String
+}
+
 type Club {
   id: String
   name: String
   createdAt: AWSDateTime
 }
 
-type Tablet {
-  id: String
+type ClubDevice {
+  id: AWSEmail
   name: String
   createdAt: AWSDateTime
 }
 
-type TabletsForClubOutput {
+type ListClubOutput {
   tablets: [Club]!
 }
 
@@ -46,37 +57,39 @@ type Mutation {
   unexpectedError: UnexpectedErrorResponse!
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
+  # TODO: rename to createClub, to conform to CRUD
   addClub(input: AddClubInput!): AddClubResponse!
   @aws_api_key
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
+  # TODO: rename to deleteClubAndAdmin, to conform to CRUD
   removeClubAndAdmin(input: RemoveClubAndAdminInput!): RemoveClubAndAdminResponse!
   @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
-  addTabletNonce(input: AddTabletNonceInput!): AddTabletNonceResponse!
-  @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+  createClubDeviceNonce(input: CreateClubDeviceNonceInput!): CreateClubDeviceNonceResponse!
+  @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
-  addTablet(input: AddTabletInput!): AddTabletResponse!
+  createClubDevice(input: CreateClubDeviceInput!): CreateClubDeviceResponse!
   @aws_api_key
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 }
 
-input AddTabletNonceInput {
+input CreateClubDeviceNonceInput {
   clubId: String!
   tabletName: String!
   nonce: String!
 }
 
-type AddTabletNonceResponse {
+type CreateClubDeviceNonceResponse {
   status: String!
 }
 
-input AddTabletInput {
+input CreateClubDeviceInput {
   clubId: String!
   nonce: String!
 }
 
-type AddTabletResponse {
+type CreateClubDeviceResponse {
   username: AWSEmail!
   password: String!
 }

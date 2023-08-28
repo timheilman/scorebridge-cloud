@@ -63,7 +63,6 @@ function graphQlApiUrl(slsInfoLines: string[]) {
 }
 const stage = process.argv[2];
 
-// Check if both email and club slug are provided as command-line arguments
 if (!stage) {
   log("stageNotPresent", "error", {
     message: "Please provide the stage as a command-line argument.",

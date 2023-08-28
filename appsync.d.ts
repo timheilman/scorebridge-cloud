@@ -36,6 +36,42 @@ export type AddClubResponse = {
   userId: Scalars['String']['output'];
 };
 
+export type Club = {
+  __typename?: 'Club';
+  createdAt?: Maybe<Scalars['AWSDateTime']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+};
+
+export type ClubDevice = {
+  __typename?: 'ClubDevice';
+  createdAt?: Maybe<Scalars['AWSDateTime']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+};
+
+export type CreateClubDeviceInput = {
+  clubId: Scalars['String']['input'];
+  nonce: Scalars['String']['input'];
+};
+
+export type CreateClubDeviceNonceInput = {
+  clubId: Scalars['String']['input'];
+  nonce: Scalars['String']['input'];
+  tabletName: Scalars['String']['input'];
+};
+
+export type CreateClubDeviceNonceResponse = {
+  __typename?: 'CreateClubDeviceNonceResponse';
+  status: Scalars['String']['output'];
+};
+
+export type CreateClubDeviceResponse = {
+  __typename?: 'CreateClubDeviceResponse';
+  password: Scalars['String']['output'];
+  username: Scalars['AWSEmail']['output'];
+};
+
 export type ExampleLambdaDataSourceInput = {
   contentType?: InputMaybe<Scalars['String']['input']>;
   extension: Scalars['String']['input'];
@@ -46,9 +82,28 @@ export type ExampleLambdaDataSourceOutput = {
   exampleOutputField: Scalars['String']['output'];
 };
 
+export type ListClubDevicesInput = {
+  clubId: Scalars['String']['input'];
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  nextToken?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ListClubDevicesOutput = {
+  __typename?: 'ListClubDevicesOutput';
+  clubDevices: Array<Maybe<ClubDevice>>;
+  nextToken?: Maybe<Scalars['String']['output']>;
+};
+
+export type ListClubOutput = {
+  __typename?: 'ListClubOutput';
+  tablets: Array<Maybe<Club>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addClub: AddClubResponse;
+  createClubDevice: CreateClubDeviceResponse;
+  createClubDeviceNonce: CreateClubDeviceNonceResponse;
   removeClubAndAdmin: RemoveClubAndAdminResponse;
   unexpectedError: UnexpectedErrorResponse;
 };
@@ -59,6 +114,16 @@ export type MutationAddClubArgs = {
 };
 
 
+export type MutationCreateClubDeviceArgs = {
+  input: CreateClubDeviceInput;
+};
+
+
+export type MutationCreateClubDeviceNonceArgs = {
+  input: CreateClubDeviceNonceInput;
+};
+
+
 export type MutationRemoveClubAndAdminArgs = {
   input: RemoveClubAndAdminInput;
 };
@@ -66,11 +131,23 @@ export type MutationRemoveClubAndAdminArgs = {
 export type Query = {
   __typename?: 'Query';
   exampleLambdaDataSource: ExampleLambdaDataSourceOutput;
+  getClub?: Maybe<Club>;
+  listClubDevices: ListClubDevicesOutput;
 };
 
 
 export type QueryExampleLambdaDataSourceArgs = {
-  input?: InputMaybe<ExampleLambdaDataSourceInput>;
+  input: ExampleLambdaDataSourceInput;
+};
+
+
+export type QueryGetClubArgs = {
+  clubId: Scalars['String']['input'];
+};
+
+
+export type QueryListClubDevicesArgs = {
+  input?: InputMaybe<ListClubDevicesInput>;
 };
 
 export type RemoveClubAndAdminInput = {

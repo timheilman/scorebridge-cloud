@@ -22,10 +22,8 @@ async function createFirstCognitoAdminSuperForEnv(
   log("createFirstCognitoAdminSuperForEnv.success", "info");
 }
 
-// Retrieve the email and club slug from command-line arguments
 const email = process.argv[2];
 
-// Check if both email and club slug are provided as command-line arguments
 if (!email) {
   log("emailNotPresent", "error", {
     message: "Please provide the email as a command-line argument.",

@@ -194,7 +194,7 @@ async function handleNoSuchCognitoUser({
   newClubName,
 }: AddClubInput) {
   const clubId = ulid();
-  // start club creation in parallel since it does not need userId
+  // start get-club creation in parallel since it does not need userId
   const ddbCreateClubPromise = ddbCreateClub(clubId, newClubName);
 
   // everything else needs the userId, so await its creation

@@ -1,7 +1,7 @@
 import { Context, LambdaRequest, util } from "@aws-appsync/utils";
-import { AppSyncIdentityCognito } from "aws-lambda";
 
 import { MutationRemoveClubAndAdminArgs } from "../../appsync";
+import { errorOnClubMultitenancyFailure } from "./mappingTemplateUtils";
 export { middyOnErrorHandlingResponse as response } from "./mappingTemplateUtils";
 
 export function request(
@@ -9,38 +9,21 @@ export function request(
 ): LambdaRequest {
   const clubId = ctx.arguments.input.clubId;
   const userId = ctx.arguments.input.userId;
-  if (!clubId) {
-    util.error("No clubId", "No clubId");
-  }
-  const cogIdentity = ctx.identity as AppSyncIdentityCognito;
-  if (!cogIdentity) {
-    util.error("No cogIdentity", "No cogIdentity");
-  }
-  const groups = cogIdentity.groups || [];
-  if (!groups) {
-    util.error("No groups", "No groups");
-  }
-  const isAdminSuper = groups.includes("adminSuper");
-  const claims = cogIdentity.claims as Record<string, unknown>;
-  if (!claims) {
-    util.error("No claims", "No claims");
-  }
-  if (!isAdminSuper && clubId !== claims["custom:tenantId"]) {
+
+  const { isAdminSuper, cogIdentity } = errorOnClubMultitenancyFailure(
+    clubId,
+    ctx,
+    "Can only remove a club that one is an admin of",
+  );
+  if (!isAdminSuper && cogIdentity.sub !== userId) {
     util.error(
-      "Can only remove a club that one is an admin of",
-      "401: Invalid Club Id",
+      "Can only remove one's self, not others",
+      "401: Invalid User Id",
     );
   } else {
-    if (!isAdminSuper && cogIdentity.sub !== userId) {
-      util.error(
-        "Can only remove one's self, not others",
-        "401: Invalid User Id",
-      );
-    } else {
-      return {
-        operation: "Invoke",
-        payload: ctx,
-      };
-    }
+    return {
+      operation: "Invoke",
+      payload: ctx,
+    };
   }
 }
