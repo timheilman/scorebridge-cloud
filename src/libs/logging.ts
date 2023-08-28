@@ -17,12 +17,12 @@ const configString = process.env["SB_LOGGING_CONFIG"]
         categories: {
           default: {
             appenders: ["console"],
-            level: "debug",
+            level: "info",
           },
-          __test__: {
-            appenders: ["console"],
-            level: "trace",
-          },
+          // __test__: {
+          //   appenders: ["console"],
+          //   level: "info",
+          // },
         },
       },
       null,

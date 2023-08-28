@@ -56,7 +56,7 @@ const graphQl = async (
     throwOnErrors({ query, variables, errors });
     return data;
   } catch (err) {
-    log("gql.axiosPost.endError", "error", err);
+    log("gql.axiosPost.endError", "debug", err);
     throw err;
   }
 };

@@ -1,9 +1,14 @@
 import { config as dotenvConfig } from "dotenv";
 
-import { AddClubResponse, RemoveClubAndAdminResponse } from "../../appsync";
+import {
+  AddClubResponse,
+  RemoveClubAndAdminResponse,
+  UnexpectedErrorResponse,
+} from "../../appsync";
 import { logFn } from "../../src/libs/logging";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
 import GraphQL from "../lib/graphql";
+
 const log = logFn("__tests__.steps.when.");
 dotenvConfig();
 
@@ -16,6 +21,11 @@ const addClubGql = `mutation addClub($input: AddClubInput!) {
 const removeClubAndAdminGql = `mutation removeClubAndAdmin($input: RemoveClubAndAdminInput!) {
     removeClubAndAdmin(input: $input) {
       status
+    }
+  }`;
+const unexpectedErrorGql = `mutation unexpectedError {
+    unexpectedError {
+      neverGetsReturned
     }
   }`;
 
@@ -75,6 +85,30 @@ export const anUnknownUserCallsRemoveClubAndAdmin = async (
 
   log("anUnknownUserCallsRemoveClubAndAdmin", "debug", { output });
   return output;
+};
+
+export const anUnknownUserCallsUnexpectedError =
+  async (): Promise<UnexpectedErrorResponse> => {
+    const data = await GraphQL(
+      requiredEnvVar("API_URL"),
+      unexpectedErrorGql,
+      {},
+      null,
+      requiredEnvVar("ADD_CLUB_API_KEY"),
+    );
+    return data.unexpectedError as UnexpectedErrorResponse;
+  };
+
+export const aUserCallsUnexpectedError = async (
+  idToken: string,
+): Promise<UnexpectedErrorResponse> => {
+  const data = await GraphQL(
+    requiredEnvVar("API_URL"),
+    unexpectedErrorGql,
+    {},
+    idToken,
+  );
+  return data.unexpectedError as UnexpectedErrorResponse;
 };
 
 export const aUserCallsRemoveClubAndAdmin = async (

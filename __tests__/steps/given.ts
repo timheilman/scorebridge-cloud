@@ -84,7 +84,7 @@ export const aLoggedInAdminSuper = async () => {
     "STAGE",
   )}-testUser-adminSuper@gmail.com`;
   const password = await getAutomatedTestUserPassword(premadeAdminSuperEmail);
-  log("aLoggedInAdminSuper.end", "info", { password });
+  log("aLoggedInAdminSuper.end", "debug", { password });
   return aLoggedInUser(premadeAdminSuperEmail, password);
 };
 

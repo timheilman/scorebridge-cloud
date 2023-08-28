@@ -22,7 +22,6 @@ type ExampleLambdaDataSourceOutput {
 
 type Mutation {
   unexpectedError: UnexpectedErrorResponse!
-  @aws_api_key
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
   addClub(input: AddClubInput!): AddClubResponse!
