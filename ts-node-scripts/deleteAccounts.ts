@@ -6,7 +6,7 @@ import {
 import {
   cognitoDestroyUser,
   deleteItemFromTable,
-} from "@functions/remove-club-and-admin/handler";
+} from "@functions/delete-club-and-admin/handler";
 
 import { cachedCognitoIdpClient } from "../src/libs/cognito";
 import requiredEnvVar from "../src/libs/requiredEnvVar";

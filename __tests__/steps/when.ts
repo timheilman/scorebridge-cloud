@@ -2,7 +2,7 @@ import { config as dotenvConfig } from "dotenv";
 
 import {
   CreateClubResponse,
-  RemoveClubAndAdminResponse,
+  DeleteClubAndAdminResponse,
   UnexpectedErrorResponse,
 } from "../../appsync";
 import { logFn } from "../../src/libs/logging";
@@ -18,8 +18,8 @@ const createClubGql = `mutation createClub($input: CreateClubInput!) {
       userId
     }
   }`;
-const removeClubAndAdminGql = `mutation removeClubAndAdmin($input: RemoveClubAndAdminInput!) {
-    removeClubAndAdmin(input: $input) {
+const deleteClubAndAdminGql = `mutation deleteClubAndAdmin($input: DeleteClubAndAdminInput!) {
+    deleteClubAndAdmin(input: $input) {
       status
     }
   }`;
@@ -63,10 +63,10 @@ export const anUnknownUserAddsAClubViaApiKey = async (
 };
 
 // TODO: refactor out the duplication with the next two functions
-export const anUnknownUserCallsRemoveClubAndAdmin = async (
+export const anUnknownUserCallsDeleteClubAndAdmin = async (
   userId: string,
   clubId: string,
-): Promise<RemoveClubAndAdminResponse> => {
+): Promise<DeleteClubAndAdminResponse> => {
   const variables = {
     input: {
       userId,
@@ -76,14 +76,14 @@ export const anUnknownUserCallsRemoveClubAndAdmin = async (
 
   const data = await GraphQL(
     requiredEnvVar("API_URL"),
-    removeClubAndAdminGql,
+    deleteClubAndAdminGql,
     variables,
     null,
     requiredEnvVar("CREATE_CLUB_API_KEY"),
   );
-  const output = data.removeClubAndAdmin as RemoveClubAndAdminResponse;
+  const output = data.deleteClubAndAdmin as DeleteClubAndAdminResponse;
 
-  log("anUnknownUserCallsRemoveClubAndAdmin", "debug", { output });
+  log("anUnknownUserCallsDeleteClubAndAdmin", "debug", { output });
   return output;
 };
 
@@ -111,22 +111,22 @@ export const aUserCallsUnexpectedError = async (
   return data.unexpectedError as UnexpectedErrorResponse;
 };
 
-export const aUserCallsRemoveClubAndAdmin = async (
+export const aUserCallsDeleteClubAndAdmin = async (
   userId: string,
   clubId: string,
   idToken: string,
-): Promise<RemoveClubAndAdminResponse> => {
+): Promise<DeleteClubAndAdminResponse> => {
   const variables = { input: { userId, clubId } };
 
   const data = await GraphQL(
     requiredEnvVar("API_URL"),
-    removeClubAndAdminGql,
+    deleteClubAndAdminGql,
     variables,
     idToken,
   );
-  const output = data.removeClubAndAdmin as RemoveClubAndAdminResponse;
+  const output = data.deleteClubAndAdmin as DeleteClubAndAdminResponse;
 
-  log("aUserCallsRemoveClubAndAdmin", "debug", { output });
+  log("aUserCallsDeleteClubAndAdmin", "debug", { output });
   return output;
 };
 

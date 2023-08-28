@@ -1,11 +1,11 @@
 import { Context, LambdaRequest, util } from "@aws-appsync/utils";
 
-import { MutationRemoveClubAndAdminArgs } from "../../appsync";
+import { MutationDeleteClubAndAdminArgs } from "../../appsync";
 import { errorOnClubMultitenancyFailure } from "./mappingTemplateUtils";
 export { middyOnErrorHandlingResponse as response } from "./mappingTemplateUtils";
 
 export function request(
-  ctx: Context<MutationRemoveClubAndAdminArgs>,
+  ctx: Context<MutationDeleteClubAndAdminArgs>,
 ): LambdaRequest {
   const clubId = ctx.arguments.input.clubId;
   const userId = ctx.arguments.input.userId;

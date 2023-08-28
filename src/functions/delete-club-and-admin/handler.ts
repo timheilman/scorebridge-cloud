@@ -11,11 +11,11 @@ import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 
 import {
-  MutationRemoveClubAndAdminArgs,
-  RemoveClubAndAdminResponse,
+  DeleteClubAndAdminResponse,
+  MutationDeleteClubAndAdminArgs,
 } from "../../../appsync";
 
-const catPrefix = "src.functions.remove-club-and-admin.handler.";
+const catPrefix = "src.functions.delete-club-and-admin.handler.";
 const lcd = getLogCompletionDecorator(catPrefix, "debug");
 const log = logFn(catPrefix);
 
@@ -38,11 +38,11 @@ export function deleteItemFromTable(tableName: string, userId: string) {
 }
 
 const almostMain: AppSyncResolverHandler<
-  MutationRemoveClubAndAdminArgs,
-  RemoveClubAndAdminResponse
+  MutationDeleteClubAndAdminArgs,
+  DeleteClubAndAdminResponse
 > = async (
-  event: AppSyncResolverEvent<MutationRemoveClubAndAdminArgs>,
-): Promise<RemoveClubAndAdminResponse> => {
+  event: AppSyncResolverEvent<MutationDeleteClubAndAdminArgs>,
+): Promise<DeleteClubAndAdminResponse> => {
   const { clubId } = event.arguments.input;
   const promises: Promise<unknown>[] = [];
   promises.push(

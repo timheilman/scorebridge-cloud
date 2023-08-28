@@ -57,13 +57,11 @@ type Mutation {
   unexpectedError: UnexpectedErrorResponse!
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
-  # TODO: rename to createClub, to conform to CRUD
   createClub(input: CreateClubInput!): CreateClubResponse!
   @aws_api_key
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
-  # TODO: rename to deleteClubAndAdmin, to conform to CRUD
-  removeClubAndAdmin(input: RemoveClubAndAdminInput!): RemoveClubAndAdminResponse!
+  deleteClubAndAdmin(input: DeleteClubAndAdminInput!): DeleteClubAndAdminResponse!
   @aws_cognito_user_pools(cognito_groups: ["adminClub","adminSuper"])
 
   createClubDevice(input: CreateClubDeviceInput!): CreateClubDeviceResponse!
@@ -96,12 +94,12 @@ type CreateClubResponse {
   clubId: String! @aws_api_key @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 }
 
-input RemoveClubAndAdminInput {
+input DeleteClubAndAdminInput {
   userId: String!
   clubId: String!
 }
 
-type RemoveClubAndAdminResponse {
+type DeleteClubAndAdminResponse {
   status: String!
 }
 

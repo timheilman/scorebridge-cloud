@@ -24,11 +24,11 @@ import {
 } from "../../steps/then";
 import {
   anUnknownUserAddsAClubViaApiKey,
-  anUnknownUserCallsRemoveClubAndAdmin,
+  anUnknownUserCallsDeleteClubAndAdmin,
   aUserCallsCreateClub,
-  aUserCallsRemoveClubAndAdmin,
+  aUserCallsDeleteClubAndAdmin,
 } from "../../steps/when";
-const log = logFn("__tests__/test_cases/e2e/createClub-removeClubAndAdmin.");
+const log = logFn("__tests__/test_cases/e2e/createClub-deleteClubAndAdmin.");
 
 const timestampFormat =
   /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g;
@@ -102,14 +102,14 @@ describe("When an unknown user adds a club via API key", () => {
       );
     }
   });
-  it("nor can call removeClubAndAdmin with the API key", async () => {
+  it("nor can call deleteClubAndAdmin with the API key", async () => {
     try {
-      await anUnknownUserCallsRemoveClubAndAdmin(userId, clubId);
+      await anUnknownUserCallsDeleteClubAndAdmin(userId, clubId);
       throw new Error("failed");
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(e.message).toContain(
-        "Not Authorized to access removeClubAndAdmin on type Mutation",
+        "Not Authorized to access deleteClubAndAdmin on type Mutation",
       );
     }
   });
@@ -122,7 +122,7 @@ describe("When an unknown user adds a club via API key", () => {
 
   it("Then removing the club (and user) via normal login succeeds in cognito and ddb", async () => {
     const { idToken } = await aLoggedInUser(email, password);
-    const result = await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
+    const result = await aUserCallsDeleteClubAndAdmin(userId, clubId, idToken);
     expect(result.status).toEqual("OK");
     await verifyUserGone();
   });
@@ -132,7 +132,7 @@ describe("When an unknown user adds a club via API key", () => {
     userId = result.userId;
     clubId = result.clubId;
     try {
-      await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
+      await aUserCallsDeleteClubAndAdmin(userId, clubId, idToken);
       throw new Error("failed");
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -144,9 +144,9 @@ describe("When an unknown user adds a club via API key", () => {
     }
     await verifyCreateUserBackendEffects("FORCE_CHANGE_PASSWORD");
   });
-  it("But an adminSuper is permitted to removeClubAndAdmin", async () => {
+  it("But an adminSuper is permitted to deleteClubAndAdmin", async () => {
     const { idToken } = await aLoggedInAdminSuper();
-    const actual = await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
+    const actual = await aUserCallsDeleteClubAndAdmin(userId, clubId, idToken);
     expect(actual.status).toEqual("OK");
     await verifyUserGone();
   });
@@ -162,7 +162,7 @@ describe("When an unknown user adds a club via API key", () => {
     await updatePassword();
     const { idToken } = await aLoggedInUser(email, password);
     try {
-      await aUserCallsRemoveClubAndAdmin("Some_other_UserID", clubId, idToken);
+      await aUserCallsDeleteClubAndAdmin("Some_other_UserID", clubId, idToken);
       throw new Error("failed");
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -172,7 +172,7 @@ describe("When an unknown user adds a club via API key", () => {
     }
     await verifyCreateUserBackendEffects("CONFIRMED");
     // cleanup:
-    const actual = await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
+    const actual = await aUserCallsDeleteClubAndAdmin(userId, clubId, idToken);
     expect(actual.status).toEqual("OK");
     await verifyUserGone();
   });

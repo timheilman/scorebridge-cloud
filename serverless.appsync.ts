@@ -40,7 +40,7 @@ const ddbResolvers: DdbResolver[] = [
 const lambdaResolvers = [
   lr("Query", "exampleLambdaDataSource"),
   lr("Mutation", "createClub"),
-  lr("Mutation", "removeClubAndAdmin"),
+  lr("Mutation", "deleteClubAndAdmin"),
   lr("Mutation", "unexpectedError"),
 ];
 
