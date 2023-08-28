@@ -12,11 +12,11 @@ type DdbResolver = {
   dataSource: string;
 };
 
-// const ddr = (
-//   endpointType: EndpointType,
-//   endpointName: string,
-//   dataSource: string,
-// ): DdbResolver => ({ endpointType, endpointName, dataSource });
+const ddr = (
+  endpointType: EndpointType,
+  endpointName: string,
+  dataSource: string,
+): DdbResolver => ({ endpointType, endpointName, dataSource });
 
 type LambdaResolver = {
   endpointType: "Query" | "Mutation";
@@ -32,7 +32,7 @@ const lr = (
 });
 
 const ddbResolvers: DdbResolver[] = [
-  // ddr("Query", "getMyProfile", "usersTable"),
+  ddr("Query", "getClub", "clubsTable"),
   // ddr("Mutation", "editMyProfile", "usersTable"),
 ];
 
@@ -47,14 +47,13 @@ const lambdaResolvers = [
 // Derived:
 const ddbDataSources = [...new Set(ddbResolvers.map((v) => v.dataSource))];
 
-const resolverDefnUnitVtl = (d: DdbResolver) => ({
-  request: `src/mapping-templates/${d.endpointType}.${d.endpointName}.request.vtl`,
-  response: `src/mapping-templates/${d.endpointType}.${d.endpointName}.response.vtl`,
-  kind: "UNIT",
+const fnDefnDdb = (d: DdbResolver) => ({
   dataSource: d.dataSource,
+  code: `src/mapping-templates-js/${d.endpointType}.${d.endpointName}.js`,
+  kind: "PIPELINE",
 });
 
-const fnDefnPipelineJs = (l: LambdaResolver) => {
+const fnDefnLambda = (l: LambdaResolver) => {
   return {
     dataSource: l.endpointNameAndDataSource,
     code: `src/mapping-templates-js/${l.endpointType}.${l.endpointNameAndDataSource}.js`,
@@ -62,7 +61,7 @@ const fnDefnPipelineJs = (l: LambdaResolver) => {
   };
 };
 
-const resolverDefnPipelineVtl = (pipelineFnName: string) => ({
+const resolverDefn = (pipelineFnName: string) => ({
   functions: [pipelineFnName],
 });
 
@@ -108,7 +107,11 @@ function customAppSyncDataSources() {
   };
 }
 
-function pipelineFnName(l: LambdaResolver) {
+function pipelineFnNameDdb(d: DdbResolver) {
+  return `Pfn${d.endpointType}${d.dataSource}${d.endpointName}`;
+}
+
+function pipelineFnNameLambda(l: LambdaResolver) {
   return `Pfn${l.endpointType}${l.endpointNameAndDataSource}`;
 }
 
@@ -129,18 +132,25 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   dataSources: customAppSyncDataSources(),
   resolvers: {
     ...ddbResolvers.reduce((acc, dr) => {
-      acc[`${dr.endpointType}.${dr.endpointName}`] = resolverDefnUnitVtl(dr);
+      acc[`${dr.endpointType}.${dr.endpointName}`] = resolverDefn(
+        pipelineFnNameDdb(dr),
+      );
       return acc;
     }, {}),
     ...lambdaResolvers.reduce((acc, lr) => {
-      acc[`${lr.endpointType}.${lr.endpointNameAndDataSource}`] =
-        resolverDefnPipelineVtl(pipelineFnName(lr));
+      acc[`${lr.endpointType}.${lr.endpointNameAndDataSource}`] = resolverDefn(
+        pipelineFnNameLambda(lr),
+      );
       return acc;
     }, {}),
   },
   pipelineFunctions: {
     ...lambdaResolvers.reduce((acc, lr) => {
-      acc[pipelineFnName(lr)] = fnDefnPipelineJs(lr);
+      acc[pipelineFnNameLambda(lr)] = fnDefnLambda(lr);
+      return acc;
+    }, {}),
+    ...ddbResolvers.reduce((acc, dr) => {
+      acc[pipelineFnNameDdb(dr)] = fnDefnDdb(dr);
       return acc;
     }, {}),
   },

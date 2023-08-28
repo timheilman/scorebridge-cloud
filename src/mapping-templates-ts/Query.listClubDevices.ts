@@ -1,5 +1,4 @@
 import { Context, DynamoDBQueryRequest, util } from "@aws-appsync/utils";
-import { marshall } from "@aws-sdk/util-dynamodb";
 
 import { ListClubDevicesOutput, QueryListClubDevicesArgs } from "../../appsync";
 import { errorOnClubMultitenancyFailure } from "./mappingTemplateUtils";
@@ -19,7 +18,7 @@ export function request(
     operation: "Query",
     query: {
       expression: "clubId = :clubId",
-      expressionValues: marshall({
+      expressionValues: util.dynamodb.toMapValues({
         ":clubId": clubId,
       }),
     },
