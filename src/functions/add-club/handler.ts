@@ -108,6 +108,7 @@ export async function ddbCreateClub(clubId: string, clubName: string) {
     Item: club,
     ConditionExpression: "attribute_not_exists(id)",
   });
+  log("ddbCreateClub.send", "debug", { createClubDdbCommand });
   await cachedDynamoDbClient().send(createClubDdbCommand);
 }
 

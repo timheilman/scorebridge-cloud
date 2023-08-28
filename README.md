@@ -103,15 +103,21 @@ The project code base is mainly located within the `src` folder. This folder is 
 
 Notes from doing it.  Problem: must verify "from" email address before cognito can use it in ses.
 
-1) setup a new ~/.aws/config profile and session like in [example_aws_config.txt](./example_aws_config.txt)
-1) e.g. `export SB_TEST_AWS_CLI_PROFILE=ScoreBridge-tmpenv-tdh-PowerUser-profile`
-2) e.g. `npm run verifyEmail -- scorebridge8+tmpenv@gmail.com --profile ${SB_TEST_AWS_CLI_PROFILE}` .  That requires clicking a link sent to that address.  No ConfigSet, yet.
-3) clicky your link
-2) Deploy to the env. `npm run deploy<Env>`
-3) If prod, go into secrets manager and set the prod keys for recaptcha.  For nonprod, run `npm run setRecaptchaSecrets<Env> -- --profile ${SB_TEST_AWS_CLI_PROFILE}`
-4) Go into SES and connect the verified identity to the configSet created by the deploy.  This linkage cannot be made in serverless.ts because the creation of the cognito user pool resource tests the email-send and fails the resource creation if the address is not verified in SES, and we cannot pause the deployment to verify the address over at gmail.  Couldn't quickly figure out how to do this with CLI so it's console only.
-5) `npm run exportEnv<Env>`
-5) run `npm run createAutomatedTestUsers`
-6) `npm test` should pass
-7) run `npm run refreshExportedDetailsToWebapp`
-8) cypress should pass
+1) setup a new ~/.aws/config profile and session for the serverless service/aws account, if it doesn't exist yet, like in [example_aws_config.txt](./example_aws_config.txt)
+2) e.g. `export SB_TEST_AWS_CLI_PROFILE=ScoreBridge-sbc00-tdh-PowerUser-profile`
+3) e.g. `npm run verifyEmail -- scorebridge8+tmpenv@gmail.com ` .  That requires clicking a link sent to that address.  No ConfigSet, yet.
+4) clicky your link
+5) Deploy to the env. `npm run deploy<Env>`
+6) `aws sso login --profile ${SB_TEST_AWS_CLI_PROFILE}`
+7) * non-prod: run `npm run setRecaptchaSecrets<Env>`
+   * prod: go into secrets manager and set the prod keys for recaptcha.
+8) Go into [SES verified identities](https://us-west-2.console.aws.amazon.com/ses/home?region=us-west-2#/verified-identities) and provide the verified identity a default ConfigSet: the one with a suffix of the <Env> deployed.  (This linkage cannot be made in serverless.ts because the creation of the cognito user pool resource tests the email-send and fails the resource creation if the address is not verified in SES, and we cannot pause the deployment to verify the address over at gmail.  Couldn't quickly figure out how to do this with CLI so it's console only.)
+9) `npm run exportEnv<Env>`
+10) run `npm run createAutomatedTestUsers`
+11) `npm test` should pass
+12) run `npm run refreshExportedDetailsToWebapp`
+13) in webapp, 
+    * `npm start` in one terminal,
+    * `npm cypress:open` in another terminal
+    * select E2E testing
+    * tests should pass

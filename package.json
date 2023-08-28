@@ -26,13 +26,13 @@
     "provideEnvEntriesToWebappCypress": "ts-node ts-node-scripts/provideEnvEntriesToWebappCypress.ts > ${SCOREBRIDGE_WEBAPP_CLONE_LOCATION:-../scorebridge-webapp/}cypress.env.json",
     "provideGqlTypesToWebapp": "npm run codegen-gql-types && cp ./appsync.d.ts ${SCOREBRIDGE_WEBAPP_CLONE_LOCATION:-../scorebridge-webapp/}",
     "refreshExportedDetailsToWebapp": "npm run provideEnvEntriesToWebapp; npm run provideEnvEntriesToWebappCypress; npm run provideGqlTypesToWebapp",
-    "setRecaptchaSecretsDev": "aws secretsmanager put-secret-value --secret-id dev.recaptcha2Secret --secret-string '{\"siteKey\":\"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\", \"secretKey\": \"6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe\"}' $@",
-    "setRecaptchaSecretsStaging": "aws secretsmanager put-secret-value --secret-id staging.recaptcha2Secret --secret-string '{\"siteKey\":\"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\", \"secretKey\": \"6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe\"}' $@",
-    "setRecaptchaSecretsTmpenv": "aws secretsmanager put-secret-value --secret-id tmpenv.recaptcha2Secret --secret-string '{\"siteKey\":\"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\", \"secretKey\": \"6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe\"}' $@",
+    "setRecaptchaSecretsDev": "aws secretsmanager put-secret-value --secret-id dev.recaptcha2Secret --secret-string '{\"siteKey\":\"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\", \"secretKey\": \"6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe\"}' --profile ${SB_TEST_AWS_CLI_PROFILE} $@",
+    "setRecaptchaSecretsStaging": "aws secretsmanager put-secret-value --secret-id staging.recaptcha2Secret --secret-string '{\"siteKey\":\"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\", \"secretKey\": \"6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe\"}' --profile ${SB_TEST_AWS_CLI_PROFILE} $@",
+    "setRecaptchaSecretsTmpenv": "aws secretsmanager put-secret-value --secret-id tmpenv.recaptcha2Secret --secret-string '{\"siteKey\":\"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\", \"secretKey\": \"6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe\"}' --profile ${SB_TEST_AWS_CLI_PROFILE} $@",
     "sls": "sls",
     "test": "jest --verbose ./__tests__/test_cases/e2e",
     "tidy": "npm run lint; npm run format",
-    "verifyEmail": "aws ses verify-email-identity --email-address $@"
+    "verifyEmail": "aws ses verify-email-identity --email-address --profile ${SB_TEST_AWS_CLI_PROFILE} $@"
   },
   "engines": {
     "node": ">=14.15.0"

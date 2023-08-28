@@ -1,11 +1,11 @@
-[profile ScoreBridge-tmpenv-tdh-PowerUser-profile]
-sso_session = ScoreBridge-tmpenv-tdh-PowerUser-session
+[profile ScoreBridge-sbc00-tdh-PowerUser-profile]
+sso_session = ScoreBridge-sbc00-tdh-PowerUser-session
 sso_account_id = 437893194722
 sso_role_name = PowerUserAccess
 region = us-west-2
 output = json
-credential_process = aws configure export-credentials --profile ScoreBridge-tmpenv-tdh-PowerUser-profile
-[sso-session ScoreBridge-tmpenv-tdh-PowerUser-session]
+credential_process = aws configure export-credentials --profile ScoreBridge-sbc00-tdh-PowerUser-profile
+[sso-session ScoreBridge-sbc00-tdh-PowerUser-session]
 sso_start_url = https://d-92674207af.awsapps.com/start
 sso_region = us-west-2
 sso_registration_scopes = sso:account:access
