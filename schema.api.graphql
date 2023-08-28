@@ -5,10 +5,10 @@ schema {
 
 # ignore for now; Query simply has to be present
 type Query {
-  getClub(clubId: String!): Club
+  getClub(clubId: String!): Club!
   @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
-  listClubDevices(input: ListClubDevicesInput): ListClubDevicesOutput!
+  listClubDevices(input: ListClubDevicesInput!): ListClubDevicesOutput!
   @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 }
 
@@ -24,19 +24,17 @@ type ListClubDevicesOutput {
 }
 
 type Club {
-  id: String
-  name: String
-  createdAt: AWSDateTime
+  id: String!
+  name: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
 }
 
 type ClubDevice {
-  id: AWSEmail
-  name: String
-  createdAt: AWSDateTime
-}
-
-type ListClubOutput {
-  tablets: [Club]!
+  id: String!
+  name: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
 }
 
 type Mutation {
@@ -56,12 +54,13 @@ type Mutation {
 
 input CreateClubDeviceInput {
   clubId: String!
-  tabletName: String!
-  tabletRegToken: String!
+  deviceName: String!
+  regToken: String!
 }
 
 type CreateClubDeviceResponse {
-  status: String!
+  clubDeviceId: String!
+  clubDeviceEmail: AWSEmail!
 }
 
 type UnexpectedErrorResponse {
@@ -72,7 +71,7 @@ input CreateClubInput {
   newAdminEmail: AWSEmail!
   newClubName: String!
   suppressInvitationEmail: Boolean
-  recaptchaToken: String
+  recaptchaToken: String!
 }
 
 type CreateClubResponse {

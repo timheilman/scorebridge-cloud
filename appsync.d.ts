@@ -25,33 +25,36 @@ export type Scalars = {
 
 export type Club = {
   __typename?: 'Club';
-  createdAt?: Maybe<Scalars['AWSDateTime']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['AWSDateTime']['output'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  updatedAt: Scalars['AWSDateTime']['output'];
 };
 
 export type ClubDevice = {
   __typename?: 'ClubDevice';
-  createdAt?: Maybe<Scalars['AWSDateTime']['output']>;
-  id?: Maybe<Scalars['AWSEmail']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['AWSDateTime']['output'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  updatedAt: Scalars['AWSDateTime']['output'];
 };
 
 export type CreateClubDeviceInput = {
   clubId: Scalars['String']['input'];
-  tabletName: Scalars['String']['input'];
-  tabletRegToken: Scalars['String']['input'];
+  deviceName: Scalars['String']['input'];
+  regToken: Scalars['String']['input'];
 };
 
 export type CreateClubDeviceResponse = {
   __typename?: 'CreateClubDeviceResponse';
-  status: Scalars['String']['output'];
+  clubDeviceEmail: Scalars['AWSEmail']['output'];
+  clubDeviceId: Scalars['String']['output'];
 };
 
 export type CreateClubInput = {
   newAdminEmail: Scalars['AWSEmail']['input'];
   newClubName: Scalars['String']['input'];
-  recaptchaToken?: InputMaybe<Scalars['String']['input']>;
+  recaptchaToken: Scalars['String']['input'];
   suppressInvitationEmail?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
@@ -83,11 +86,6 @@ export type ListClubDevicesOutput = {
   nextToken?: Maybe<Scalars['String']['output']>;
 };
 
-export type ListClubOutput = {
-  __typename?: 'ListClubOutput';
-  tablets: Array<Maybe<Club>>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createClub: CreateClubResponse;
@@ -113,7 +111,7 @@ export type MutationDeleteClubAndAdminArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getClub?: Maybe<Club>;
+  getClub: Club;
   listClubDevices: ListClubDevicesOutput;
 };
 
@@ -124,7 +122,7 @@ export type QueryGetClubArgs = {
 
 
 export type QueryListClubDevicesArgs = {
-  input?: InputMaybe<ListClubDevicesInput>;
+  input: ListClubDevicesInput;
 };
 
 export type UnexpectedErrorResponse = {

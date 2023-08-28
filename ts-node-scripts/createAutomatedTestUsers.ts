@@ -1,14 +1,19 @@
 import {
   AdminCreateUserCommandOutput,
   AdminGetUserCommand,
-  AdminSetUserPasswordCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import {
   CreateSecretCommand,
   ResourceExistsException,
   UpdateSecretCommand,
 } from "@aws-sdk/client-secrets-manager";
-import { cachedCognitoIdpClient } from "@libs/cognito";
+import {
+  cachedCognitoIdpClient,
+  cognitoAddUserToGroup,
+  cognitoCreateUser,
+  cognitoSetNewPassword,
+  cognitoUpdateUserTenantId,
+} from "@libs/cognito";
 import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import chance from "chance";
@@ -16,9 +21,6 @@ import { config as dotenvConfig } from "dotenv";
 import { ulid } from "ulid";
 
 import {
-  cognitoAddUserToGroup,
-  cognitoCreateUser,
-  cognitoUpdateUserTenantId,
   ddbCreateClub,
   ddbCreateUser,
 } from "../src/functions/./create-club/handler";
@@ -32,17 +34,6 @@ const lcd = getLogCompletionDecorator(catPrefix, "debug");
 dotenvConfig();
 
 const UserPoolId = requiredEnvVar("COGNITO_USER_POOL_ID");
-
-async function cognitoSetNewPassword(userId: string, newPassword: string) {
-  const params = {
-    UserPoolId,
-    Username: userId,
-    Password: newPassword,
-    Permanent: true,
-  };
-  const command = new AdminSetUserPasswordCommand(params);
-  await cachedCognitoIdpClient().send(command);
-}
 
 async function secretsManagerRecordPassword(email: string, password: string) {
   // Secret name must contain only alphanumeric characters and the characters /_+=.@-

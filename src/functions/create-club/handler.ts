@@ -1,11 +1,6 @@
 import {
-  AdminAddUserToGroupCommand,
-  AdminCreateUserCommand,
   AdminCreateUserCommandOutput,
-  AdminGetUserCommand,
   AdminGetUserCommandOutput,
-  AdminUpdateUserAttributesCommand,
-  AdminUpdateUserAttributesCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import {
   PutItemCommand,
@@ -14,7 +9,12 @@ import {
 } from "@aws-sdk/client-dynamodb";
 import { GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import { marshall } from "@aws-sdk/util-dynamodb";
-import { cachedCognitoIdpClient } from "@libs/cognito";
+import {
+  cognitoAddUserToGroup,
+  cognitoCreateUser,
+  cognitoUpdateUserTenantId,
+  getNullableUser,
+} from "@libs/cognito";
 import { cachedDynamoDbClient } from "@libs/ddb";
 import { UserAlreadyExistsError } from "@libs/errors/user-already-exists-error";
 import { UserIsBotError } from "@libs/errors/user-is-bot-error";
@@ -37,48 +37,9 @@ import {
 const catPrefix = "src.functions.create-club.handler.";
 const log = logFn(catPrefix);
 const lcd = getLogCompletionDecorator(catPrefix, "debug");
-const getCognitoUser = async (email: string) => {
-  const getUserCommand = new AdminGetUserCommand({
-    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-    Username: email,
-  });
-  return await cachedCognitoIdpClient().send(getUserCommand);
-};
-
-export async function cognitoCreateUser(
-  email: string,
-  invitationEmailAction: "SUPPRESS" | "RESEND" | undefined,
-) {
-  // Because there is a quota on the number of emails we may send using cognito, but
-  // it is far beyond anything expected in production, we suppress emails when testing
-  const emailAction = invitationEmailAction
-    ? { MessageAction: invitationEmailAction }
-    : {};
-  const createUserParams = {
-    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-    Username: email,
-    UserAttributes: [{ Name: "email", Value: email }],
-    ...emailAction,
-  };
-
-  const createUserCommand = new AdminCreateUserCommand(createUserParams);
-  return cachedCognitoIdpClient().send(createUserCommand);
-}
 
 const reinviteUser = async (email: string) => {
   return cognitoCreateUser(email, "RESEND");
-};
-const getNullableUser = async (email: string) => {
-  try {
-    return await getCognitoUser(email);
-  } catch (problem) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (problem.__type === "UserNotFoundException") {
-      return null;
-    }
-    log("getNullableUser", "error", problem);
-    throw problem;
-  }
 };
 
 const updateClubName = async (
@@ -102,6 +63,7 @@ export async function ddbCreateClub(clubId: string, clubName: string) {
     id: clubId,
     name: clubName,
     createdAt: new Date().toJSON(),
+    updatedAt: new Date().toJSON(),
   });
   const createClubDdbCommand = new PutItemCommand({
     TableName: requiredEnvVar("CLUBS_TABLE"),
@@ -127,32 +89,6 @@ export async function ddbCreateUser(userId: string, email: string) {
   await cachedDynamoDbClient().send(createUserDdbCommand);
 }
 
-export async function cognitoAddUserToGroup(userId: string, groupName: string) {
-  const params = {
-    GroupName: groupName,
-    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-    Username: userId, // note: email also works here
-  };
-  const command = new AdminAddUserToGroupCommand(params);
-  await cachedCognitoIdpClient().send(command);
-  log("cognitoAddUserToGroup.success", "debug");
-}
-
-export async function cognitoUpdateUserTenantId(
-  userId: string,
-  clubId: string,
-) {
-  const updateUserParams: AdminUpdateUserAttributesCommandInput = {
-    UserAttributes: [{ Name: "custom:tenantId", Value: clubId }],
-    UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-    Username: userId, // note: email also works here!
-  };
-  const updateUserCommand = new AdminUpdateUserAttributesCommand(
-    updateUserParams,
-  );
-  await cachedCognitoIdpClient().send(updateUserCommand);
-}
-
 async function readdClub(
   input: CreateClubInput,
   user: AdminGetUserCommandOutput,
@@ -162,14 +98,14 @@ async function readdClub(
   ).Value;
   const promises: Promise<unknown>[] = [];
   promises.push(
-    lcd(updateClubName(clubId, input.newClubName), "updateClubName.success", {
+    lcd(updateClubName(clubId, input.newClubName), "updateClubName", {
       clubId,
       newClubName: input.newClubName,
     }),
   );
   if (!input.suppressInvitationEmail) {
     promises.push(
-      lcd(reinviteUser(input.newAdminEmail), "reinviteUser.success", {
+      lcd(reinviteUser(input.newAdminEmail), "reinviteUser", {
         newAdminEmail: input.newAdminEmail,
       }) as Promise<AdminCreateUserCommandOutput>,
     );
@@ -206,22 +142,16 @@ async function handleNoSuchCognitoUser({
       newAdminEmail,
       suppressInvitationEmail ? "SUPPRESS" : undefined,
     ),
-    "cognitoCreateUser.success",
+    "cognitoCreateUser",
     { newAdminEmail, suppressInvitationEmail },
   )) as AdminCreateUserCommandOutput; // I do not understand why this cast is needed
   const userId = createdUser.User.Username;
   // the ddbClub creation and remaining userId-dependent promises can be awaited in parallel
   await Promise.all([
-    lcd(
-      cognitoUpdateUserTenantId(userId, clubId),
-      "cognitoUpdateUserTenantId.success",
-    ),
-    lcd(
-      cognitoAddUserToGroup(userId, "adminClub"),
-      "cognitoAddUserToGroup.success",
-    ),
-    lcd(ddbCreateUser(userId, newAdminEmail), "ddbCreateUser.success"),
-    lcd(ddbCreateClubPromise, "ddbCreateClubPromise.success"),
+    lcd(cognitoUpdateUserTenantId(userId, clubId), "cognitoUpdateUserTenantId"),
+    lcd(cognitoAddUserToGroup(userId, "adminClub"), "cognitoAddUserToGroup"),
+    lcd(ddbCreateUser(userId, newAdminEmail), "ddbCreateUser"),
+    lcd(ddbCreateClubPromise, "ddbCreateClubPromise"),
   ]);
 
   return { userId: userId, clubId: clubId };
@@ -253,7 +183,7 @@ const almostMain: AppSyncResolverHandler<
   if (response.data?.success) {
     const user = (await lcd(
       getNullableUser(event.arguments.input.newAdminEmail),
-      "getNullableUser.success",
+      "getNullableUser",
       { newAdminEmail: event.arguments.input.newAdminEmail },
     )) as AdminGetUserCommandOutput; // again I do not understand why this is needed
     if (user) {
