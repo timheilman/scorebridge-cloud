@@ -64,34 +64,20 @@ type Mutation {
 
   # TODO: rename to deleteClubAndAdmin, to conform to CRUD
   removeClubAndAdmin(input: RemoveClubAndAdminInput!): RemoveClubAndAdminResponse!
-  @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
-
-  createClubDeviceNonce(input: CreateClubDeviceNonceInput!): CreateClubDeviceNonceResponse!
-  @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
+  @aws_cognito_user_pools(cognito_groups: ["adminClub","adminSuper"])
 
   createClubDevice(input: CreateClubDeviceInput!): CreateClubDeviceResponse!
-  @aws_api_key
-  @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
-}
-
-input CreateClubDeviceNonceInput {
-  clubId: String!
-  tabletName: String!
-  nonce: String!
-}
-
-type CreateClubDeviceNonceResponse {
-  status: String!
+  @aws_cognito_user_pools(cognito_groups: ["adminClub","adminSuper"])
 }
 
 input CreateClubDeviceInput {
   clubId: String!
-  nonce: String!
+  tabletName: String!
+  tabletRegToken: String!
 }
 
 type CreateClubDeviceResponse {
-  username: AWSEmail!
-  password: String!
+  status: String!
 }
 
 type UnexpectedErrorResponse {
