@@ -22,7 +22,7 @@ Export an env var, SB_TEST_AWS_CLI_PROFILE, containing the profile that you use 
 aws sso login --profile <that_profile_name>
 ```
 
-Also export ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=NaN . This allows serverless packaging into .serverless to proceed
+Also export CREATE_USER_API_KEY_EXPIRES_EPOCH_SEC=NaN . This allows serverless packaging into .serverless to proceed
 even when not deploying.
 
 ### Using NPM

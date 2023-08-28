@@ -39,7 +39,7 @@ describe("When an unknown user adds a club via API key", () => {
   let userId: string;
   let clubId: string;
 
-  async function verifyAddUserBackendEffects(expectedUserStatus: string) {
+  async function verifyCreateUserBackendEffects(expectedUserStatus: string) {
     const ddbUser = await userExistsInUsersTable(userId);
     expect(ddbUser.id).toBe(userId);
     expect(ddbUser.email).toBe(email);
@@ -68,7 +68,7 @@ describe("When an unknown user adds a club via API key", () => {
     const result = await anUnknownUserAddsAClubViaApiKey(email, clubName);
     userId = result.userId;
     clubId = result.clubId;
-    await verifyAddUserBackendEffects("FORCE_CHANGE_PASSWORD");
+    await verifyCreateUserBackendEffects("FORCE_CHANGE_PASSWORD");
   });
 
   async function updatePassword() {
@@ -142,7 +142,7 @@ describe("When an unknown user adds a club via API key", () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(e.message).toContain("401: Invalid Club Id");
     }
-    await verifyAddUserBackendEffects("FORCE_CHANGE_PASSWORD");
+    await verifyCreateUserBackendEffects("FORCE_CHANGE_PASSWORD");
   });
   it("But an adminSuper is permitted to removeClubAndAdmin", async () => {
     const { idToken } = await aLoggedInAdminSuper();
@@ -170,7 +170,7 @@ describe("When an unknown user adds a club via API key", () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(e.message).toContain("401: Invalid User Id");
     }
-    await verifyAddUserBackendEffects("CONFIRMED");
+    await verifyCreateUserBackendEffects("CONFIRMED");
     // cleanup:
     const actual = await aUserCallsRemoveClubAndAdmin(userId, clubId, idToken);
     expect(actual.status).toEqual("OK");

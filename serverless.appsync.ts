@@ -155,8 +155,8 @@ export const AdditionalAppSyncResources = {
       ApiId: {
         "Fn::GetAtt": ["GraphQlApi", "ApiId"],
       },
-      Description: `AppSync API key for stage \${sls:stage} for adding new clubs`,
-      Expires: `\${env:ADD_USER_API_KEY_EXPIRES_EPOCH_SEC}`,
+      Description: `AppSync API key for stage \${sls:stage} for creating new clubs`,
+      Expires: `\${env:CREATE_USER_API_KEY_EXPIRES_EPOCH_SEC}`,
     },
   },
 };

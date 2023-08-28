@@ -11,7 +11,7 @@
     "createFirstCognitoAdminSuperForEnv": "ts-node ts-node-scripts/createFirstCognitoAdminSuperForEnv.ts",
     "deleteTestRandomUsers": "ts-node ts-node-scripts/deleteTestRandomUserAccounts.ts",
     "deployDev": "DEPLOY_STAGE=dev npm run deployGeneral",
-    "deployGeneral": "npm run compileMappingTemplates && ADD_USER_API_KEY_EXPIRES_EPOCH_SEC=`ts-node ts-node-scripts/printRolloverEpochSeconds.ts` sls deploy --verbose --stage $DEPLOY_STAGE",
+    "deployGeneral": "npm run compileMappingTemplates && CREATE_USER_API_KEY_EXPIRES_EPOCH_SEC=`ts-node ts-node-scripts/printRolloverEpochSeconds.ts` sls deploy --verbose --stage $DEPLOY_STAGE",
     "deployStaging": "DEPLOY_STAGE=staging npm run deployGeneral",
     "deployTmpenv": "DEPLOY_STAGE=tmpenv npm run deployGeneral",
     "exportEnvDev": "DEPLOY_STAGE=dev npm run exportEnvGeneral",
