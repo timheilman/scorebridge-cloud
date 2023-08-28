@@ -101,5 +101,5 @@ export async function cognitoSetNewPassword(
     Permanent: true,
   };
   const command = new AdminSetUserPasswordCommand(params);
-  await cachedCognitoIdpClient().send(command);
+  return await cachedCognitoIdpClient().send(command);
 }

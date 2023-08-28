@@ -11,7 +11,7 @@ export default {
     },
     STAGE: `\${sls:stage}`,
   },
-  iamRoleStatementsName: `createClubIamRoleStmts-\${sls:stage}`,
+  iamRoleStatementsName: `createClubDeviceIamRoleStmts-\${sls:stage}`,
   iamRoleStatements: [
     {
       Effect: "Allow",
@@ -27,6 +27,7 @@ export default {
         "cognito-idp:AdminCreateUser",
         "cognito-idp:AdminAddUserToGroup",
         "cognito-idp:AdminUpdateUserAttributes",
+        "cognito-idp:AdminSetUserPassword",
       ],
       Resource: {
         "Fn::GetAtt": ["CognitoUserPool", "Arn"],

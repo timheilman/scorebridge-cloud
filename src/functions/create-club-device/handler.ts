@@ -15,7 +15,6 @@ import { cachedDynamoDbClient } from "@libs/ddb";
 import { ClubDeviceAlreadyExistsError } from "@libs/errors/club-device-already-exists-error";
 import { middyWithErrorHandling } from "@libs/lambda";
 import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
-import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
@@ -27,7 +26,6 @@ import {
 } from "../../../appsync";
 
 const catPrefix = "src.functions.create-club-device.handler.";
-const log = logFn(catPrefix);
 const lcd = getLogCompletionDecorator(catPrefix, "debug");
 
 const stage = requiredEnvVar("STAGE");
@@ -51,8 +49,11 @@ export async function ddbCreateClubDevice(
     TableName: requiredEnvVar("CLUB_DEVICES_TABLE"),
     Item: clubDevice,
   });
-  log("ddbCreateClubDevice.send", "debug", { createDdbCommand });
-  await cachedDynamoDbClient().send(createDdbCommand);
+  await lcd(
+    cachedDynamoDbClient().send(createDdbCommand),
+    "ddbCreateClubDevice.send",
+    { createDdbCommand },
+  );
 }
 
 async function handleNoSuchCognitoUser({
@@ -81,7 +82,7 @@ async function handleNoSuchCognitoUser({
     ),
     lcd(
       cognitoSetNewPassword(clubDeviceId, regTokenSecretPart(regToken)),
-      "cognitoAddUserToGroup",
+      "cognitoSetNewPassword",
     ),
     lcd(ddbCreatePromise, "ddbCreateClubDevicePromise"),
   ]);
