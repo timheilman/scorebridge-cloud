@@ -7,7 +7,7 @@ function convertToReactActVar(s: string) {
 
 [
   "AWS_REGION",
-  "ADD_CLUB_API_KEY",
+  "CREATE_CLUB_API_KEY",
   "COGNITO_USER_POOL_ID",
   "COGNITO_USER_POOL_CLIENT_ID_WEB",
   "API_URL",

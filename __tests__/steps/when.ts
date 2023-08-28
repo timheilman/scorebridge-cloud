@@ -51,7 +51,7 @@ export const anUnknownUserAddsAClubViaApiKey = async (
     createClubGql,
     variables,
     null,
-    requiredEnvVar("ADD_CLUB_API_KEY"),
+    requiredEnvVar("CREATE_CLUB_API_KEY"),
   );
   const output = data.createClub as CreateClubResponse;
 
@@ -79,7 +79,7 @@ export const anUnknownUserCallsRemoveClubAndAdmin = async (
     removeClubAndAdminGql,
     variables,
     null,
-    requiredEnvVar("ADD_CLUB_API_KEY"),
+    requiredEnvVar("CREATE_CLUB_API_KEY"),
   );
   const output = data.removeClubAndAdmin as RemoveClubAndAdminResponse;
 
@@ -94,7 +94,7 @@ export const anUnknownUserCallsUnexpectedError =
       unexpectedErrorGql,
       {},
       null,
-      requiredEnvVar("ADD_CLUB_API_KEY"),
+      requiredEnvVar("CREATE_CLUB_API_KEY"),
     );
     return data.unexpectedError as UnexpectedErrorResponse;
   };
