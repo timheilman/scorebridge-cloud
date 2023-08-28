@@ -1,8 +1,5 @@
-import { AdminDeleteUserCommand } from "@aws-sdk/client-cognito-identity-provider";
-import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
-import { marshall } from "@aws-sdk/util-dynamodb";
-import { cachedCognitoIdpClient } from "@libs/cognito";
-import { cachedDynamoDbClient } from "@libs/ddb";
+import { cognitoDestroyUser } from "@libs/cognito";
+import { deleteItemFromSimpleIdTable } from "@libs/ddb";
 import { middyWithErrorHandling } from "@libs/lambda";
 import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
@@ -18,24 +15,6 @@ import {
 const catPrefix = "src.functions.delete-club-and-admin.handler.";
 const lcd = getLogCompletionDecorator(catPrefix, "debug");
 const log = logFn(catPrefix);
-
-export async function cognitoDestroyUser(userId: string) {
-  return cachedCognitoIdpClient().send(
-    new AdminDeleteUserCommand({
-      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-      Username: userId,
-    }),
-  );
-}
-
-export function deleteItemFromTable(tableName: string, userId: string) {
-  return cachedDynamoDbClient().send(
-    new DeleteItemCommand({
-      TableName: tableName,
-      Key: marshall({ id: userId }),
-    }),
-  );
-}
 
 const almostMain: AppSyncResolverHandler<
   MutationDeleteClubAndAdminArgs,
@@ -55,7 +34,7 @@ const almostMain: AppSyncResolverHandler<
 
   promises.push(
     lcd(
-      deleteItemFromTable(
+      deleteItemFromSimpleIdTable(
         requiredEnvVar("USERS_TABLE"),
         event.arguments.input.userId,
       ),
@@ -67,7 +46,7 @@ const almostMain: AppSyncResolverHandler<
 
   promises.push(
     lcd(
-      deleteItemFromTable(requiredEnvVar("CLUBS_TABLE"), clubId),
+      deleteItemFromSimpleIdTable(requiredEnvVar("CLUBS_TABLE"), clubId),
       "deleteItemFromTable",
       { clubId },
     ),

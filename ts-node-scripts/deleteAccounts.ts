@@ -5,7 +5,7 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import {
   cognitoDestroyUser,
-  deleteItemFromTable,
+  deleteItemFromSimpleIdTable,
 } from "@functions/delete-club-and-admin/handler";
 
 import { cachedCognitoIdpClient } from "../src/libs/cognito";

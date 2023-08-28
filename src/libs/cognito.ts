@@ -1,6 +1,7 @@
 import {
   AdminAddUserToGroupCommand,
   AdminCreateUserCommand,
+  AdminDeleteUserCommand,
   AdminGetUserCommand,
   AdminSetUserPasswordCommand,
   AdminUpdateUserAttributesCommand,
@@ -102,4 +103,13 @@ export async function cognitoSetNewPassword(
   };
   const command = new AdminSetUserPasswordCommand(params);
   return await cachedCognitoIdpClient().send(command);
+}
+
+export async function cognitoDestroyUser(userId: string) {
+  return cachedCognitoIdpClient().send(
+    new AdminDeleteUserCommand({
+      UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+      Username: userId,
+    }),
+  );
 }

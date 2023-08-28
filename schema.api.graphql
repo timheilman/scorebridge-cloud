@@ -50,6 +50,9 @@ type Mutation {
 
   createClubDevice(input: CreateClubDeviceInput!): CreateClubDeviceResponse!
   @aws_cognito_user_pools(cognito_groups: ["adminClub","adminSuper"])
+
+  deleteClubDevice(input: DeleteClubDeviceInput!): DeleteClubDeviceResponse!
+  @aws_cognito_user_pools(cognito_groups: ["adminClub","adminSuper"])
 }
 
 input CreateClubDeviceInput {
@@ -61,6 +64,15 @@ input CreateClubDeviceInput {
 type CreateClubDeviceResponse {
   clubDeviceId: String!
   clubDeviceEmail: AWSEmail!
+}
+
+input DeleteClubDeviceInput {
+  clubId: String!
+  clubDeviceId: String!
+}
+
+type DeleteClubDeviceResponse {
+  status: String!
 }
 
 type UnexpectedErrorResponse {

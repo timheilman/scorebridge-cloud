@@ -74,6 +74,16 @@ export type DeleteClubAndAdminResponse = {
   status: Scalars['String']['output'];
 };
 
+export type DeleteClubDeviceInput = {
+  clubDeviceId: Scalars['String']['input'];
+  clubId: Scalars['String']['input'];
+};
+
+export type DeleteClubDeviceResponse = {
+  __typename?: 'DeleteClubDeviceResponse';
+  status: Scalars['String']['output'];
+};
+
 export type ListClubDevicesInput = {
   clubId: Scalars['String']['input'];
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -91,6 +101,7 @@ export type Mutation = {
   createClub: CreateClubResponse;
   createClubDevice: CreateClubDeviceResponse;
   deleteClubAndAdmin: DeleteClubAndAdminResponse;
+  deleteClubDevice: DeleteClubDeviceResponse;
   unexpectedError: UnexpectedErrorResponse;
 };
 
@@ -107,6 +118,11 @@ export type MutationCreateClubDeviceArgs = {
 
 export type MutationDeleteClubAndAdminArgs = {
   input: DeleteClubAndAdminInput;
+};
+
+
+export type MutationDeleteClubDeviceArgs = {
+  input: DeleteClubDeviceInput;
 };
 
 export type Query = {
