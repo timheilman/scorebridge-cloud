@@ -21,7 +21,7 @@ import {
   cognitoUpdateUserTenantId,
   ddbCreateClub,
   ddbCreateUser,
-} from "../src/functions/add-club/handler";
+} from "../src/functions/./create-club/handler";
 import requiredEnvVar from "../src/libs/requiredEnvVar";
 import { cachedSecretsManagerClient } from "./secretsManager";
 

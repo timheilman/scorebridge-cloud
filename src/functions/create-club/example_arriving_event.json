@@ -47,7 +47,7 @@
     "domainName": null
   },
   "info": {
-    "fieldName": "addClub",
+    "fieldName": "createClub",
     "parentTypeName": "Mutation",
     "variables": {}
   },

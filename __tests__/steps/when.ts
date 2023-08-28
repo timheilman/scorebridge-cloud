@@ -1,7 +1,7 @@
 import { config as dotenvConfig } from "dotenv";
 
 import {
-  AddClubResponse,
+  CreateClubResponse,
   RemoveClubAndAdminResponse,
   UnexpectedErrorResponse,
 } from "../../appsync";
@@ -12,8 +12,8 @@ import GraphQL from "../lib/graphql";
 const log = logFn("__tests__.steps.when.");
 dotenvConfig();
 
-const addClubGql = `mutation addClub($input: AddClubInput!) {
-    addClub(input: $input) {
+const createClubGql = `mutation createClub($input: CreateClubInput!) {
+    createClub(input: $input) {
       clubId
       userId
     }
@@ -48,12 +48,12 @@ export const anUnknownUserAddsAClubViaApiKey = async (
 
   const data = await GraphQL(
     requiredEnvVar("API_URL"),
-    addClubGql,
+    createClubGql,
     variables,
     null,
     requiredEnvVar("ADD_CLUB_API_KEY"),
   );
-  const output = data.addClub as AddClubResponse;
+  const output = data.createClub as CreateClubResponse;
 
   log("anUnknownUserAddsAClubViaApiKey.end", "debug", {
     userId: output.userId,
@@ -130,11 +130,11 @@ export const aUserCallsRemoveClubAndAdmin = async (
   return output;
 };
 
-export const aUserCallsAddClub = async (
+export const aUserCallsCreateClub = async (
   newAdminEmail: string,
   newClubName: string,
   idToken: string,
-): Promise<AddClubResponse> => {
+): Promise<CreateClubResponse> => {
   const variables = {
     input: {
       newAdminEmail,
@@ -145,13 +145,13 @@ export const aUserCallsAddClub = async (
 
   const data = await GraphQL(
     requiredEnvVar("API_URL"),
-    addClubGql,
+    createClubGql,
     variables,
     idToken,
   );
-  const output = data.addClub as AddClubResponse;
+  const output = data.createClub as CreateClubResponse;
 
-  log("aUserCallsAddClub", "debug", { output });
+  log("aUserCallsCreateClub", "debug", { output });
   return output;
 };
 

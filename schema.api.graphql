@@ -58,7 +58,7 @@ type Mutation {
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
   # TODO: rename to createClub, to conform to CRUD
-  addClub(input: AddClubInput!): AddClubResponse!
+  createClub(input: CreateClubInput!): CreateClubResponse!
   @aws_api_key
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
@@ -84,14 +84,14 @@ type UnexpectedErrorResponse {
   neverGetsReturned: String! @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 }
 
-input AddClubInput {
+input CreateClubInput {
   newAdminEmail: AWSEmail!
   newClubName: String!
   suppressInvitationEmail: Boolean
   recaptchaToken: String
 }
 
-type AddClubResponse {
+type CreateClubResponse {
   userId: String! @aws_api_key @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
   clubId: String! @aws_api_key @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 }

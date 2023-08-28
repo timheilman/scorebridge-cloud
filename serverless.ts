@@ -142,7 +142,9 @@ const serverlessConfiguration: AWS & {
       ...SecretsManagerResources,
     },
     Outputs: {
-      AddClubApiKey: { Value: { "Fn::GetAtt": ["AddClubApiKey", "ApiKey"] } },
+      CreateClubApiKey: {
+        Value: { "Fn::GetAtt": ["CreateClubApiKey", "ApiKey"] },
+      },
       ApiUrl: { Value: { "Fn::GetAtt": ["GraphQlApi", "GraphQLUrl"] } },
       AwsRegion: { Value: `\${aws:region}` },
       ClubsTable: { Value: { Ref: "ClubsTable" } },

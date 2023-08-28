@@ -36,12 +36,12 @@ const buildSyntheticHashNoSortTable = (tableNameHyphens: string) =>
 
 const buildClubIdMultitenantTable = (
   tableNameHyphens: string,
-  sortKeyName: string,
+  rangeKeyName: string,
 ) =>
   buildTable(tableNameHyphens, {
     KeySchema: [
       { AttributeName: "clubId", KeyType: "HASH" },
-      { AttributeName: sortKeyName, KeyType: "SORT" },
+      { AttributeName: rangeKeyName, KeyType: "RANGE" },
     ],
     AttributeDefinitions: [
       {
@@ -49,7 +49,7 @@ const buildClubIdMultitenantTable = (
         AttributeType: "S",
       },
       {
-        AttributeName: sortKeyName,
+        AttributeName: rangeKeyName,
         AttributeType: "S",
       },
     ],
@@ -57,10 +57,6 @@ const buildClubIdMultitenantTable = (
 export default {
   UsersTable: buildSyntheticHashNoSortTable("users-table"),
   ClubsTable: buildSyntheticHashNoSortTable("clubs-table"),
-  ClubDeviceNoncesTable: buildClubIdMultitenantTable(
-    "club-device-nonces-table",
-    "clubDeviceNonceId",
-  ),
   ClubDevicesTable: buildClubIdMultitenantTable(
     "club-devices-table",
     "clubDeviceId",

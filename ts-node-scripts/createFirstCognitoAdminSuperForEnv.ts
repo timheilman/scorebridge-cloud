@@ -5,7 +5,7 @@ import {
   cognitoAddUserToGroup,
   cognitoCreateUser,
   ddbCreateUser,
-} from "../src/functions/add-club/handler";
+} from "../src/functions/./create-club/handler";
 const log = logFn("ts-node-scripts.createFirstCognitoAdminSuperForEnv.");
 
 dotenvConfig();

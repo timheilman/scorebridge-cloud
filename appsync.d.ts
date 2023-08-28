@@ -23,19 +23,6 @@ export type Scalars = {
   AWSURL: { input: string; output: string; }
 };
 
-export type AddClubInput = {
-  newAdminEmail: Scalars['AWSEmail']['input'];
-  newClubName: Scalars['String']['input'];
-  recaptchaToken?: InputMaybe<Scalars['String']['input']>;
-  suppressInvitationEmail?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-export type AddClubResponse = {
-  __typename?: 'AddClubResponse';
-  clubId: Scalars['String']['output'];
-  userId: Scalars['String']['output'];
-};
-
 export type Club = {
   __typename?: 'Club';
   createdAt?: Maybe<Scalars['AWSDateTime']['output']>;
@@ -46,30 +33,32 @@ export type Club = {
 export type ClubDevice = {
   __typename?: 'ClubDevice';
   createdAt?: Maybe<Scalars['AWSDateTime']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['AWSEmail']['output']>;
   name?: Maybe<Scalars['String']['output']>;
 };
 
 export type CreateClubDeviceInput = {
   clubId: Scalars['String']['input'];
-  nonce: Scalars['String']['input'];
-};
-
-export type CreateClubDeviceNonceInput = {
-  clubId: Scalars['String']['input'];
-  nonce: Scalars['String']['input'];
   tabletName: Scalars['String']['input'];
-};
-
-export type CreateClubDeviceNonceResponse = {
-  __typename?: 'CreateClubDeviceNonceResponse';
-  status: Scalars['String']['output'];
+  tabletRegToken: Scalars['String']['input'];
 };
 
 export type CreateClubDeviceResponse = {
   __typename?: 'CreateClubDeviceResponse';
-  password: Scalars['String']['output'];
-  username: Scalars['AWSEmail']['output'];
+  status: Scalars['String']['output'];
+};
+
+export type CreateClubInput = {
+  newAdminEmail: Scalars['AWSEmail']['input'];
+  newClubName: Scalars['String']['input'];
+  recaptchaToken?: InputMaybe<Scalars['String']['input']>;
+  suppressInvitationEmail?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type CreateClubResponse = {
+  __typename?: 'CreateClubResponse';
+  clubId: Scalars['String']['output'];
+  userId: Scalars['String']['output'];
 };
 
 export type ExampleLambdaDataSourceInput = {
@@ -101,26 +90,20 @@ export type ListClubOutput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addClub: AddClubResponse;
+  createClub: CreateClubResponse;
   createClubDevice: CreateClubDeviceResponse;
-  createClubDeviceNonce: CreateClubDeviceNonceResponse;
   removeClubAndAdmin: RemoveClubAndAdminResponse;
   unexpectedError: UnexpectedErrorResponse;
 };
 
 
-export type MutationAddClubArgs = {
-  input: AddClubInput;
+export type MutationCreateClubArgs = {
+  input: CreateClubInput;
 };
 
 
 export type MutationCreateClubDeviceArgs = {
   input: CreateClubDeviceInput;
-};
-
-
-export type MutationCreateClubDeviceNonceArgs = {
-  input: CreateClubDeviceNonceInput;
 };
 
 

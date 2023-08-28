@@ -12,7 +12,7 @@ type Mutation {
   @aws_api_key
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
-  addClub(input: AddClubInput!): AddClubResponse!
+  addClub(input: CreateClubInput!): CreateClubResponse!
   @aws_api_key
   @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 

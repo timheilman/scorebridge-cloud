@@ -39,7 +39,7 @@ const ddbResolvers: DdbResolver[] = [
 // Unlike DynamoDb resolvers, lambdas always have a datasource named the same
 const lambdaResolvers = [
   lr("Query", "exampleLambdaDataSource"),
-  lr("Mutation", "addClub"),
+  lr("Mutation", "createClub"),
   lr("Mutation", "removeClubAndAdmin"),
   lr("Mutation", "unexpectedError"),
 ];
@@ -149,7 +149,7 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
 export default appsyncApi;
 
 export const AdditionalAppSyncResources = {
-  AddClubApiKey: {
+  CreateClubApiKey: {
     Type: "AWS::AppSync::ApiKey",
     Properties: {
       ApiId: {

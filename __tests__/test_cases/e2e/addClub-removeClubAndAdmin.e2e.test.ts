@@ -25,10 +25,10 @@ import {
 import {
   anUnknownUserAddsAClubViaApiKey,
   anUnknownUserCallsRemoveClubAndAdmin,
-  aUserCallsAddClub,
+  aUserCallsCreateClub,
   aUserCallsRemoveClubAndAdmin,
 } from "../../steps/when";
-const log = logFn("__tests__/test_cases/e2e/addClub-removeClubAndAdmin.");
+const log = logFn("__tests__/test_cases/e2e/createClub-removeClubAndAdmin.");
 
 const timestampFormat =
   /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g;
@@ -90,15 +90,15 @@ describe("When an unknown user adds a club via API key", () => {
     const cognitoUserPasswordChanged = await userExistsInCognito(userId);
     expect(cognitoUserPasswordChanged.UserStatus).toEqual("CONFIRMED");
   });
-  it("but cannot call addClub", async () => {
+  it("but cannot call createClub", async () => {
     const { idToken } = await aLoggedInUser(email, password);
     try {
-      await aUserCallsAddClub(email, clubName, idToken);
+      await aUserCallsCreateClub(email, clubName, idToken);
       throw new Error("failed");
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(e.message).toContain(
-        "Not Authorized to access addClub on type Mutation",
+        "Not Authorized to access createClub on type Mutation",
       );
     }
   });

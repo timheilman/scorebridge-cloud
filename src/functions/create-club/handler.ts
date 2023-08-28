@@ -29,12 +29,12 @@ import axios from "axios";
 import { ulid } from "ulid";
 
 import {
-  AddClubInput,
-  AddClubResponse,
-  MutationAddClubArgs,
+  CreateClubInput,
+  CreateClubResponse,
+  MutationCreateClubArgs,
 } from "../../../appsync";
 
-const catPrefix = "src.functions.add-club.handler.";
+const catPrefix = "src.functions.create-club.handler.";
 const log = logFn(catPrefix);
 const lcd = getLogCompletionDecorator(catPrefix, "debug");
 const getCognitoUser = async (email: string) => {
@@ -153,7 +153,10 @@ export async function cognitoUpdateUserTenantId(
   await cachedCognitoIdpClient().send(updateUserCommand);
 }
 
-async function readdClub(input: AddClubInput, user: AdminGetUserCommandOutput) {
+async function readdClub(
+  input: CreateClubInput,
+  user: AdminGetUserCommandOutput,
+) {
   const clubId = user.UserAttributes.find(
     (at) => at.Name === "custom:tenantId",
   ).Value;
@@ -177,7 +180,7 @@ async function readdClub(input: AddClubInput, user: AdminGetUserCommandOutput) {
 
 async function handleFoundCognitoUser(
   user: AdminGetUserCommandOutput,
-  input: AddClubInput,
+  input: CreateClubInput,
 ) {
   if (user.UserStatus === "FORCE_CHANGE_PASSWORD") {
     return await readdClub(input, user);
@@ -192,7 +195,7 @@ async function handleNoSuchCognitoUser({
   newAdminEmail,
   suppressInvitationEmail,
   newClubName,
-}: AddClubInput) {
+}: CreateClubInput) {
   const clubId = ulid();
   // start get-club creation in parallel since it does not need userId
   const ddbCreateClubPromise = ddbCreateClub(clubId, newClubName);
@@ -225,11 +228,11 @@ async function handleNoSuchCognitoUser({
 }
 
 const almostMain: AppSyncResolverHandler<
-  MutationAddClubArgs,
-  AddClubResponse
+  MutationCreateClubArgs,
+  CreateClubResponse
 > = async (
-  event: AppSyncResolverEvent<MutationAddClubArgs>,
-): Promise<AddClubResponse> => {
+  event: AppSyncResolverEvent<MutationCreateClubArgs>,
+): Promise<CreateClubResponse> => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
   const recaptchaSecret = JSON.parse(
     (
