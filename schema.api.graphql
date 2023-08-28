@@ -10,11 +10,6 @@ type Query {
 
   listClubDevices(input: ListClubDevicesInput): ListClubDevicesOutput!
   @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
-
-  exampleLambdaDataSource(
-    input: ExampleLambdaDataSourceInput!
-  ): ExampleLambdaDataSourceOutput!
-  @aws_cognito_user_pools(cognito_groups: [])
 }
 
 input ListClubDevicesInput {
@@ -42,15 +37,6 @@ type ClubDevice {
 
 type ListClubOutput {
   tablets: [Club]!
-}
-
-input ExampleLambdaDataSourceInput {
-  extension: String!
-  contentType: String
-}
-
-type ExampleLambdaDataSourceOutput {
-  exampleOutputField: String!
 }
 
 type Mutation {

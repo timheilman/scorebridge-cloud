@@ -71,16 +71,6 @@ export type DeleteClubAndAdminResponse = {
   status: Scalars['String']['output'];
 };
 
-export type ExampleLambdaDataSourceInput = {
-  contentType?: InputMaybe<Scalars['String']['input']>;
-  extension: Scalars['String']['input'];
-};
-
-export type ExampleLambdaDataSourceOutput = {
-  __typename?: 'ExampleLambdaDataSourceOutput';
-  exampleOutputField: Scalars['String']['output'];
-};
-
 export type ListClubDevicesInput = {
   clubId: Scalars['String']['input'];
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -123,14 +113,8 @@ export type MutationDeleteClubAndAdminArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  exampleLambdaDataSource: ExampleLambdaDataSourceOutput;
   getClub?: Maybe<Club>;
   listClubDevices: ListClubDevicesOutput;
-};
-
-
-export type QueryExampleLambdaDataSourceArgs = {
-  input: ExampleLambdaDataSourceInput;
 };
 
 
