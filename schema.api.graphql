@@ -34,6 +34,7 @@ type ClubDevice {
   clubId: String!
   clubDeviceId: String!
   name: String!
+  email: AWSEmail!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
