@@ -15,7 +15,7 @@ export default {
   iamRoleStatements: [
     {
       Effect: "Allow",
-      Action: "dynamodb:PutItem",
+      Action: "dynamodb:UpdateItem",
       Resource: {
         "Fn::GetAtt": ["ClubDevicesTable", "Arn"],
       },

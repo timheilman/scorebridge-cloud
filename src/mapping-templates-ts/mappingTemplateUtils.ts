@@ -20,7 +20,7 @@ export const middyOnErrorHandlingResponse = (ctx: Context) => {
   // this happens due to middy error handling middleware per Yan Cui
   /* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
   // @ts-ignore
-  if (ctx.result.error) {
+  if (ctx.result?.error) {
     // @ts-ignore
     util.error(ctx.result.error.message, ctx.result.error.type);
   }

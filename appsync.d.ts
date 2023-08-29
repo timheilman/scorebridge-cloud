@@ -43,15 +43,8 @@ export type ClubDevice = {
 };
 
 export type CreateClubDeviceInput = {
-  clubId: Scalars['String']['input'];
   deviceName: Scalars['String']['input'];
   regToken: Scalars['String']['input'];
-};
-
-export type CreateClubDeviceResponse = {
-  __typename?: 'CreateClubDeviceResponse';
-  clubDeviceEmail: Scalars['AWSEmail']['output'];
-  clubDeviceId: Scalars['String']['output'];
 };
 
 export type CreateClubInput = {
@@ -79,12 +72,6 @@ export type DeleteClubAndAdminResponse = {
 
 export type DeleteClubDeviceInput = {
   clubDeviceId: Scalars['String']['input'];
-  clubId: Scalars['String']['input'];
-};
-
-export type DeleteClubDeviceResponse = {
-  __typename?: 'DeleteClubDeviceResponse';
-  status: Scalars['String']['output'];
 };
 
 export type ListClubDevicesInput = {
@@ -102,9 +89,9 @@ export type ListClubDevicesOutput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createClub: CreateClubResponse;
-  createClubDevice: CreateClubDeviceResponse;
+  createClubDevice: ClubDevice;
   deleteClubAndAdmin: DeleteClubAndAdminResponse;
-  deleteClubDevice: DeleteClubDeviceResponse;
+  deleteClubDevice: ClubDevice;
   unexpectedError: UnexpectedErrorResponse;
 };
 
@@ -115,6 +102,7 @@ export type MutationCreateClubArgs = {
 
 
 export type MutationCreateClubDeviceArgs = {
+  clubId: Scalars['String']['input'];
   input: CreateClubDeviceInput;
 };
 
@@ -125,6 +113,7 @@ export type MutationDeleteClubAndAdminArgs = {
 
 
 export type MutationDeleteClubDeviceArgs = {
+  clubId: Scalars['String']['input'];
   input: DeleteClubDeviceInput;
 };
 
@@ -142,6 +131,22 @@ export type QueryGetClubArgs = {
 
 export type QueryListClubDevicesArgs = {
   input: ListClubDevicesInput;
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  createdClubDevice: ClubDevice;
+  deletedClubDevice: ClubDevice;
+};
+
+
+export type SubscriptionCreatedClubDeviceArgs = {
+  clubId: Scalars['String']['input'];
+};
+
+
+export type SubscriptionDeletedClubDeviceArgs = {
+  clubId: Scalars['String']['input'];
 };
 
 export type UnexpectedErrorResponse = {

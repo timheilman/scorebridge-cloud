@@ -2,8 +2,11 @@ import {
   AdminCreateUserCommandOutput,
   AdminGetUserCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { PutItemCommand } from "@aws-sdk/client-dynamodb";
-import { marshall } from "@aws-sdk/util-dynamodb";
+import {
+  PutItemCommandOutput,
+  UpdateItemCommand,
+} from "@aws-sdk/client-dynamodb";
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import {
   cognitoAddUserToGroup,
   cognitoCreateUser,
@@ -21,12 +24,12 @@ import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 
 import {
+  ClubDevice,
   CreateClubDeviceInput,
-  CreateClubDeviceResponse,
   MutationCreateClubDeviceArgs,
 } from "../../../appsync";
 const catPrefix = "src.functions.create-club-device.handler.";
-const lcd = getLogCompletionDecorator(catPrefix, "debug");
+const lcd = getLogCompletionDecorator(catPrefix, "info");
 const log = logFn(catPrefix);
 
 const stage = requiredEnvVar("STAGE");
@@ -40,30 +43,41 @@ export async function ddbCreateClubDevice(
   name: string,
   regToken: string,
 ) {
-  const clubDevice = marshall({
+  const clubDevice = {
     clubId: clubId,
     clubDeviceId,
     email: newEmail(regToken),
     name,
     createdAt: new Date().toJSON(),
     updatedAt: new Date().toJSON(),
-  });
-  const createDdbCommand = new PutItemCommand({
+  };
+  const createDdbCommand = new UpdateItemCommand({
     TableName: requiredEnvVar("CLUB_DEVICES_TABLE"),
-    Item: clubDevice,
+    Key: marshall({ clubId, clubDeviceId }),
+    UpdateExpression:
+      "SET email = :email, #name = :name, createdAt = :createdAt, updatedAt = :updatedAt",
+    ExpressionAttributeNames: { "#name": "name" },
+    ExpressionAttributeValues: marshall({
+      ":email": clubDevice.email,
+      ":name": clubDevice.name,
+      ":createdAt": clubDevice.createdAt,
+      ":updatedAt": clubDevice.updatedAt,
+    }),
+    ReturnValues: "ALL_NEW",
   });
-  await lcd(
+  const result = await lcd(
     cachedDynamoDbClient().send(createDdbCommand),
     "ddbCreateClubDevice.send",
     { createDdbCommand },
   );
+  log("unmarshallAttrs", "info", { result });
+  return unmarshall((result as PutItemCommandOutput).Attributes) as ClubDevice;
 }
 
-async function handleNoSuchCognitoUser({
-  clubId,
-  regToken,
-  deviceName,
-}: CreateClubDeviceInput) {
+async function handleNoSuchCognitoUser(
+  clubId: string,
+  { regToken, deviceName }: CreateClubDeviceInput,
+) {
   // everything else needs the userId, so await its creation
   const { User } = (await lcd(
     cognitoCreateUser(newEmail(regToken), "SUPPRESS"),
@@ -73,7 +87,7 @@ async function handleNoSuchCognitoUser({
   const clubDeviceId = User.Username;
   log("User", "debug", { User });
   // the ddbClub creation and remaining userId-dependent promises can be awaited in parallel
-  await Promise.all([
+  const responses = await Promise.all([
     lcd(
       cognitoUpdateUserTenantId(clubDeviceId, clubId),
       "cognitoUpdateUserTenantId",
@@ -92,7 +106,7 @@ async function handleNoSuchCognitoUser({
     ),
   ]);
 
-  return { clubDeviceId, clubDeviceEmail: newEmail(regToken) };
+  return responses[3] as ClubDevice;
 }
 
 function regTokenPublicPart(regToken: string) {
@@ -117,10 +131,11 @@ function regTokenToEmail(regToken: string, stage: string) {
 
 const almostMain: AppSyncResolverHandler<
   MutationCreateClubDeviceArgs,
-  CreateClubDeviceResponse
+  ClubDevice
 > = async (
   event: AppSyncResolverEvent<MutationCreateClubDeviceArgs>,
-): Promise<CreateClubDeviceResponse> => {
+): Promise<ClubDevice> => {
+  const clubId = event.arguments.clubId;
   const input = event.arguments.input;
   const user = (await lcd(
     getNullableUser(newEmail(input.regToken)),
@@ -132,7 +147,7 @@ const almostMain: AppSyncResolverHandler<
       `A tablet has already been onboarded with that registration token.`,
     );
   } else {
-    return await handleNoSuchCognitoUser(input);
+    return await handleNoSuchCognitoUser(clubId, input);
   }
 };
 export const main = middyWithErrorHandling(almostMain);

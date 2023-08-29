@@ -28,5 +28,6 @@ async function logCompletionDecorator<T>(
     return r;
   } catch (e: unknown) {
     logFn(catPrefix)(`${catSuffix}.end.error`, logLevel, ...[e, ...addlArgs]);
+    throw e;
   }
 }
