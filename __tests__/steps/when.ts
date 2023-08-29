@@ -139,6 +139,7 @@ export const aUserCallsCreateClub = async (
     input: {
       newAdminEmail,
       newClubName,
+      recaptchaToken: "ignored in test envs",
       suppressInvitationEmail: true, // only for testing, due to email quota
     },
   };
