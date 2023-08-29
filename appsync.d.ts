@@ -72,6 +72,7 @@ export type DeleteClubAndAdminResponse = {
 
 export type DeleteClubDeviceInput = {
   clubDeviceId: Scalars['String']['input'];
+  clubId: Scalars['String']['input'];
 };
 
 export type ListClubDevicesInput = {
@@ -113,7 +114,6 @@ export type MutationDeleteClubAndAdminArgs = {
 
 
 export type MutationDeleteClubDeviceArgs = {
-  clubId: Scalars['String']['input'];
   input: DeleteClubDeviceInput;
 };
 
@@ -135,8 +135,8 @@ export type QueryListClubDevicesArgs = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  createdClubDevice: ClubDevice;
-  deletedClubDevice: ClubDevice;
+  createdClubDevice?: Maybe<ClubDevice>;
+  deletedClubDevice?: Maybe<ClubDevice>;
 };
 
 
