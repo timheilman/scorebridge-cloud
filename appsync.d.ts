@@ -38,6 +38,7 @@ export type ClubDevice = {
   createdAt: Scalars['AWSDateTime']['output'];
   email: Scalars['AWSEmail']['output'];
   name: Scalars['String']['output'];
+  table?: Maybe<Scalars['Int']['output']>;
   updatedAt: Scalars['AWSDateTime']['output'];
 };
 
