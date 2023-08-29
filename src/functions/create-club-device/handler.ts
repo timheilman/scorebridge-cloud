@@ -15,6 +15,7 @@ import { cachedDynamoDbClient } from "@libs/ddb";
 import { ClubDeviceAlreadyExistsError } from "@libs/errors/club-device-already-exists-error";
 import { middyWithErrorHandling } from "@libs/lambda";
 import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
+import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
@@ -24,9 +25,9 @@ import {
   CreateClubDeviceResponse,
   MutationCreateClubDeviceArgs,
 } from "../../../appsync";
-
 const catPrefix = "src.functions.create-club-device.handler.";
 const lcd = getLogCompletionDecorator(catPrefix, "debug");
+const log = logFn(catPrefix);
 
 const stage = requiredEnvVar("STAGE");
 function newEmail(regToken: string) {
@@ -35,13 +36,15 @@ function newEmail(regToken: string) {
 
 export async function ddbCreateClubDevice(
   clubId: string,
-  deviceName: string,
+  clubDeviceId: string,
+  name: string,
   regToken: string,
 ) {
   const clubDevice = marshall({
     clubId: clubId,
-    clubDeviceId: newEmail(regToken),
-    name: deviceName,
+    clubDeviceId,
+    email: newEmail(regToken),
+    name,
     createdAt: new Date().toJSON(),
     updatedAt: new Date().toJSON(),
   });
@@ -61,8 +64,6 @@ async function handleNoSuchCognitoUser({
   regToken,
   deviceName,
 }: CreateClubDeviceInput) {
-  const ddbCreatePromise = ddbCreateClubDevice(clubId, deviceName, regToken);
-
   // everything else needs the userId, so await its creation
   const { User } = (await lcd(
     cognitoCreateUser(newEmail(regToken), "SUPPRESS"),
@@ -70,6 +71,7 @@ async function handleNoSuchCognitoUser({
     { clubId, regTokenPublic: regTokenPublicPart(regToken), deviceName },
   )) as AdminCreateUserCommandOutput; // I do not understand why this cast is needed
   const clubDeviceId = User.Username;
+  log("User", "debug", { User });
   // the ddbClub creation and remaining userId-dependent promises can be awaited in parallel
   await Promise.all([
     lcd(
@@ -84,7 +86,10 @@ async function handleNoSuchCognitoUser({
       cognitoSetNewPassword(clubDeviceId, regTokenSecretPart(regToken)),
       "cognitoSetNewPassword",
     ),
-    lcd(ddbCreatePromise, "ddbCreateClubDevicePromise"),
+    lcd(
+      ddbCreateClubDevice(clubId, clubDeviceId, deviceName, regToken),
+      "ddbCreateClubDevicePromise",
+    ),
   ]);
 
   return { clubDeviceId, clubDeviceEmail: newEmail(regToken) };
