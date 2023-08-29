@@ -27,6 +27,7 @@ export function deleteItemFromTable(
     new DeleteItemCommand({
       TableName: tableName,
       Key: marshall(key),
+      ReturnValues: "ALL_OLD",
     }),
   );
 }

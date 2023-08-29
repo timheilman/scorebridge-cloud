@@ -7,7 +7,7 @@ export { middyOnErrorHandlingResponse as response } from "./mappingTemplateUtils
 export function request(
   ctx: Context<MutationDeleteClubDeviceArgs>,
 ): LambdaRequest {
-  const clubId = ctx.arguments.clubId;
+  const clubId = ctx.arguments.input.clubId;
   errorOnClubMultitenancyFailure(
     clubId,
     ctx,

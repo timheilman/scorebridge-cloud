@@ -2,12 +2,13 @@ import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { cognitoDestroyUser } from "@libs/cognito";
 import { deleteItemFromTable } from "@libs/ddb";
 import { middyWithErrorHandling } from "@libs/lambda";
+import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 
 import { ClubDevice, MutationDeleteClubDeviceArgs } from "../../../appsync";
-
+const log = logFn("src.functions.deleteClubDevice.handler.");
 // const catPrefix = "src.functions.delete-club-device.handler.";
 
 const almostMain: AppSyncResolverHandler<
@@ -24,6 +25,7 @@ const almostMain: AppSyncResolverHandler<
       event.arguments.input,
     ),
   ]);
+  log("deleteItemFromTable", "info", { result: results[1] });
   return unmarshall(results[1].Attributes) as ClubDevice;
 };
 export const main = middyWithErrorHandling(almostMain);
