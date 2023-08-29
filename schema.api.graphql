@@ -6,16 +6,16 @@ schema {
 # ignore for now; Query simply has to be present
 type Query {
   getClub(clubId: String!): Club!
-  @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
+    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
   listClubDevices(input: ListClubDevicesInput!): ListClubDevicesOutput!
-  @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
+    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 }
 
 input ListClubDevicesInput {
   clubId: String!
   nextToken: String
-  limit:Int = 50
+  limit: Int = 50
 }
 
 type ListClubDevicesOutput {
@@ -40,20 +40,22 @@ type ClubDevice {
 
 type Mutation {
   unexpectedError: UnexpectedErrorResponse!
-  @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+    @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
   createClub(input: CreateClubInput!): CreateClubResponse!
-  @aws_api_key
-  @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+    @aws_api_key
+    @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
-  deleteClubAndAdmin(input: DeleteClubAndAdminInput!): DeleteClubAndAdminResponse!
-  @aws_cognito_user_pools(cognito_groups: ["adminClub","adminSuper"])
+  deleteClubAndAdmin(
+    input: DeleteClubAndAdminInput!
+  ): DeleteClubAndAdminResponse!
+    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
   createClubDevice(input: CreateClubDeviceInput!): CreateClubDeviceResponse!
-  @aws_cognito_user_pools(cognito_groups: ["adminClub","adminSuper"])
+    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
   deleteClubDevice(input: DeleteClubDeviceInput!): DeleteClubDeviceResponse!
-  @aws_cognito_user_pools(cognito_groups: ["adminClub","adminSuper"])
+    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 }
 
 input CreateClubDeviceInput {
@@ -77,7 +79,8 @@ type DeleteClubDeviceResponse {
 }
 
 type UnexpectedErrorResponse {
-  neverGetsReturned: String! @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+  neverGetsReturned: String!
+    @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 }
 
 input CreateClubInput {
@@ -88,8 +91,12 @@ input CreateClubInput {
 }
 
 type CreateClubResponse {
-  userId: String! @aws_api_key @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
-  clubId: String! @aws_api_key @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+  userId: String!
+    @aws_api_key
+    @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
+  clubId: String!
+    @aws_api_key
+    @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 }
 
 input DeleteClubAndAdminInput {

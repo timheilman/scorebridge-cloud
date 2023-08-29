@@ -19,13 +19,13 @@ function errorMiddleware() {
         // where the response is { error: { message, type } }
         log("errorMiddleware.onError.settingResponse", "debug", {
           message: request.error.message,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+
           type: request.error.constructor.name,
         });
         request.response = {
           error: {
             message: request.error.message,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+
             type: request.error.constructor.name,
           },
         };

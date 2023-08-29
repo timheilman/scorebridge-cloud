@@ -3,9 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "noEmit": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node"
   },
-  "include": [
-    "*.ts",
-  ]
+  "include": ["*.ts"]
 }

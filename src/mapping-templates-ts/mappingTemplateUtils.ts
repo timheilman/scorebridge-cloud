@@ -7,7 +7,7 @@ import { QueryListClubDevicesArgs } from "../../appsync";
 export const passThruLambdaInvokeRequest = (ctx: Context): LambdaRequest => {
   return {
     operation: "Invoke",
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     payload: ctx,
   };
 };
