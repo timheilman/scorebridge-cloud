@@ -1,6 +1,6 @@
 import { Context, DynamoDBQueryRequest, util } from "@aws-appsync/utils";
 
-import { ListClubDevicesOutput, QueryListClubDevicesArgs } from "../../appsync";
+import { QueryListClubDevicesArgs } from "../../appsync";
 import { errorOnClubMultitenancyFailure } from "./mappingTemplateUtils";
 
 export function request(
@@ -38,11 +38,10 @@ export const response = (ctx: Context<QueryListClubDevicesArgs>) => {
     util.error(ctx.error.message, ctx.error.type);
   }
 
-  const output: ListClubDevicesOutput = {
+  return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
     clubDevices: ctx.result.items,
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
     nextToken: ctx.result.nextToken,
   };
-  return output;
 };

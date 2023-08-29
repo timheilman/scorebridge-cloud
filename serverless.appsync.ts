@@ -42,6 +42,7 @@ const ddbResolvers: DdbResolver[] = [
 const lambdaResolvers = [
   lr("Mutation", "createClub"),
   lr("Mutation", "createClubDevice"),
+  lr("Mutation", "deleteClubDevice"),
   lr("Mutation", "deleteClubAndAdmin"),
   lr("Mutation", "unexpectedError"),
 ];

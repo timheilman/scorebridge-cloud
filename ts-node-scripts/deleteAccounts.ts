@@ -3,12 +3,12 @@ import {
   ListUsersCommandInput,
   UserType,
 } from "@aws-sdk/client-cognito-identity-provider";
-import {
-  cognitoDestroyUser,
-  deleteItemFromSimpleIdTable,
-} from "@functions/delete-club-and-admin/handler";
+import { deleteItemFromSimpleIdTable } from "@libs/ddb";
 
-import { cachedCognitoIdpClient } from "../src/libs/cognito";
+import {
+  cachedCognitoIdpClient,
+  cognitoDestroyUser,
+} from "../src/libs/cognito";
 import requiredEnvVar from "../src/libs/requiredEnvVar";
 
 async function cognitoListUsers(paginationToken?: string) {
@@ -30,14 +30,14 @@ async function deleteUser(user: UserType) {
   const promises: Promise<unknown>[] = [];
   if (userAttr(user, "tenantId")) {
     promises.push(
-      deleteItemFromTable(
+      deleteItemFromSimpleIdTable(
         requiredEnvVar("CLUBS_TABLE"),
         userAttr(user, "tenantId"),
       ),
     );
   }
   promises.push(
-    deleteItemFromTable(requiredEnvVar("USERS_TABLE"), user.Username),
+    deleteItemFromSimpleIdTable(requiredEnvVar("USERS_TABLE"), user.Username),
   );
   promises.push(cognitoDestroyUser(user.Username));
   return Promise.all(promises);

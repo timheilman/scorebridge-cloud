@@ -31,7 +31,8 @@ type Club {
 }
 
 type ClubDevice {
-  id: String!
+  clubId: String!
+  clubDeviceId: String!
   name: String!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
