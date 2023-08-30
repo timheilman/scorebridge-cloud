@@ -74,10 +74,11 @@ export async function ddbCreateClubDevice(
   return unmarshall((result as PutItemCommandOutput).Attributes) as ClubDevice;
 }
 
-async function handleNoSuchCognitoUser(
-  clubId: string,
-  { regToken, deviceName }: CreateClubDeviceInput,
-) {
+async function handleNoSuchCognitoUser({
+  clubId,
+  regToken,
+  deviceName,
+}: CreateClubDeviceInput) {
   // everything else needs the userId, so await its creation
   const { User } = (await lcd(
     cognitoCreateUser(newEmail(regToken), "SUPPRESS"),
@@ -135,7 +136,6 @@ const almostMain: AppSyncResolverHandler<
 > = async (
   event: AppSyncResolverEvent<MutationCreateClubDeviceArgs>,
 ): Promise<ClubDevice> => {
-  const clubId = event.arguments.clubId;
   const input = event.arguments.input;
   const user = (await lcd(
     getNullableUser(newEmail(input.regToken)),
@@ -147,7 +147,7 @@ const almostMain: AppSyncResolverHandler<
       `A tablet has already been onboarded with that registration token.`,
     );
   } else {
-    return await handleNoSuchCognitoUser(clubId, input);
+    return await handleNoSuchCognitoUser(input);
   }
 };
 export const main = middyWithErrorHandling(almostMain);

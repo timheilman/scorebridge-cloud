@@ -43,6 +43,7 @@ export type ClubDevice = {
 };
 
 export type CreateClubDeviceInput = {
+  clubId: Scalars['String']['input'];
   deviceName: Scalars['String']['input'];
   regToken: Scalars['String']['input'];
 };
@@ -103,7 +104,6 @@ export type MutationCreateClubArgs = {
 
 
 export type MutationCreateClubDeviceArgs = {
-  clubId: Scalars['String']['input'];
   input: CreateClubDeviceInput;
 };
 

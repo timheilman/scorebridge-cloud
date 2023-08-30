@@ -142,13 +142,10 @@ const serverlessConfiguration: AWS & {
       ...SecretsManagerResources,
     },
     Outputs: {
-      CreateClubApiKey: {
-        Value: { "Fn::GetAtt": ["CreateClubApiKey", "ApiKey"] },
-      },
       ApiUrl: { Value: { "Fn::GetAtt": ["GraphQlApi", "GraphQLUrl"] } },
       AwsRegion: { Value: `\${aws:region}` },
       ClubsTable: { Value: { Ref: "ClubsTable" } },
-      UsersTable: { Value: { Ref: "UsersTable" } },
+      ClubDevicesTable: { Value: { Ref: "ClubDevicesTable" } },
       CognitoUserPoolClientIdAutomatedTest: {
         Value: { Ref: "UserPoolClientAutomatedTest" },
       },
@@ -157,11 +154,15 @@ const serverlessConfiguration: AWS & {
       },
       CognitoUserPoolClientIdWeb: { Value: { Ref: "UserPoolClientWeb" } },
       CognitoUserPoolId: { Value: { Ref: "CognitoUserPool" } },
+      CreateClubApiKey: {
+        Value: { "Fn::GetAtt": ["CreateClubApiKey", "ApiKey"] },
+      },
       PortalUrl: { Value: `\${self:custom.settings.PORTAL_URL}` },
       SesSandboxSqsQueueUrl: {
         Value: { "Fn::GetAtt": ["SesSandboxSqsQueue", "QueueUrl"] },
       },
       Stage: { Value: `\${sls:stage}` },
+      UsersTable: { Value: { Ref: "UsersTable" } },
     },
   },
   appSync,

@@ -15,6 +15,7 @@ console.log(
       "COGNITO_USER_POOL_ID",
       "USERS_TABLE",
       "CLUBS_TABLE",
+      "CLUB_DEVICES_TABLE",
       "STAGE",
       "PORTAL_URL",
       "SB_TEST_AWS_CLI_PROFILE",
