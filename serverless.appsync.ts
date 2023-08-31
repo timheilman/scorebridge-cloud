@@ -107,6 +107,9 @@ function customAppSyncDataSources() {
   return {
     ...customAppSyncDdbDataSources(),
     ...customAppSyncLambdaDataSources(),
+    none: {
+      type: "NONE",
+    },
   };
 }
 
@@ -146,6 +149,9 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
       );
       return acc;
     }, {}),
+    "Subscription.createdClubDevice": {
+      functions: ["PfnSubscriptioncreatedClubDevice"],
+    },
   },
   pipelineFunctions: {
     ...lambdaResolvers.reduce((acc, lr) => {
@@ -156,6 +162,11 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
       acc[pipelineFnNameDdb(dr)] = fnDefnDdb(dr);
       return acc;
     }, {}),
+    PfnSubscriptioncreatedClubDevice: {
+      dataSource: "none",
+      code: `src/mapping-templates-js/Subscription.createdClubDevice.js`,
+      kind: "PIPELINE",
+    },
   },
 };
 
