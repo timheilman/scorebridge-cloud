@@ -152,6 +152,9 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
     "Subscription.createdClubDevice": {
       functions: ["PfnSubscriptioncreatedClubDevice"],
     },
+    "Subscription.deletedClubDevice": {
+      functions: ["PfnSubscriptiondeletedClubDevice"],
+    },
   },
   pipelineFunctions: {
     ...lambdaResolvers.reduce((acc, lr) => {
@@ -165,6 +168,11 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
     PfnSubscriptioncreatedClubDevice: {
       dataSource: "none",
       code: `src/mapping-templates-js/Subscription.createdClubDevice.js`,
+      kind: "PIPELINE",
+    },
+    PfnSubscriptiondeletedClubDevice: {
+      dataSource: "none",
+      code: `src/mapping-templates-js/Subscription.deletedClubDevice.js`,
       kind: "PIPELINE",
     },
   },
