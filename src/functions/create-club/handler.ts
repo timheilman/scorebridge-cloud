@@ -21,7 +21,7 @@ import { UserIsBotError } from "@libs/errors/user-is-bot-error";
 import { middyWithErrorHandling } from "@libs/lambda";
 import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
-import { cachedSecretsManagerClient } from "@libs/secretsManager";
+import { secretsManagerClient } from "@libs/secretsManager";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 import axios from "axios";
@@ -164,7 +164,7 @@ const almostMain: AppSyncResolverHandler<
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
   const recaptchaSecret = JSON.parse(
     (
-      await cachedSecretsManagerClient().send(
+      await secretsManagerClient().send(
         new GetSecretValueCommand({
           SecretId: `${requiredEnvVar("STAGE")}.recaptcha2Secret`,
         }),

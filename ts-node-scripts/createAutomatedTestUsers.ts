@@ -25,7 +25,7 @@ import {
   ddbCreateUser,
 } from "../src/functions/./create-club/handler";
 import requiredEnvVar from "../src/libs/requiredEnvVar";
-import { cachedSecretsManagerClient } from "./secretsManager";
+import { secretsManagerClient } from "../src/libs/secretsManager";
 
 const catPrefix = "ts-node-scripts.createAutomatedTestUsers.";
 const log = logFn(catPrefix);
@@ -50,14 +50,14 @@ async function secretsManagerRecordPassword(email: string, password: string) {
     SecretString,
   });
   try {
-    return await cachedSecretsManagerClient().send(command);
+    return await secretsManagerClient().send(command);
   } catch (e) {
     if (e instanceof ResourceExistsException) {
       const changeCommand = new UpdateSecretCommand({
         SecretId,
         SecretString,
       });
-      return await cachedSecretsManagerClient().send(changeCommand);
+      return await secretsManagerClient().send(changeCommand);
     } else {
       throw e;
     }
