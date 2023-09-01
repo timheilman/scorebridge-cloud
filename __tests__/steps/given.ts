@@ -3,9 +3,9 @@ import { GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import chance from "chance";
 import { config as dotenvConfig } from "dotenv";
 
+import requiredEnvVar from "../../scorebridge-ts-submodule/requiredEnvVar";
 import { cognitoClient } from "../../src/libs/cognito";
 import { logFn } from "../../src/libs/logging";
-import requiredEnvVar from "../../src/libs/requiredEnvVar";
 import { secretsManagerClient } from "../../src/libs/secretsManager";
 
 const log = logFn("__tests__.steps.given.");

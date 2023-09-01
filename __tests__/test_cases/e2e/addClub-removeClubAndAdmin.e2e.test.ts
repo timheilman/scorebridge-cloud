@@ -5,7 +5,7 @@ import {
 
 import { cognitoClient } from "../../../src/libs/cognito";
 import { logFn } from "../../../src/libs/logging";
-import requiredEnvVar from "../../../src/libs/requiredEnvVar";
+import requiredEnvVar from "../../../src/scorebridge-ts-submodule/requiredEnvVar";
 import { cognitoUserAttributeValue } from "../../lib/cognito";
 import {
   aLoggedInAdminClub,

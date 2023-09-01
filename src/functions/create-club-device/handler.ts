@@ -14,11 +14,10 @@ import {
   cognitoUpdateUserTenantId,
   getNullableUser,
 } from "@libs/cognito";
-import { cachedDynamoDbClient } from "@libs/ddb";
+import { dynamoDbClient } from "@libs/ddb";
 import { ClubDeviceAlreadyExistsError } from "@libs/errors/club-device-already-exists-error";
 import { middyWithErrorHandling } from "@libs/lambda";
 import { logFn } from "@libs/logging";
-import requiredEnvVar from "@libs/requiredEnvVar";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 
@@ -28,6 +27,7 @@ import {
   MutationCreateClubDeviceArgs,
 } from "../../../appsync";
 import { logCompletionDecoratorFactory } from "../../../scorebridge-ts-submodule/logCompletionDecorator";
+import requiredEnvVar from "../../../scorebridge-ts-submodule/requiredEnvVar";
 
 const log = logFn("src.functions.create-club-device.handler.");
 const lcd = logCompletionDecoratorFactory(log);
@@ -66,7 +66,7 @@ export async function ddbCreateClubDevice(
     ReturnValues: "ALL_NEW",
   });
   const result = await lcd(
-    cachedDynamoDbClient().send(createDdbCommand),
+    dynamoDbClient().send(createDdbCommand),
     "ddbCreateClubDevice.send",
     { createDdbCommand },
   );

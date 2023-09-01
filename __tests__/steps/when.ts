@@ -6,7 +6,7 @@ import {
   UnexpectedErrorResponse,
 } from "../../appsync";
 import { logFn } from "../../src/libs/logging";
-import requiredEnvVar from "../../src/libs/requiredEnvVar";
+import requiredEnvVar from "../../src/scorebridge-ts-submodule/requiredEnvVar";
 import GraphQL from "../lib/graphql";
 
 const log = logFn("__tests__.steps.when.");

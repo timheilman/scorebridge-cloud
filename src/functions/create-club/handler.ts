@@ -15,12 +15,11 @@ import {
   cognitoUpdateUserTenantId,
   getNullableUser,
 } from "@libs/cognito";
-import { cachedDynamoDbClient } from "@libs/ddb";
+import { dynamoDbClient } from "@libs/ddb";
 import { UserAlreadyExistsError } from "@libs/errors/user-already-exists-error";
 import { UserIsBotError } from "@libs/errors/user-is-bot-error";
 import { middyWithErrorHandling } from "@libs/lambda";
 import { logFn } from "@libs/logging";
-import requiredEnvVar from "@libs/requiredEnvVar";
 import { secretsManagerClient } from "@libs/secretsManager";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
@@ -33,6 +32,7 @@ import {
   MutationCreateClubArgs,
 } from "../../../appsync";
 import { logCompletionDecoratorFactory } from "../../../scorebridge-ts-submodule/logCompletionDecorator";
+import requiredEnvVar from "../../../scorebridge-ts-submodule/requiredEnvVar";
 
 const log = logFn("src.functions.create-club.handler.");
 const lcd = logCompletionDecoratorFactory(log);
@@ -53,7 +53,7 @@ const updateClubName = async (
       ":val1": newClubName,
     }),
   });
-  return await cachedDynamoDbClient().send(updateClubDdbCommand);
+  return await dynamoDbClient().send(updateClubDdbCommand);
 };
 
 export async function ddbCreateClub(clubId: string, clubName: string) {
@@ -69,7 +69,7 @@ export async function ddbCreateClub(clubId: string, clubName: string) {
     ConditionExpression: "attribute_not_exists(id)",
   });
   log("ddbCreateClub.send", "debug", { createClubDdbCommand });
-  await cachedDynamoDbClient().send(createClubDdbCommand);
+  await dynamoDbClient().send(createClubDdbCommand);
 }
 
 export async function ddbCreateUser(userId: string, email: string) {
@@ -84,7 +84,7 @@ export async function ddbCreateUser(userId: string, email: string) {
     Item: user,
     ConditionExpression: "attribute_not_exists(id)",
   });
-  await cachedDynamoDbClient().send(createUserDdbCommand);
+  await dynamoDbClient().send(createUserDdbCommand);
 }
 
 async function readdClub(

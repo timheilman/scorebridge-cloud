@@ -20,11 +20,11 @@ import { config as dotenvConfig } from "dotenv";
 import { ulid } from "ulid";
 
 import { logCompletionDecoratorFactory } from "../scorebridge-ts-submodule/logCompletionDecorator";
+import requiredEnvVar from "../scorebridge-ts-submodule/requiredEnvVar";
 import {
   ddbCreateClub,
   ddbCreateUser,
 } from "../src/functions/./create-club/handler";
-import requiredEnvVar from "../src/libs/requiredEnvVar";
 import { secretsManagerClient } from "../src/libs/secretsManager";
 
 const catPrefix = "ts-node-scripts.createAutomatedTestUsers.";

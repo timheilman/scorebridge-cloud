@@ -1,29 +1,23 @@
-import { DeleteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { fromEnv } from "@aws-sdk/credential-providers";
+import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 
-import fromSsoUsingProfileFromEnv from "./from-sso-using-profile-from-env";
-import requiredEnvVar from "./requiredEnvVar";
+import { cachedDynamoDbClient } from "../../scorebridge-ts-submodule/cachedDynamoDbClient";
+import requiredEnvVar from "../../scorebridge-ts-submodule/requiredEnvVar";
 
-let dynamoDbClient: DynamoDBClient;
-export const cachedDynamoDbClient = () => {
-  if (dynamoDbClient) {
-    return dynamoDbClient;
-  }
-  dynamoDbClient = new DynamoDBClient({
-    region: requiredEnvVar("AWS_REGION"),
-    credentials: process.env.SB_TEST_AWS_CLI_PROFILE
-      ? fromSsoUsingProfileFromEnv()
-      : fromEnv(),
-  });
-  return dynamoDbClient;
+export const dynamoDbClient = () => {
+  return cachedDynamoDbClient(
+    requiredEnvVar("AWS_REGION"),
+    process.env["SB_TEST_AWS_CLI_PROFILE"]
+      ? process.env["SB_TEST_AWS_CLI_PROFILE"]
+      : null,
+  );
 };
 
 export function deleteItemFromTable(
   tableName: string,
   key: Record<string, unknown>,
 ) {
-  return cachedDynamoDbClient().send(
+  return dynamoDbClient().send(
     new DeleteItemCommand({
       TableName: tableName,
       Key: marshall(key),

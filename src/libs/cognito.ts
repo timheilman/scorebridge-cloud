@@ -10,7 +10,7 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 
 import { cachedCognitoIdpClient } from "../../scorebridge-ts-submodule/cachedCognitoIdpClient";
-import requiredEnvVar from "./requiredEnvVar";
+import requiredEnvVar from "../../scorebridge-ts-submodule/requiredEnvVar";
 
 export function cognitoClient(): CognitoIdentityProviderClient {
   return cachedCognitoIdpClient(

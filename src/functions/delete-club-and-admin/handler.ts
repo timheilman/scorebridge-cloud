@@ -2,7 +2,6 @@ import { cognitoDestroyUser } from "@libs/cognito";
 import { deleteItemFromSimpleIdTable } from "@libs/ddb";
 import { middyWithErrorHandling } from "@libs/lambda";
 import { logFn } from "@libs/logging";
-import requiredEnvVar from "@libs/requiredEnvVar";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 
@@ -11,6 +10,7 @@ import {
   MutationDeleteClubAndAdminArgs,
 } from "../../../appsync";
 import { logCompletionDecoratorFactory } from "../../../scorebridge-ts-submodule/logCompletionDecorator";
+import requiredEnvVar from "../../../scorebridge-ts-submodule/requiredEnvVar";
 
 const log = logFn("src.functions.delete-club-and-admin.handler.");
 const lcd = logCompletionDecoratorFactory(log);

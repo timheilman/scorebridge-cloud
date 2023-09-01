@@ -7,9 +7,9 @@ import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { config as dotenvConfig } from "dotenv";
 
 import { cognitoClient } from "../../src/libs/cognito";
-import { cachedDynamoDbClient } from "../../src/libs/ddb";
+import { dynamoDbClient } from "../../src/libs/ddb";
 import { logFn } from "../../src/libs/logging";
-import requiredEnvVar from "../../src/libs/requiredEnvVar";
+import requiredEnvVar from "../../src/scorebridge-ts-submodule/requiredEnvVar";
 const log = logFn("__tests__.steps.then.");
 dotenvConfig();
 
@@ -38,7 +38,7 @@ export const userDoesNotExistInCognito = async (userId: string) => {
 };
 
 async function getUserDdb(id: string) {
-  const response = await cachedDynamoDbClient().send(
+  const response = await dynamoDbClient().send(
     new GetItemCommand({
       TableName: process.env.USERS_TABLE,
       Key: marshall({
@@ -71,7 +71,7 @@ export const userDoesNotExistInUsersTable = async (id: string) => {
 };
 
 async function getClubDdb(id: string) {
-  const response = await cachedDynamoDbClient().send(
+  const response = await dynamoDbClient().send(
     new GetItemCommand({
       TableName: process.env.CLUBS_TABLE,
       Key: marshall({
