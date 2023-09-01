@@ -17,7 +17,7 @@ import {
 import { cachedDynamoDbClient } from "@libs/ddb";
 import { ClubDeviceAlreadyExistsError } from "@libs/errors/club-device-already-exists-error";
 import { middyWithErrorHandling } from "@libs/lambda";
-import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
+import { logCompletionDecoratorFactory } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { AppSyncResolverEvent } from "aws-lambda";
@@ -29,7 +29,7 @@ import {
   MutationCreateClubDeviceArgs,
 } from "../../../appsync";
 const catPrefix = "src.functions.create-club-device.handler.";
-const lcd = getLogCompletionDecorator(catPrefix, "info");
+const lcd = logCompletionDecoratorFactory(logFn, catPrefix);
 const log = logFn(catPrefix);
 
 const stage = requiredEnvVar("STAGE");

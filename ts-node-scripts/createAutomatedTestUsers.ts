@@ -14,7 +14,7 @@ import {
   cognitoSetNewPassword,
   cognitoUpdateUserTenantId,
 } from "@libs/cognito";
-import { getLogCompletionDecorator } from "@libs/logCompletionDecorator";
+import { logCompletionDecoratorFactory } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import chance from "chance";
 import { config as dotenvConfig } from "dotenv";
@@ -29,7 +29,7 @@ import { cachedSecretsManagerClient } from "./secretsManager";
 
 const catPrefix = "ts-node-scripts.createAutomatedTestUsers.";
 const log = logFn(catPrefix);
-const lcd = getLogCompletionDecorator(catPrefix, "debug");
+const lcd = logCompletionDecoratorFactory(logFn, catPrefix);
 
 dotenvConfig();
 
