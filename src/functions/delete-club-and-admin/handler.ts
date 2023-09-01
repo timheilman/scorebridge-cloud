@@ -1,7 +1,6 @@
 import { cognitoDestroyUser } from "@libs/cognito";
 import { deleteItemFromSimpleIdTable } from "@libs/ddb";
 import { middyWithErrorHandling } from "@libs/lambda";
-import { logCompletionDecoratorFactory } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { AppSyncResolverEvent } from "aws-lambda";
@@ -11,10 +10,10 @@ import {
   DeleteClubAndAdminResponse,
   MutationDeleteClubAndAdminArgs,
 } from "../../../appsync";
+import { logCompletionDecoratorFactory } from "../../../scorebridge-ts-submodule/logCompletionDecorator";
 
-const catPrefix = "src.functions.delete-club-and-admin.handler.";
-const lcd = logCompletionDecoratorFactory(logFn, catPrefix);
-const log = logFn(catPrefix);
+const log = logFn("src.functions.delete-club-and-admin.handler.");
+const lcd = logCompletionDecoratorFactory(log);
 
 const almostMain: AppSyncResolverHandler<
   MutationDeleteClubAndAdminArgs,

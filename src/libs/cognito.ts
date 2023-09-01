@@ -8,23 +8,17 @@ import {
   AdminUpdateUserAttributesCommandInput,
   CognitoIdentityProviderClient,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { fromEnv } from "@aws-sdk/credential-providers";
 
-import fromSsoUsingProfileFromEnv from "./from-sso-using-profile-from-env";
+import cachedCognitoIdpClient from "../../scorebridge-ts-submodule/cachedCognitoIdpClient";
 import requiredEnvVar from "./requiredEnvVar";
 
-let cognitoIdpClient: CognitoIdentityProviderClient;
-export function cachedCognitoIdpClient(): CognitoIdentityProviderClient {
-  if (cognitoIdpClient) {
-    return cognitoIdpClient;
-  }
-  cognitoIdpClient = new CognitoIdentityProviderClient({
-    region: requiredEnvVar("AWS_REGION"),
-    credentials: process.env.SB_TEST_AWS_CLI_PROFILE
-      ? fromSsoUsingProfileFromEnv()
-      : fromEnv(),
-  });
-  return cognitoIdpClient;
+export function cognitoClient(): CognitoIdentityProviderClient {
+  return cachedCognitoIdpClient(
+    requiredEnvVar("AWS_REGION"),
+    process.env.SB_TEST_AWS_CLI_PROFILE
+      ? process.env.SB_TEST_AWS_CLI_PROFILE
+      : null,
+  );
 }
 
 export async function cognitoAddUserToGroup(userId: string, groupName: string) {
@@ -34,7 +28,7 @@ export async function cognitoAddUserToGroup(userId: string, groupName: string) {
     Username: userId, // note: email also works here
   };
   const command = new AdminAddUserToGroupCommand(params);
-  return await cachedCognitoIdpClient().send(command);
+  return await cognitoClient().send(command);
 }
 
 export async function cognitoUpdateUserTenantId(
@@ -49,7 +43,7 @@ export async function cognitoUpdateUserTenantId(
   const updateUserCommand = new AdminUpdateUserAttributesCommand(
     updateUserParams,
   );
-  return await cachedCognitoIdpClient().send(updateUserCommand);
+  return await cognitoClient().send(updateUserCommand);
 }
 
 export async function cognitoCreateUser(
@@ -69,7 +63,7 @@ export async function cognitoCreateUser(
   };
 
   const createUserCommand = new AdminCreateUserCommand(createUserParams);
-  return cachedCognitoIdpClient().send(createUserCommand);
+  return cognitoClient().send(createUserCommand);
 }
 export const getNullableUser = async (email: string) => {
   try {
@@ -88,7 +82,7 @@ export const getCognitoUser = async (email: string) => {
     UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
     Username: email,
   });
-  return await cachedCognitoIdpClient().send(getUserCommand);
+  return await cognitoClient().send(getUserCommand);
 };
 
 export async function cognitoSetNewPassword(
@@ -102,11 +96,11 @@ export async function cognitoSetNewPassword(
     Permanent: true,
   };
   const command = new AdminSetUserPasswordCommand(params);
-  return await cachedCognitoIdpClient().send(command);
+  return await cognitoClient().send(command);
 }
 
 export async function cognitoDestroyUser(userId: string) {
-  return cachedCognitoIdpClient().send(
+  return cognitoClient().send(
     new AdminDeleteUserCommand({
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
       Username: userId,

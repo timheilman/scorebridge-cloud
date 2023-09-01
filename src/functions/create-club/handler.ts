@@ -19,7 +19,6 @@ import { cachedDynamoDbClient } from "@libs/ddb";
 import { UserAlreadyExistsError } from "@libs/errors/user-already-exists-error";
 import { UserIsBotError } from "@libs/errors/user-is-bot-error";
 import { middyWithErrorHandling } from "@libs/lambda";
-import { logCompletionDecoratorFactory } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import requiredEnvVar from "@libs/requiredEnvVar";
 import { cachedSecretsManagerClient } from "@libs/secretsManager";
@@ -33,10 +32,10 @@ import {
   CreateClubResponse,
   MutationCreateClubArgs,
 } from "../../../appsync";
+import { logCompletionDecoratorFactory } from "../../../scorebridge-ts-submodule/logCompletionDecorator";
 
-const catPrefix = "src.functions.create-club.handler.";
-const log = logFn(catPrefix);
-const lcd = logCompletionDecoratorFactory(logFn, catPrefix);
+const log = logFn("src.functions.create-club.handler.");
+const lcd = logCompletionDecoratorFactory(log);
 const reinviteUser = async (email: string) => {
   return cognitoCreateUser(email, "RESEND");
 };

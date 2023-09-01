@@ -5,10 +5,7 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { deleteItemFromSimpleIdTable } from "@libs/ddb";
 
-import {
-  cachedCognitoIdpClient,
-  cognitoDestroyUser,
-} from "../src/libs/cognito";
+import { cognitoClient, cognitoDestroyUser } from "../src/libs/cognito";
 import requiredEnvVar from "../src/libs/requiredEnvVar";
 
 async function cognitoListUsers(paginationToken?: string) {
@@ -19,7 +16,7 @@ async function cognitoListUsers(paginationToken?: string) {
     input["PaginationToken"] = paginationToken;
   }
 
-  return cachedCognitoIdpClient().send(new ListUsersCommand(input));
+  return cognitoClient().send(new ListUsersCommand(input));
 }
 
 export function userAttr(user: UserType, attrName: string) {

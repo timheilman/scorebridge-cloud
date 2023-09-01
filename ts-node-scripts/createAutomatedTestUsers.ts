@@ -8,18 +8,18 @@ import {
   UpdateSecretCommand,
 } from "@aws-sdk/client-secrets-manager";
 import {
-  cachedCognitoIdpClient,
   cognitoAddUserToGroup,
+  cognitoClient,
   cognitoCreateUser,
   cognitoSetNewPassword,
   cognitoUpdateUserTenantId,
 } from "@libs/cognito";
-import { logCompletionDecoratorFactory } from "@libs/logCompletionDecorator";
 import { logFn } from "@libs/logging";
 import chance from "chance";
 import { config as dotenvConfig } from "dotenv";
 import { ulid } from "ulid";
 
+import { logCompletionDecoratorFactory } from "../scorebridge-ts-submodule/logCompletionDecorator";
 import {
   ddbCreateClub,
   ddbCreateUser,
@@ -29,7 +29,7 @@ import { cachedSecretsManagerClient } from "./secretsManager";
 
 const catPrefix = "ts-node-scripts.createAutomatedTestUsers.";
 const log = logFn(catPrefix);
-const lcd = logCompletionDecoratorFactory(logFn, catPrefix);
+const lcd = logCompletionDecoratorFactory(log);
 
 dotenvConfig();
 
@@ -106,7 +106,7 @@ async function createAutomatedTestUsers(): Promise<void> {
         if (settled.status === "fulfilled") {
           return Promise.resolve(settled.value.User.Username);
         }
-        return cachedCognitoIdpClient()
+        return cognitoClient()
           .send(
             new AdminGetUserCommand({ UserPoolId, Username: emails[index] }),
           )

@@ -3,7 +3,7 @@ import { GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import chance from "chance";
 import { config as dotenvConfig } from "dotenv";
 
-import { cachedCognitoIdpClient } from "../../src/libs/cognito";
+import { cognitoClient } from "../../src/libs/cognito";
 import { logFn } from "../../src/libs/logging";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
 import { cachedSecretsManagerClient } from "../../ts-node-scripts/secretsManager";
@@ -41,7 +41,7 @@ export const aRandomUser = (): {
 };
 
 export const aLoggedInUser = async (email: string, password: string) => {
-  const auth = await cachedCognitoIdpClient().send(
+  const auth = await cognitoClient().send(
     new InitiateAuthCommand({
       AuthFlow: "USER_PASSWORD_AUTH",
       ClientId: requiredEnvVar("COGNITO_USER_POOL_CLIENT_ID_AUTOMATED_TEST"),

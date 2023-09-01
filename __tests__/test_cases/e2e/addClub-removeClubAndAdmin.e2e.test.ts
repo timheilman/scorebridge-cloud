@@ -3,7 +3,7 @@ import {
   AdminSetUserPasswordCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
 
-import { cachedCognitoIdpClient } from "../../../src/libs/cognito";
+import { cognitoClient } from "../../../src/libs/cognito";
 import { logFn } from "../../../src/libs/logging";
 import requiredEnvVar from "../../../src/libs/requiredEnvVar";
 import { cognitoUserAttributeValue } from "../../lib/cognito";
@@ -81,7 +81,7 @@ describe("When an unknown user adds a club via API key", () => {
     };
     const command = new AdminSetUserPasswordCommand(input);
     /* const response = */
-    await cachedCognitoIdpClient().send(command);
+    await cognitoClient().send(command);
   }
 
   it("Once the user resets their password their status changes to CONFIRMED", async () => {

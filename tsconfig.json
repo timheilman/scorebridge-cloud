@@ -15,6 +15,7 @@
   "include": [
     "__tests__/**/*.ts",
     "src/**/*.ts",
+    "scorebridge-ts-submodule",
     "serverless.ts",
     "serverless.*.ts",
     "ts-node-scripts/*.ts"

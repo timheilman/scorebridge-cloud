@@ -6,7 +6,7 @@ import { GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { config as dotenvConfig } from "dotenv";
 
-import { cachedCognitoIdpClient } from "../../src/libs/cognito";
+import { cognitoClient } from "../../src/libs/cognito";
 import { cachedDynamoDbClient } from "../../src/libs/ddb";
 import { logFn } from "../../src/libs/logging";
 import requiredEnvVar from "../../src/libs/requiredEnvVar";
@@ -16,7 +16,7 @@ dotenvConfig();
 const getUserCognito = async (
   userId: string,
 ): Promise<AdminGetUserCommandOutput> =>
-  cachedCognitoIdpClient().send(
+  cognitoClient().send(
     new AdminGetUserCommand({
       UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
       Username: userId,
