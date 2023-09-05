@@ -35,7 +35,7 @@ const lr = (
 const ddbResolvers: DdbResolver[] = [
   ddr("Query", "getClub", "clubsTable"),
   ddr("Query", "listClubDevices", "clubDevicesTable"),
-  // ddr("Mutation", "editMyProfile", "usersTable"),
+  ddr("Mutation", "updateClub", "clubsTable"),
 ];
 
 // Unlike DynamoDb resolvers, lambdas always have a datasource named the same

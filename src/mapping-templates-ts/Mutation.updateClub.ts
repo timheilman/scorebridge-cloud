@@ -1,9 +1,6 @@
 import { Context, DynamoDBUpdateItemRequest, util } from "@aws-appsync/utils";
 
-import {
-  MutationUpdateClubArgs,
-  QueryListClubDevicesArgs,
-} from "../../appsync";
+import { MutationUpdateClubArgs } from "../../appsync";
 import { errorOnClubMultitenancyFailure } from "./mappingTemplateUtils";
 
 export function request(
@@ -24,7 +21,7 @@ export function request(
   };
 }
 
-export const response = (ctx: Context<QueryListClubDevicesArgs>) => {
+export const response = (ctx: Context<MutationUpdateClubArgs>) => {
   if (ctx.error) {
     util.error(ctx.error.message, ctx.error.type);
   }
