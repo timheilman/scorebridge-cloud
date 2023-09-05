@@ -46,7 +46,7 @@ type Subscription {
 
   updatedClub(id: String!): Club
     @aws_subscribe(mutations: ["updateClub"])
-    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
+    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper", "clubDevice"])
 }
 input ListClubDevicesInput {
   clubId: String!
