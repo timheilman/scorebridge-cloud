@@ -27,6 +27,11 @@ import {
   MutationCreateClubDeviceArgs,
 } from "../../../appsync";
 import { logCompletionDecoratorFactory } from "../../../scorebridge-ts-submodule/logCompletionDecorator";
+import {
+  regTokenPublicPart,
+  regTokenSecretPart,
+  regTokenToEmail,
+} from "../../../scorebridge-ts-submodule/regTokenUtils";
 import requiredEnvVar from "../../../scorebridge-ts-submodule/requiredEnvVar";
 
 const log = logFn("src.functions.create-club-device.handler.");
@@ -108,26 +113,6 @@ async function handleNoSuchCognitoUser({
   ]);
 
   return responses[3] as ClubDevice;
-}
-
-function regTokenPublicPart(regToken: string) {
-  if (regToken.length < 16) {
-    throw new Error("reg tokens should be 16 chars for now");
-  }
-  return regToken.slice(0, 8);
-}
-
-function regTokenSecretPart(regToken: string) {
-  if (regToken.length < 16) {
-    throw new Error("reg tokens should be 16 chars for now");
-  }
-  return regToken.slice(8);
-}
-
-function regTokenToEmail(regToken: string, stage: string) {
-  return `scorebridge8+${stage}-clubDevice-${regTokenPublicPart(
-    regToken,
-  )}@gmail.com`;
 }
 
 const almostMain: AppSyncResolverHandler<
