@@ -158,7 +158,7 @@ export type SubscriptionDeletedClubDeviceArgs = {
 
 
 export type SubscriptionUpdatedClubArgs = {
-  clubId: Scalars['String']['input'];
+  id: Scalars['String']['input'];
 };
 
 export type UnexpectedErrorResponse = {

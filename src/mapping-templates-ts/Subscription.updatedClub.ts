@@ -4,7 +4,7 @@ import { errorOnClubMultitenancyFailure } from "./mappingTemplateUtils";
 
 export function request(ctx: Context) {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const clubId = ctx.arguments.clubId as string;
+  const clubId = ctx.arguments.id as string;
   errorOnClubMultitenancyFailure(
     clubId,
     ctx,

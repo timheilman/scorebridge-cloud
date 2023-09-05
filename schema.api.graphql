@@ -44,7 +44,7 @@ type Subscription {
     @aws_subscribe(mutations: ["deleteClubDevice"])
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
-  updatedClub(clubId: String!): Club
+  updatedClub(id: String!): Club
     @aws_subscribe(mutations: ["updateClub"])
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 }
