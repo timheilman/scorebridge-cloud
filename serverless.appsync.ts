@@ -47,6 +47,12 @@ const lambdaResolvers = [
   lr("Mutation", "unexpectedError"),
 ];
 
+const subscriptionResolvers = [
+  "createdClubDevice",
+  "deletedClubDevice",
+  "updatedClub",
+];
+
 // Derived:
 const ddbDataSources = [...new Set(ddbResolvers.map((v) => v.dataSource))];
 
@@ -67,16 +73,6 @@ const fnDefnLambda = (l: LambdaResolver) => {
 const resolverDefn = (pipelineFnName: string) => ({
   functions: [pipelineFnName],
 });
-
-// const resolverDefnJs = (
-//   endpointType: string,
-//   endpointName: string,
-//   dataSource: string,
-// ) => ({
-//   functions:
-//   code: `/Users/tdh/repos/scorebridge-cloud/src/mapping-templates-js/${endpointType}.${endpointName}.js`,
-//   dataSource,
-// });
 
 function customAppSyncLambdaDataSources() {
   return lambdaResolvers.reduce((acc, lr) => {
@@ -149,12 +145,12 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
       );
       return acc;
     }, {}),
-    "Subscription.createdClubDevice": {
-      functions: ["PfnSubscriptioncreatedClubDevice"],
-    },
-    "Subscription.deletedClubDevice": {
-      functions: ["PfnSubscriptiondeletedClubDevice"],
-    },
+    ...subscriptionResolvers.reduce((acc, sr) => {
+      acc[`Subscription.${sr}`] = resolverDefn(
+        `PfnSubscription${capitalizeFirstLetter(sr)}`,
+      );
+      return acc;
+    }, {}),
   },
   pipelineFunctions: {
     ...lambdaResolvers.reduce((acc, lr) => {
@@ -165,16 +161,14 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
       acc[pipelineFnNameDdb(dr)] = fnDefnDdb(dr);
       return acc;
     }, {}),
-    PfnSubscriptioncreatedClubDevice: {
-      dataSource: "none",
-      code: `src/mapping-templates-js/Subscription.createdClubDevice.js`,
-      kind: "PIPELINE",
-    },
-    PfnSubscriptiondeletedClubDevice: {
-      dataSource: "none",
-      code: `src/mapping-templates-js/Subscription.deletedClubDevice.js`,
-      kind: "PIPELINE",
-    },
+    ...subscriptionResolvers.reduce((acc, sr) => {
+      acc[`PfnSubscription${capitalizeFirstLetter(sr)}`] = {
+        dataSource: "none",
+        code: `src/mapping-templates-js/Subscription.${sr}.js`,
+        kind: "PIPELINE",
+      };
+      return acc;
+    }, {}),
   },
 };
 

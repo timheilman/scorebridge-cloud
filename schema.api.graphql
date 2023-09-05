@@ -20,6 +20,9 @@ type Mutation {
     @aws_api_key
     @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
+  updateClub(input: UpdateClubInput!): Club!
+  @aws_cognito_user_pools(cognito_groups: ["adminSuper", "adminClub"])
+
   deleteClubAndAdmin(
     input: DeleteClubAndAdminInput!
   ): DeleteClubAndAdminResponse!
@@ -39,6 +42,10 @@ type Subscription {
 
   deletedClubDevice(clubId: String!): ClubDevice
     @aws_subscribe(mutations: ["deleteClubDevice"])
+    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
+
+  updatedClub(clubId: String!): Club
+    @aws_subscribe(mutations: ["updateClub"])
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 }
 input ListClubDevicesInput {
@@ -73,6 +80,11 @@ input CreateClubDeviceInput {
   clubId: String!
   deviceName: String!
   regToken: String!
+}
+
+input UpdateClubInput {
+  id: String!
+  name: String
 }
 
 input DeleteClubDeviceInput {

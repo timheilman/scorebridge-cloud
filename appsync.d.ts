@@ -95,6 +95,7 @@ export type Mutation = {
   deleteClubAndAdmin: DeleteClubAndAdminResponse;
   deleteClubDevice: ClubDevice;
   unexpectedError: UnexpectedErrorResponse;
+  updateClub: Club;
 };
 
 
@@ -117,6 +118,11 @@ export type MutationDeleteClubDeviceArgs = {
   input: DeleteClubDeviceInput;
 };
 
+
+export type MutationUpdateClubArgs = {
+  input: UpdateClubInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   getClub: Club;
@@ -137,6 +143,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   createdClubDevice?: Maybe<ClubDevice>;
   deletedClubDevice?: Maybe<ClubDevice>;
+  updatedClub?: Maybe<Club>;
 };
 
 
@@ -149,7 +156,17 @@ export type SubscriptionDeletedClubDeviceArgs = {
   clubId: Scalars['String']['input'];
 };
 
+
+export type SubscriptionUpdatedClubArgs = {
+  clubId: Scalars['String']['input'];
+};
+
 export type UnexpectedErrorResponse = {
   __typename?: 'UnexpectedErrorResponse';
   neverGetsReturned: Scalars['String']['output'];
+};
+
+export type UpdateClubInput = {
+  id: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
