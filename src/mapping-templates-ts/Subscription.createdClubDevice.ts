@@ -1,9 +1,8 @@
-import { Context, util } from "@aws-appsync/utils";
+import { Context } from "@aws-appsync/utils";
 
 import { errorOnClubMultitenancyFailure } from "./mappingTemplateUtils";
 
 export function request(ctx: Context) {
-  util.error("ctx is", JSON.stringify(ctx, null, 2));
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const clubId = ctx.arguments.clubId as string;
   errorOnClubMultitenancyFailure(
