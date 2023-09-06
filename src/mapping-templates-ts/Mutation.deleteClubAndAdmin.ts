@@ -1,6 +1,6 @@
 import { Context, LambdaRequest, util } from "@aws-appsync/utils";
 
-import { MutationDeleteClubAndAdminArgs } from "../../appsync";
+import { MutationDeleteClubAndAdminArgs } from "../../scorebridge-ts-submodule/graphql/appsync";
 import { errorOnClubMultitenancyFailure } from "./mappingTemplateUtils";
 export { middyOnErrorHandlingResponse as response } from "./mappingTemplateUtils";
 

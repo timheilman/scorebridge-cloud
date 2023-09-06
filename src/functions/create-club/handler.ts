@@ -30,7 +30,7 @@ import {
   CreateClubInput,
   CreateClubResponse,
   MutationCreateClubArgs,
-} from "../../../appsync";
+} from "../../../scorebridge-ts-submodule/graphql/appsync";
 import { logCompletionDecoratorFactory } from "../../../scorebridge-ts-submodule/logCompletionDecorator";
 import requiredEnvVar from "../../../scorebridge-ts-submodule/requiredEnvVar";
 

@@ -25,7 +25,7 @@ import {
   ClubDevice,
   CreateClubDeviceInput,
   MutationCreateClubDeviceArgs,
-} from "../../../appsync";
+} from "../../../scorebridge-ts-submodule/graphql/appsync";
 import { logCompletionDecoratorFactory } from "../../../scorebridge-ts-submodule/logCompletionDecorator";
 import {
   regTokenPublicPart,

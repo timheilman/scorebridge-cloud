@@ -6,7 +6,10 @@ import { logFn } from "@libs/logging";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 
-import { ClubDevice, MutationDeleteClubDeviceArgs } from "../../../appsync";
+import {
+  ClubDevice,
+  MutationDeleteClubDeviceArgs,
+} from "../../../scorebridge-ts-submodule/graphql/appsync";
 import requiredEnvVar from "../../../scorebridge-ts-submodule/requiredEnvVar";
 const log = logFn("src.functions.deleteClubDevice.handler.");
 // const catPrefix = "src.functions.delete-club-device.handler.";

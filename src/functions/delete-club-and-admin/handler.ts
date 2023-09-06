@@ -8,7 +8,7 @@ import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 import {
   DeleteClubAndAdminResponse,
   MutationDeleteClubAndAdminArgs,
-} from "../../../appsync";
+} from "../../../scorebridge-ts-submodule/graphql/appsync";
 import { logCompletionDecoratorFactory } from "../../../scorebridge-ts-submodule/logCompletionDecorator";
 import requiredEnvVar from "../../../scorebridge-ts-submodule/requiredEnvVar";
 

@@ -33,7 +33,7 @@ even when not deploying.
 
 ### Updating graphql-based typescript types
 
-Although it is checked in, `appsync.d.ts` is a generated file.
+`appsync.d.ts` is a generated file saved in the submodule.
 
 Use `npm run gql-types-codegen` to generate typescript types from the gql schema.
 

@@ -1,6 +1,9 @@
 import { Context, DynamoDBGetItemRequest, util } from "@aws-appsync/utils";
 
-import { QueryGetClubArgs, QueryListClubDevicesArgs } from "../../appsync";
+import {
+  QueryGetClubArgs,
+  QueryListClubDevicesArgs,
+} from "../../scorebridge-ts-submodule/graphql/appsync";
 import { errorOnClubMultitenancyFailure } from "./mappingTemplateUtils";
 
 export function request(

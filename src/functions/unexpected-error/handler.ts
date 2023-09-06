@@ -3,7 +3,7 @@ import { middyWithErrorHandling } from "@libs/lambda";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AppSyncResolverHandler } from "aws-lambda/trigger/appsync-resolver";
 
-import { UnexpectedErrorResponse } from "../../../appsync";
+import { UnexpectedErrorResponse } from "../../../scorebridge-ts-submodule/graphql/appsync";
 
 const almostMain: AppSyncResolverHandler<void, UnexpectedErrorResponse> = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

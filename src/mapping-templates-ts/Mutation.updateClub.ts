@@ -1,6 +1,6 @@
 import { Context, DynamoDBUpdateItemRequest, util } from "@aws-appsync/utils";
 
-import { MutationUpdateClubArgs } from "../../appsync";
+import { MutationUpdateClubArgs } from "../../scorebridge-ts-submodule/graphql/appsync";
 import { errorOnClubMultitenancyFailure } from "./mappingTemplateUtils";
 
 export function request(
