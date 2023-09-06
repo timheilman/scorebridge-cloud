@@ -5,7 +5,7 @@
   "description": "Serverless aws-nodejs-typescript template",
   "main": "serverless.ts",
   "scripts": {
-    "codegen-gql-types": "npm run codegen-gql-types; mv ./appsync.d.ts ./scorebridge-ts-submodule/graphql",
+    "codegen-gql-types": "graphql-codegen; mv appsync.d.ts scorebridge-ts-submodule/graphql",
     "compileMappingTemplates": "esbuild --bundle --sourcemap=inline --sources-content=false --target=esnext --platform=node --format=esm --external:@aws-appsync/utils --outdir=./src/mapping-templates-js/ --tsconfig=./src/mapping-templates-ts/tsconfig.json ./src/mapping-templates-ts/*.ts",
     "createAutomatedTestUsers": "ts-node ts-node-scripts/createAutomatedTestUsers.ts",
     "createFirstCognitoAdminSuperForEnv": "ts-node ts-node-scripts/createFirstCognitoAdminSuperForEnv.ts",
