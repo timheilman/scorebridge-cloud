@@ -28,14 +28,7 @@ export const middyOnErrorHandlingResponse = (ctx: Context) => {
   return ctx.result;
 };
 
-export function errorOnClubMultitenancyFailure<T>(
-  clubId: string,
-  ctx: Context<T>,
-  failureMessage: string,
-) {
-  if (!clubId) {
-    util.error("No clubId", "No clubId");
-  }
+export function getUserDetails<T>(ctx: Context<T>) {
   const cogIdentity = ctx.identity as AppSyncIdentityCognito;
   if (!cogIdentity) {
     util.error("No cogIdentity", "No cogIdentity");
@@ -49,6 +42,18 @@ export function errorOnClubMultitenancyFailure<T>(
   if (!claims) {
     util.error("No claims", "No claims");
   }
+  return { cogIdentity, isAdminSuper, claims };
+}
+
+export function errorOnClubMultitenancyFailure<T>(
+  clubId: string,
+  ctx: Context<T>,
+  failureMessage: string,
+) {
+  if (!clubId) {
+    util.error("No clubId", "No clubId");
+  }
+  const { cogIdentity, isAdminSuper, claims } = getUserDetails(ctx);
   if (!isAdminSuper && clubId !== claims["custom:tenantId"]) {
     util.error(failureMessage, "401: Invalid Club Id");
   }

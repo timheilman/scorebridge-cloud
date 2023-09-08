@@ -31,6 +31,9 @@ type Mutation {
   createClubDevice(input: CreateClubDeviceInput!): ClubDevice!
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
+  updateClubDevice(input: UpdateClubDeviceInput!): ClubDevice!
+  @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper", "clubDevice"])
+
   deleteClubDevice(input: DeleteClubDeviceInput!): ClubDevice!
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 }
@@ -80,6 +83,13 @@ input CreateClubDeviceInput {
   clubId: String!
   deviceName: String!
   regToken: String!
+}
+
+input UpdateClubDeviceInput {
+  clubId: String!
+  clubDeviceId: String!
+  deviceName: String
+  table: Int
 }
 
 input UpdateClubInput {
