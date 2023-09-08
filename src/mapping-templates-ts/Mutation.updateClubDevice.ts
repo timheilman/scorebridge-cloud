@@ -1,25 +1,14 @@
 import { Context, DynamoDBUpdateItemRequest, util } from "@aws-appsync/utils";
 
 import { MutationUpdateClubDeviceArgs } from "../../scorebridge-ts-submodule/graphql/appsync";
-import {
-  errorOnClubMultitenancyFailure,
-  getUserDetails,
-} from "./mappingTemplateUtils";
+import { errorOnDeviceLevelMultitenancy } from "./mappingTemplateUtils";
 
 export function request(
   ctx: Context<MutationUpdateClubDeviceArgs>,
 ): DynamoDBUpdateItemRequest {
   const clubId = ctx.arguments.input.clubId;
   const clubDeviceId = ctx.arguments.input.clubDeviceId;
-  const { claims } = getUserDetails(ctx);
-  errorOnClubMultitenancyFailure(
-    clubId,
-    ctx,
-    "Can only update devices within one's own club",
-  );
-  if (!(claims["sub"] && claims["sub"] === clubDeviceId)) {
-    util.error("Can only update one's own club device", "401: Invalid Club Id");
-  }
+  errorOnDeviceLevelMultitenancy(ctx, clubId, clubDeviceId);
   return {
     operation: "UpdateItem",
     update: {

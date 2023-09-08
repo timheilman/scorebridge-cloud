@@ -2,6 +2,8 @@ import { Context, util } from "@aws-appsync/utils";
 import { LambdaRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import { AppSyncIdentityCognito } from "aws-lambda";
 
+import { MutationUpdateClubDeviceArgs } from "../../scorebridge-ts-submodule/graphql/appsync";
+
 export const passThruLambdaInvokeRequest = (ctx: Context): LambdaRequest => {
   return {
     operation: "Invoke",
@@ -58,4 +60,20 @@ export function errorOnClubMultitenancyFailure<T>(
     util.error(failureMessage, "401: Invalid Club Id");
   }
   return { isAdminSuper, cogIdentity };
+}
+
+export function errorOnDeviceLevelMultitenancy(
+  ctx: Context<MutationUpdateClubDeviceArgs>,
+  clubId: string,
+  clubDeviceId: string,
+) {
+  const { claims } = getUserDetails(ctx);
+  errorOnClubMultitenancyFailure(
+    clubId,
+    ctx,
+    "Can only act on devices within one's own club",
+  );
+  if (!(claims["sub"] && claims["sub"] === clubDeviceId)) {
+    util.error("Can only act on one's own club device", "401: Invalid Club Id");
+  }
 }
