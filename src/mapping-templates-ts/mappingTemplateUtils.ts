@@ -40,11 +40,12 @@ export function getUserDetails<T>(ctx: Context<T>) {
     util.error("No groups", "No groups");
   }
   const isAdminSuper = groups.includes("adminSuper");
+  const isAdminClub = groups.includes("adminClub");
   const claims = cogIdentity.claims as Record<string, unknown>;
   if (!claims) {
     util.error("No claims", "No claims");
   }
-  return { cogIdentity, isAdminSuper, claims };
+  return { cogIdentity, isAdminSuper, isAdminClub, claims };
 }
 
 export function errorOnClubMultitenancyFailure<T>(
@@ -52,11 +53,14 @@ export function errorOnClubMultitenancyFailure<T>(
   ctx: Context<T>,
   failureMessage: string,
 ) {
+  const { cogIdentity, isAdminSuper, claims } = getUserDetails(ctx);
+  if (isAdminSuper) {
+    return;
+  }
   if (!clubId) {
     util.error("No clubId", "No clubId");
   }
-  const { cogIdentity, isAdminSuper, claims } = getUserDetails(ctx);
-  if (!isAdminSuper && clubId !== claims["custom:tenantId"]) {
+  if (clubId !== claims["custom:tenantId"]) {
     util.error(failureMessage, "401: Invalid Club Id");
   }
   return { isAdminSuper, cogIdentity };
@@ -65,15 +69,32 @@ export function errorOnClubMultitenancyFailure<T>(
 export function errorOnDeviceLevelMultitenancy(
   ctx: Context<MutationUpdateClubDeviceArgs>,
   clubId: string,
-  clubDeviceId: string,
+  clubDeviceId?: string,
 ) {
-  const { claims } = getUserDetails(ctx);
+  const { claims, isAdminSuper, isAdminClub } = getUserDetails(ctx);
+  if (isAdminSuper) {
+    return;
+  }
+
   errorOnClubMultitenancyFailure(
     clubId,
     ctx,
-    "Can only act on devices within one's own club",
+    "Can only subscribe to devices within one's own club",
   );
-  if (!(claims["sub"] && claims["sub"] === clubDeviceId)) {
-    util.error("Can only act on one's own club device", "401: Invalid Club Id");
+
+  if (isAdminClub) {
+    return;
   }
+
+  if (!clubDeviceId) {
+    util.error(
+      "Must specify clubDeviceId with non-admin credentials",
+      "401: Invalid Club Device Id",
+    );
+  }
+
+  if (claims["sub"] && claims["sub"] === clubDeviceId) {
+    return;
+  }
+  util.error("Can only act on one's own club device", "401: Invalid Club Id");
 }
