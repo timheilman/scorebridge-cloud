@@ -23,7 +23,8 @@ export function request(
   return {
     operation: "UpdateItem",
     update: {
-      expression: "SET table = :table, updatedAt = :updatedAt",
+      expression: "SET #table = :table, updatedAt = :updatedAt",
+      expressionNames: { "#table": "table" },
       expressionValues: util.dynamodb.toMapValues({
         ":table": ctx.arguments.input.table,
         ":updatedAt": util.time.nowISO8601(),
