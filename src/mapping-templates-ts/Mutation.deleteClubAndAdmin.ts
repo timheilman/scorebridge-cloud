@@ -1,7 +1,10 @@
 import { Context, LambdaRequest, util } from "@aws-appsync/utils";
 
 import { MutationDeleteClubAndAdminArgs } from "../../scorebridge-ts-submodule/graphql/appsync";
-import { errorOnClubMultitenancyFailure } from "./mappingTemplateUtils";
+import {
+  errorOnClubMultitenancyFailure,
+  getUserDetails,
+} from "./mappingTemplateUtils";
 export { middyOnErrorHandlingResponse as response } from "./mappingTemplateUtils";
 
 export function request(
@@ -10,7 +13,8 @@ export function request(
   const clubId = ctx.arguments.input.clubId;
   const userId = ctx.arguments.input.userId;
 
-  const { isAdminSuper, cogIdentity } = errorOnClubMultitenancyFailure(
+  const { isAdminSuper, cogIdentity } = getUserDetails(ctx);
+  errorOnClubMultitenancyFailure(
     clubId,
     ctx,
     "Can only remove a club that one is an admin of",

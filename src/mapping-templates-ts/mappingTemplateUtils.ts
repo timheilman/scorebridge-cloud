@@ -2,8 +2,6 @@ import { Context, util } from "@aws-appsync/utils";
 import { LambdaRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import { AppSyncIdentityCognito } from "aws-lambda";
 
-import { MutationUpdateClubDeviceArgs } from "../../scorebridge-ts-submodule/graphql/appsync";
-
 export const passThruLambdaInvokeRequest = (ctx: Context): LambdaRequest => {
   return {
     operation: "Invoke",
