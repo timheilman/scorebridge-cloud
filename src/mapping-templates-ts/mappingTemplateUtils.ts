@@ -65,8 +65,8 @@ export function errorOnClubMultitenancyFailure<T>(
   }
 }
 
-export function errorOnDeviceLevelMultitenancy(
-  ctx: Context<MutationUpdateClubDeviceArgs>,
+export function errorOnDeviceLevelMultitenancy<T>(
+  ctx: Context<T>,
   clubId: string,
   clubDeviceId?: string,
 ) {

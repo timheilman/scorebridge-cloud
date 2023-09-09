@@ -34,6 +34,7 @@ const lr = (
 
 const ddbResolvers: DdbResolver[] = [
   ddr("Query", "getClub", "clubsTable"),
+  ddr("Query", "getClubDevice", "clubDevicesTable"),
   ddr("Query", "listClubDevices", "clubDevicesTable"),
   ddr("Mutation", "updateClub", "clubsTable"),
   ddr("Mutation", "updateClubDevice", "clubDevicesTable"),

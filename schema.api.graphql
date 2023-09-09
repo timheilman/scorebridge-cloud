@@ -11,6 +11,9 @@ type Query {
 
   listClubDevices(input: ListClubDevicesInput!): ListClubDevicesOutput!
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
+
+  getClubDevice(clubId: String!, clubDeviceId: String!): ClubDevice!
+    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper", "clubDevice"])
 }
 type Mutation {
   unexpectedError: UnexpectedErrorResponse!
