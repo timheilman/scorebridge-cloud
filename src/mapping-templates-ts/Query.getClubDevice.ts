@@ -1,9 +1,6 @@
 import { Context, DynamoDBGetItemRequest, util } from "@aws-appsync/utils";
 
-import {
-  QueryGetClubDeviceArgs,
-  QueryListClubDevicesArgs,
-} from "../../scorebridge-ts-submodule/graphql/appsync";
+import { QueryGetClubDeviceArgs } from "../../scorebridge-ts-submodule/graphql/appsync";
 import { errorOnDeviceLevelMultitenancy } from "./mappingTemplateUtils";
 
 export function request(
@@ -18,7 +15,7 @@ export function request(
   };
 }
 
-export const response = (ctx: Context<QueryListClubDevicesArgs>) => {
+export const response = (ctx: Context<QueryGetClubDeviceArgs>) => {
   if (ctx.error) {
     util.error(ctx.error.message, ctx.error.type);
   }
