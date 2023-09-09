@@ -27,6 +27,7 @@
     "provideEnvEntriesToWebappCypress": "ts-node ts-node-scripts/provideEnvEntriesToWebappCypress.ts > ${SCOREBRIDGE_WEBAPP_CLONE_LOCATION:-../scorebridge-webapp/}cypress.env.json",
     "refreshExportedDetailsToWebapp": "npm run provideEnvEntriesToWebapp; npm run provideEnvEntriesToWebappCypress",
     "refreshExportedDetailsToDevice": "npm run provideEnvEntriesToDevice",
+    "refreshExportedDetailsEverywhere": "npm run refreshExportedDetailsToWebapp; npm run refreshExportedDetailsToDevice",
     "setRecaptchaSecretsDev": "aws secretsmanager put-secret-value --secret-id dev.recaptcha2Secret --secret-string '{\"siteKey\":\"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\", \"secretKey\": \"6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe\"}' --profile ${SB_TEST_AWS_CLI_PROFILE} $@",
     "setRecaptchaSecretsStaging": "aws secretsmanager put-secret-value --secret-id staging.recaptcha2Secret --secret-string '{\"siteKey\":\"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\", \"secretKey\": \"6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe\"}' --profile ${SB_TEST_AWS_CLI_PROFILE} $@",
     "setRecaptchaSecretsTmpenv": "aws secretsmanager put-secret-value --secret-id tmpenv.recaptcha2Secret --secret-string '{\"siteKey\":\"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\", \"secretKey\": \"6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe\"}' --profile ${SB_TEST_AWS_CLI_PROFILE} $@",

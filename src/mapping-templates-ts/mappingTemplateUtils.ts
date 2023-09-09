@@ -53,7 +53,7 @@ export function errorOnClubMultitenancyFailure<T>(
   ctx: Context<T>,
   failureMessage: string,
 ) {
-  const { cogIdentity, isAdminSuper, claims } = getUserDetails(ctx);
+  const { isAdminSuper, claims } = getUserDetails(ctx);
   if (isAdminSuper) {
     return;
   }
@@ -63,7 +63,6 @@ export function errorOnClubMultitenancyFailure<T>(
   if (clubId !== claims["custom:tenantId"]) {
     util.error(failureMessage, "401: Invalid Club Id");
   }
-  return { isAdminSuper, cogIdentity };
 }
 
 export function errorOnDeviceLevelMultitenancy(
