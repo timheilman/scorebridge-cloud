@@ -62,10 +62,10 @@ For now, only the dev environment is enabled. First, establish a `.env` file at 
 npm run -- exportEnvDev
 ```
 
-That file will point at appropriate services for the stage or "env". Then run e2e tests with:
+That file will point at appropriate services for the stage or "env". Then run E2E tests with:
 
 ```
-npm run -- e2e-test
+npm run -- test
 ```
 
 Per Yan Cui's advice, in the serverless paradigm, E2E tests are the high-value tests, whereas integration and unit tests are not worth the effort.  E2E tests are as close to acceptance tests as we can get, although user sign up is simulated with cognito idp admin commands.
