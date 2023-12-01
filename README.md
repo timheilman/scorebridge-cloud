@@ -1,16 +1,12 @@
-## Project Origins
+## Welcome to ScoreBridge-Cloud
 
-### Serverless - AWS Node.js Typescript
+In Portland, Oregon, USA there is a [duplicate bridge](https://en.wikipedia.org/wiki/Duplicate_bridge) club run by a guy named Zack.  It is not sanctioned by the [ACBL](https://acbl.org/) and Zack charges no dues – it's purely social and for-fun.  I (Tim) am a club member.  Different club members take turns hosting the game at their homes.
 
-This project was generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/).
+Presently we use Google sheets and extensive macros that Zack has written in them to score the games.  However, it is awkward and error-prone using Google Sheets to enter player identities and scores so I undertook this project to make things easier and less error-prone.
 
-For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/). To view this README at its origin as created by that template, use `git checkout SLS_CREATE_RESULT`.
+As of December 1, 2023, this project is very much a work-in-progress; it is not yet capable of doing what it intends, which is to replace the Google Sheets and macros. Someday I hope it will be.
 
-[Jira](https://theilman.atlassian.net/jira/software/projects/SCOR/boards/1) is the project-tracking software.
-
-### Yan Cui AppSync MasterClass
-
-See Yan Cui's excellent instruction for [GraphQL in the serverless paradigm](https://appsyncmasterclass.com); this repo is an updated-to-summer-2023 follow-along to his video course on AWS AppSync.
+The project is in three parts: a [webapp](https://github.com/timheilman/scorebridge-webapp), a [device app](https://github.com/timheilman/scorebridge-device), and this cloud backend. The club admin (Zack) uses the webapp to administer the game and players use the device app to enter identities and scores.  The device app is a React Native app that runs on iOS and Android.  The webapp is a React app that runs in a browser. This cloud backend coordinates interaction between the webapp and device app.  It is serverless, deployed using the serverless npm package.  It uses AWS AppSync, Cognito, DynamoDB, and Lambda.  It is written in TypeScript.
 
 ## Installation/deployment instructions
 
@@ -22,8 +18,7 @@ Export an env var, SB_TEST_AWS_CLI_PROFILE, containing the profile that you use 
 aws sso login --profile <that_profile_name>
 ```
 
-Also export CREATE_USER_API_KEY_EXPIRES_EPOCH_SEC=NaN . This allows serverless packaging into .serverless to proceed
-even when not deploying.
+Also export CREATE_USER_API_KEY_EXPIRES_EPOCH_SEC=NaN . This allows serverless packaging into .serverless to proceed even when not deploying.
 
 ### Using NPM
 
@@ -120,3 +115,17 @@ Notes from doing it. Problem: must verify "from" email address before cognito ca
     - `npm cypress:open` in another terminal
     - select E2E testing
     - tests should pass
+
+## Project Origins
+
+### Serverless - AWS Node.js Typescript
+
+This project was generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/).
+
+For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/). To view this README at its origin as created by that template, use `git checkout SLS_CREATE_RESULT`.
+
+[Jira](https://theilman.atlassian.net/jira/software/projects/SCOR/boards/1) is the project-tracking software.
+
+### Yan Cui AppSync MasterClass
+
+See Yan Cui's excellent instruction for [GraphQL in the serverless paradigm](https://appsyncmasterclass.com); this repo is an updated-to-summer-2023 follow-along to his video course on AWS AppSync.
