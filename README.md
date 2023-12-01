@@ -1,3 +1,21 @@
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [Welcome to ScoreBridge-Cloud](#welcome-to-scorebridge-cloud)
+- [Installation/deployment instructions](#installationdeployment-instructions)
+   * [Using NPM](#using-npm)
+   * [Updating graphql-based typescript types](#updating-graphql-based-typescript-types)
+- [Exporting details to the webapp](#exporting-details-to-the-webapp)
+- [Testing](#testing)
+- [Template features](#template-features)
+   * [Project structure](#project-structure)
+   * [3rd party libraries](#3rd-party-libraries)
+- [Setting up a new env](#setting-up-a-new-env)
+- [Project Origins](#project-origins)
+   * [Serverless - AWS Node.js Typescript](#serverless---aws-nodejs-typescript)
+   * [Yan Cui AppSync MasterClass](#yan-cui-appsync-masterclass)
+
+<!-- TOC end -->
+
 ## Welcome to ScoreBridge-Cloud
 
 In Portland, Oregon, USA there is a [duplicate bridge](https://en.wikipedia.org/wiki/Duplicate_bridge) club run by a guy named Zack.  It is not sanctioned by the [ACBL](https://acbl.org/) and Zack charges no dues – it's purely social and for-fun.  I (Tim) am a club member.  Different club members take turns hosting the game at their homes.
@@ -129,3 +147,4 @@ For detailed instructions, please refer to the [documentation](https://www.serve
 ### Yan Cui AppSync MasterClass
 
 See Yan Cui's excellent instruction for [GraphQL in the serverless paradigm](https://appsyncmasterclass.com); this repo is an updated-to-summer-2023 follow-along to his video course on AWS AppSync.
+
