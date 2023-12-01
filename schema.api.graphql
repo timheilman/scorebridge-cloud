@@ -6,7 +6,7 @@ schema {
 
 # ignore for now; Query simply has to be present
 type Query {
-  getClub(clubId: String!): Club!
+  getClub(clubId: String!): Club
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper", "clubDevice"])
 
   listClubDevices(input: ListClubDevicesInput!): ListClubDevicesOutput!
