@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-function convertToReactActVar(s: string) {
+function convertToReactAppVar(s: string) {
   return `REACT_APP_${s}=${process.env[s]}`;
 }
 
@@ -13,7 +13,7 @@ function convertToReactActVar(s: string) {
   "API_URL",
   "STAGE",
 ].forEach((webappDependentVar) => {
-  console.log(convertToReactActVar(webappDependentVar));
+  console.log(convertToReactAppVar(webappDependentVar));
 });
 // cannot automatically test captcha in prod
 if (process.env["STAGE"] !== "prod") {
