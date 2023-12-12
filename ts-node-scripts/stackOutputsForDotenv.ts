@@ -54,13 +54,6 @@ function shellInputFormat(myStackOutputLines: string[]) {
   });
 }
 
-function graphQlApiUrl(slsInfoLines: string[]) {
-  const apiUrlIndex = slsInfoLines.findIndex((l) => l.match(/^ {2}graphql: /));
-  if (apiUrlIndex === -1) {
-    throw new Error("No graphQL api URL found in sls info output");
-  }
-  return slsInfoLines[apiUrlIndex].match(/^ {2}graphql: (.*)$/)[1];
-}
 const stage = process.argv[2];
 
 if (!stage) {
@@ -78,7 +71,6 @@ exec(
     // stderr expected and ignored
     const slsInfoLines = stdout.split("\n");
     const stackOutputLines = linesBetweenPromptAndEmptyLine(slsInfoLines);
-    stackOutputLines.push(`  ApiUrl: ${graphQlApiUrl(slsInfoLines)}`);
     console.log(shellInputFormat(stackOutputLines).join("\n"));
   },
 );
