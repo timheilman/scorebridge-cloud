@@ -57,7 +57,7 @@ const serverlessConfiguration: AWS & {
   functions: allFunctions,
   package: {
     individually: true,
-    exclude: ["package-lock.json", "package.json"],
+    patterns: ["!package-lock.json", "!package.json"],
   },
   custom: {
     esbuild: {
