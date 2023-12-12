@@ -1,3 +1,4 @@
 [submodule "scorebridge-ts-submodule"]
 	path = scorebridge-ts-submodule
 	url = git@github.com:timheilman/scorebridge-ts-submodule.git
+	branch = main
