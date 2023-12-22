@@ -32,7 +32,7 @@ import {
   regTokenSecretPart,
   regTokenToEmail,
 } from "../../../scorebridge-ts-submodule/regTokenUtils";
-import requiredEnvVar from "../../../scorebridge-ts-submodule/requiredEnvVar";
+import requiredEnvVar from "../../libs/requiredEnvVar";
 
 const log = logFn("src.functions.create-club-device.handler.");
 const lcd = logCompletionDecoratorFactory(log);

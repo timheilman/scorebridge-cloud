@@ -10,7 +10,7 @@ import {
   ClubDevice,
   MutationDeleteClubDeviceArgs,
 } from "../../../scorebridge-ts-submodule/graphql/appsync";
-import requiredEnvVar from "../../../scorebridge-ts-submodule/requiredEnvVar";
+import requiredEnvVar from "../../libs/requiredEnvVar";
 const log = logFn("src.functions.deleteClubDevice.handler.");
 // const catPrefix = "src.functions.delete-club-device.handler.";
 

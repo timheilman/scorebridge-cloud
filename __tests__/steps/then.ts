@@ -6,10 +6,10 @@ import { GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { config as dotenvConfig } from "dotenv";
 
-import requiredEnvVar from "../../scorebridge-ts-submodule/requiredEnvVar";
 import { cognitoClient } from "../../src/libs/cognito";
 import { dynamoDbClient } from "../../src/libs/ddb";
 import { logFn } from "../../src/libs/logging";
+import requiredEnvVar from "../../src/libs/requiredEnvVar";
 const log = logFn("__tests__.steps.then.");
 dotenvConfig();
 

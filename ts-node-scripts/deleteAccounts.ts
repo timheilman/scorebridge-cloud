@@ -5,8 +5,8 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { deleteItemFromSimpleIdTable } from "@libs/ddb";
 
-import requiredEnvVar from "../scorebridge-ts-submodule/requiredEnvVar";
 import { cognitoClient, cognitoDestroyUser } from "../src/libs/cognito";
+import requiredEnvVar from "../src/libs/requiredEnvVar";
 
 async function cognitoListUsers(paginationToken?: string) {
   const input: ListUsersCommandInput = {

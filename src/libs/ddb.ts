@@ -2,7 +2,7 @@ import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 
 import { cachedDynamoDbClient } from "../../scorebridge-ts-submodule/cachedDynamoDbClient";
-import requiredEnvVar from "../../scorebridge-ts-submodule/requiredEnvVar";
+import requiredEnvVar from "./requiredEnvVar";
 
 export const dynamoDbClient = () => {
   return cachedDynamoDbClient(

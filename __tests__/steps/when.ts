@@ -5,8 +5,8 @@ import {
   DeleteClubAndAdminResponse,
   UnexpectedErrorResponse,
 } from "../../scorebridge-ts-submodule/graphql/appsync";
-import requiredEnvVar from "../../scorebridge-ts-submodule/requiredEnvVar";
 import { logFn } from "../../src/libs/logging";
+import requiredEnvVar from "../../src/libs/requiredEnvVar";
 import GraphQL from "../lib/graphql";
 
 const log = logFn("__tests__.steps.when.");

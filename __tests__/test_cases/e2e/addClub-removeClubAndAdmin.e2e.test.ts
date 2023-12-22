@@ -3,9 +3,9 @@ import {
   AdminSetUserPasswordCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
 
-import requiredEnvVar from "../../../scorebridge-ts-submodule/requiredEnvVar";
 import { cognitoClient } from "../../../src/libs/cognito";
 import { logFn } from "../../../src/libs/logging";
+import requiredEnvVar from "../../../src/libs/requiredEnvVar";
 import { cognitoUserAttributeValue } from "../../lib/cognito";
 import {
   aLoggedInAdminClub,

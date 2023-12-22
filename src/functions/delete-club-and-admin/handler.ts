@@ -10,7 +10,7 @@ import {
   MutationDeleteClubAndAdminArgs,
 } from "../../../scorebridge-ts-submodule/graphql/appsync";
 import { logCompletionDecoratorFactory } from "../../../scorebridge-ts-submodule/logCompletionDecorator";
-import requiredEnvVar from "../../../scorebridge-ts-submodule/requiredEnvVar";
+import requiredEnvVar from "../../libs/requiredEnvVar";
 
 const log = logFn("src.functions.delete-club-and-admin.handler.");
 const lcd = logCompletionDecoratorFactory(log);
