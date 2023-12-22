@@ -15,3 +15,4 @@ function convertToReactActVar(s: string) {
 ].forEach((webappDependentVar) => {
   console.log(convertToReactActVar(webappDependentVar));
 });
+console.log("EXPO_PUBLIC_SB_EXPO=true");
