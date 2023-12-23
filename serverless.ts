@@ -165,6 +165,7 @@ const serverlessConfiguration: AWS & {
       UsersTable: { Value: { Ref: "UsersTable" } },
     },
   },
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   appSync,
 };
 

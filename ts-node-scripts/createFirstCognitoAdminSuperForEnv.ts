@@ -1,11 +1,9 @@
 import { logFn } from "@libs/logging";
 import { config as dotenvConfig } from "dotenv";
 
-import {
-  cognitoAddUserToGroup,
-  cognitoCreateUser,
-  ddbCreateUser,
-} from "../src/functions/./create-club/handler";
+import { ddbCreateUser } from "../src/functions/./create-club/handler";
+import { cognitoAddUserToGroup, cognitoCreateUser } from "../src/libs/cognito";
+
 const log = logFn("ts-node-scripts.createFirstCognitoAdminSuperForEnv.");
 
 dotenvConfig();

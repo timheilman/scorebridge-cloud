@@ -69,7 +69,7 @@ export const getNullableUser = async (email: string) => {
   try {
     return await getCognitoUser(email);
   } catch (problem) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+     
     if (problem.__type === "UserNotFoundException") {
       return null;
     }

@@ -7,8 +7,8 @@ import requiredEnvVar from "./requiredEnvVar";
 export const dynamoDbClient = () => {
   return cachedDynamoDbClient(
     requiredEnvVar("AWS_REGION"),
-    process.env["SB_TEST_AWS_CLI_PROFILE"]
-      ? process.env["SB_TEST_AWS_CLI_PROFILE"]
+    process.env.SB_TEST_AWS_CLI_PROFILE
+      ? process.env.SB_TEST_AWS_CLI_PROFILE
       : null,
   );
 };

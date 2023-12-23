@@ -73,9 +73,7 @@ async function getAutomatedTestUserPassword(premadeTestAcctEmail: string) {
     "STAGE",
   )}.automatedTestUserPassword.${premadeTestAcctEmail}`;
   const result = await fetchSecret(SecretId);
-  const password = (JSON.parse(result) as Record<"password", string>)[
-    "password"
-  ];
+  const password = (JSON.parse(result) as Record<"password", string>).password;
   return password;
 }
 

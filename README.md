@@ -2,17 +2,17 @@
 
 - [Welcome to ScoreBridge-Cloud](#welcome-to-scorebridge-cloud)
 - [Installation/deployment instructions](#installationdeployment-instructions)
-   * [Using NPM](#using-npm)
-   * [Updating graphql-based typescript types](#updating-graphql-based-typescript-types)
+  - [Using NPM](#using-npm)
+  - [Updating graphql-based typescript types](#updating-graphql-based-typescript-types)
 - [Exporting details to the webapp](#exporting-details-to-the-webapp)
 - [Testing](#testing)
 - [Template features](#template-features)
-   * [Project structure](#project-structure)
-   * [3rd party libraries](#3rd-party-libraries)
+  - [Project structure](#project-structure)
+  - [3rd party libraries](#3rd-party-libraries)
 - [Setting up a new env](#setting-up-a-new-env)
 - [Project Origins](#project-origins)
-   * [Serverless - AWS Node.js Typescript](#serverless---aws-nodejs-typescript)
-   * [Yan Cui AppSync MasterClass](#yan-cui-appsync-masterclass)
+  - [Serverless - AWS Node.js Typescript](#serverless---aws-nodejs-typescript)
+  - [Yan Cui AppSync MasterClass](#yan-cui-appsync-masterclass)
 
 <!-- TOC end -->
 
@@ -62,7 +62,7 @@ That file will point at appropriate services for the stage or "env". Then run E2
 npm run -- test
 ```
 
-Per Yan Cui's advice, in the serverless paradigm, E2E tests are the high-value tests, whereas integration and unit tests are not worth the effort.  E2E tests are as close to acceptance tests as we can get, although user sign up is simulated with cognito idp admin commands.
+Per Yan Cui's advice, in the serverless paradigm, E2E tests are the high-value tests, whereas integration and unit tests are not worth the effort. E2E tests are as close to acceptance tests as we can get, although user sign up is simulated with cognito idp admin commands.
 
 ## Template features
 
@@ -138,5 +138,3 @@ For detailed instructions, please refer to the [documentation](https://www.serve
 ### Yan Cui AppSync MasterClass
 
 See Yan Cui's excellent instruction for [GraphQL in the serverless paradigm](https://appsyncmasterclass.com); this repo is an updated-to-summer-2023 follow-along to his video course on AWS AppSync.
-
-

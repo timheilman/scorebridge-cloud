@@ -33,7 +33,7 @@ export function getUserDetails<T>(ctx: Context<T>) {
   if (!cogIdentity) {
     util.error("No cogIdentity", "No cogIdentity");
   }
-  const groups = cogIdentity.groups || [];
+  const groups = cogIdentity.groups ?? [];
   if (!groups) {
     util.error("No groups", "No groups");
   }
@@ -90,7 +90,7 @@ export function errorOnDeviceLevelMultitenancy<T>(
     );
   }
 
-  if (claims["sub"] && claims["sub"] === clubDeviceId) {
+  if (claims.sub && claims.sub === clubDeviceId) {
     return;
   }
   util.error("Can only act on one's own club device", "401: Invalid Club Id");

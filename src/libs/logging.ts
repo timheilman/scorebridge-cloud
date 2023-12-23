@@ -1,14 +1,14 @@
 import { Configuration, configure, getLogger, isConfigured } from "log4js";
 
-const configString = process.env["SB_LOGGING_CONFIG"]
-  ? process.env["SB_LOGGING_CONFIG"]
+const configString = process.env.SB_LOGGING_CONFIG
+  ? process.env.SB_LOGGING_CONFIG
   : JSON.stringify(
       {
         appenders: {
           console: {
             type: "console",
             layout: {
-              ...(process.env["NODE_ENV"] === "test"
+              ...(process.env.NODE_ENV === "test"
                 ? { type: "colored" }
                 : { type: "pattern", pattern: "%p %c %m" }), // better for cloudwatch
             },

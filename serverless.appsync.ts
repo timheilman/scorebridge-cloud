@@ -6,11 +6,11 @@ import { AWS } from "@serverless/typescript";
 // https://github.com/sid88in/serverless-appsync-plugin/blob/05164d8847a554d56bb73590fdc35bf0bda5198e/src/types/plugin.ts#L3
 type EndpointType = "Query" | "Mutation";
 
-type DdbResolver = {
+interface DdbResolver {
   endpointType: EndpointType;
   endpointName: string;
   dataSource: string;
-};
+}
 
 const ddr = (
   endpointType: EndpointType,
@@ -19,10 +19,10 @@ const ddr = (
   dataSource: string,
 ): DdbResolver => ({ endpointType, endpointName, dataSource });
 
-type LambdaResolver = {
+interface LambdaResolver {
   endpointType: "Query" | "Mutation";
   endpointNameAndDataSource: string;
-};
+}
 
 const lr = (
   endpointType: EndpointType,

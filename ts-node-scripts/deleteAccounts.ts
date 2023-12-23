@@ -13,7 +13,7 @@ async function cognitoListUsers(paginationToken?: string) {
     UserPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
   };
   if (paginationToken) {
-    input["PaginationToken"] = paginationToken;
+    input.PaginationToken = paginationToken;
   }
 
   return cognitoClient().send(new ListUsersCommand(input));

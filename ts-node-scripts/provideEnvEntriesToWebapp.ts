@@ -16,7 +16,7 @@ function convertToViteVar(s: string) {
   console.log(convertToViteVar(webappDependentVar));
 });
 // cannot automatically test captcha in prod
-if (process.env["STAGE"] !== "prod") {
+if (process.env.STAGE !== "prod") {
   // this is the test pass-thru site key
   console.log(
     `VITE_RECAPTCHA2_SITE_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI`,

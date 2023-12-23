@@ -7,13 +7,17 @@ schema {
 # ignore for now; Query simply has to be present
 type Query {
   getClub(clubId: String!): Club
-    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper", "clubDevice"])
+    @aws_cognito_user_pools(
+      cognito_groups: ["adminClub", "adminSuper", "clubDevice"]
+    )
 
   listClubDevices(input: ListClubDevicesInput!): ListClubDevicesOutput!
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
   getClubDevice(clubId: String!, clubDeviceId: String!): ClubDevice!
-    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper", "clubDevice"])
+    @aws_cognito_user_pools(
+      cognito_groups: ["adminClub", "adminSuper", "clubDevice"]
+    )
 }
 type Mutation {
   unexpectedError: UnexpectedErrorResponse!
@@ -24,7 +28,7 @@ type Mutation {
     @aws_cognito_user_pools(cognito_groups: ["adminSuper"])
 
   updateClub(input: UpdateClubInput!): Club!
-  @aws_cognito_user_pools(cognito_groups: ["adminSuper", "adminClub"])
+    @aws_cognito_user_pools(cognito_groups: ["adminSuper", "adminClub"])
 
   deleteClubAndAdmin(
     input: DeleteClubAndAdminInput!
@@ -35,7 +39,9 @@ type Mutation {
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
   updateClubDevice(input: UpdateClubDeviceInput!): ClubDevice!
-  @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper", "clubDevice"])
+    @aws_cognito_user_pools(
+      cognito_groups: ["adminClub", "adminSuper", "clubDevice"]
+    )
 
   deleteClubDevice(input: DeleteClubDeviceInput!): ClubDevice!
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
@@ -52,11 +58,15 @@ type Subscription {
 
   updatedClubDevice(clubId: String!, clubDeviceId: String): ClubDevice
     @aws_subscribe(mutations: ["updateClubDevice"])
-    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper", "clubDevice"])
+    @aws_cognito_user_pools(
+      cognito_groups: ["adminClub", "adminSuper", "clubDevice"]
+    )
 
   updatedClub(id: String!): Club
     @aws_subscribe(mutations: ["updateClub"])
-    @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper", "clubDevice"])
+    @aws_cognito_user_pools(
+      cognito_groups: ["adminClub", "adminSuper", "clubDevice"]
+    )
 }
 input ListClubDevicesInput {
   clubId: String!

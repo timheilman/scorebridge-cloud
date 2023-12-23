@@ -10,7 +10,7 @@ describe("visits to unexpected_error", () => {
       await anUnknownUserCallsUnexpectedError();
       throw new Error("failed");
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       
       expect(e.message).toContain(
         "Not Authorized to access unexpectedError on type Mutation",
       );
@@ -22,7 +22,7 @@ describe("visits to unexpected_error", () => {
       await aUserCallsUnexpectedError(idToken);
       throw new Error("failed");
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       
       expect(e.message).toContain(
         "Not Authorized to access unexpectedError on type Mutation",
       );

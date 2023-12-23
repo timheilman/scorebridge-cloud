@@ -96,7 +96,7 @@ describe("When an unknown user adds a club via API key", () => {
       await aUserCallsCreateClub(email, clubName, idToken);
       throw new Error("failed");
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       
       expect(e.message).toContain(
         "Not Authorized to access createClub on type Mutation",
       );
@@ -107,7 +107,7 @@ describe("When an unknown user adds a club via API key", () => {
       await anUnknownUserCallsDeleteClubAndAdmin(userId, clubId);
       throw new Error("failed");
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       
       expect(e.message).toContain(
         "Not Authorized to access deleteClubAndAdmin on type Mutation",
       );
@@ -135,11 +135,11 @@ describe("When an unknown user adds a club via API key", () => {
       await aUserCallsDeleteClubAndAdmin(userId, clubId, idToken);
       throw new Error("failed");
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       
       expect(e.message).toContain(
         "Can only remove a club that one is an admin of",
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       
       expect(e.message).toContain("401: Invalid Club Id");
     }
     await verifyCreateUserBackendEffects("FORCE_CHANGE_PASSWORD");
@@ -165,9 +165,9 @@ describe("When an unknown user adds a club via API key", () => {
       await aUserCallsDeleteClubAndAdmin("Some_other_UserID", clubId, idToken);
       throw new Error("failed");
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       
       expect(e.message).toContain("Can only remove one's self, not others");
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       
       expect(e.message).toContain("401: Invalid User Id");
     }
     await verifyCreateUserBackendEffects("CONFIRMED");

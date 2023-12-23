@@ -32,7 +32,7 @@ export const userDoesNotExistInCognito = async (userId: string) => {
     await getUserCognito(userId);
     expect(true).toBe(false);
   } catch (e) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+     
     expect(e.name).toBe("UserNotFoundException");
   }
 };
