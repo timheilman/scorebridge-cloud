@@ -78,13 +78,16 @@ const resolverDefn = (pipelineFnName: string) => ({
 });
 
 function customAppSyncLambdaDataSources() {
-  return lambdaResolvers.reduce((acc, lr) => {
-    acc[lr.endpointNameAndDataSource] = {
-      type: "AWS_LAMBDA",
-      config: { functionName: lr.endpointNameAndDataSource },
-    };
-    return acc;
-  }, {});
+  return lambdaResolvers.reduce(
+    (acc, lr) => {
+      acc[lr.endpointNameAndDataSource] = {
+        type: "AWS_LAMBDA",
+        config: { functionName: lr.endpointNameAndDataSource },
+      };
+      return acc;
+    },
+    {} as Record<string, unknown>,
+  );
 }
 
 function capitalizeFirstLetter(string: string) {
@@ -93,13 +96,16 @@ function capitalizeFirstLetter(string: string) {
 
 // patches appSync data sources through to ddb tables of same name
 function customAppSyncDdbDataSources() {
-  return ddbDataSources.reduce((acc, val) => {
-    acc[val] = {
-      type: "AMAZON_DYNAMODB",
-      config: { tableName: { Ref: capitalizeFirstLetter(val) } },
-    };
-    return acc;
-  }, {});
+  return ddbDataSources.reduce(
+    (acc, val) => {
+      acc[val] = {
+        type: "AMAZON_DYNAMODB",
+        config: { tableName: { Ref: capitalizeFirstLetter(val) } },
+      };
+      return acc;
+    },
+    {} as Record<string, unknown>,
+  );
 }
 
 function customAppSyncDataSources() {
@@ -120,6 +126,8 @@ function pipelineFnNameLambda(l: LambdaResolver) {
   return `Pfn${l.endpointType}${l.endpointNameAndDataSource}`;
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   name: "scorebridge-cloud",
   schema: "schema.api.graphql",
@@ -136,42 +144,59 @@ const appsyncApi: AWS["custom"]["appSync"] /* : AppSyncConfig */ = {
   additionalAuthentications: [{ type: "API_KEY" }],
   dataSources: customAppSyncDataSources(),
   resolvers: {
-    ...ddbResolvers.reduce((acc, dr) => {
-      acc[`${dr.endpointType}.${dr.endpointName}`] = resolverDefn(
-        pipelineFnNameDdb(dr),
-      );
-      return acc;
-    }, {}),
-    ...lambdaResolvers.reduce((acc, lr) => {
-      acc[`${lr.endpointType}.${lr.endpointNameAndDataSource}`] = resolverDefn(
-        pipelineFnNameLambda(lr),
-      );
-      return acc;
-    }, {}),
-    ...subscriptionResolvers.reduce((acc, sr) => {
-      acc[`Subscription.${sr}`] = resolverDefn(
-        `PfnSubscription${capitalizeFirstLetter(sr)}`,
-      );
-      return acc;
-    }, {}),
+    ...ddbResolvers.reduce(
+      (acc, dr) => {
+        acc[`${dr.endpointType}.${dr.endpointName}`] = resolverDefn(
+          pipelineFnNameDdb(dr),
+        );
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    ),
+    ...lambdaResolvers.reduce(
+      (acc, lr) => {
+        acc[`${lr.endpointType}.${lr.endpointNameAndDataSource}`] =
+          resolverDefn(pipelineFnNameLambda(lr));
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    ),
+    ...subscriptionResolvers.reduce(
+      (acc, sr) => {
+        acc[`Subscription.${sr}`] = resolverDefn(
+          `PfnSubscription${capitalizeFirstLetter(sr)}`,
+        );
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    ),
   },
   pipelineFunctions: {
-    ...lambdaResolvers.reduce((acc, lr) => {
-      acc[pipelineFnNameLambda(lr)] = fnDefnLambda(lr);
-      return acc;
-    }, {}),
-    ...ddbResolvers.reduce((acc, dr) => {
-      acc[pipelineFnNameDdb(dr)] = fnDefnDdb(dr);
-      return acc;
-    }, {}),
-    ...subscriptionResolvers.reduce((acc, sr) => {
-      acc[`PfnSubscription${capitalizeFirstLetter(sr)}`] = {
-        dataSource: "none",
-        code: `src/mapping-templates-js/Subscription.${sr}.js`,
-        kind: "PIPELINE",
-      };
-      return acc;
-    }, {}),
+    ...lambdaResolvers.reduce(
+      (acc, lr) => {
+        acc[pipelineFnNameLambda(lr)] = fnDefnLambda(lr);
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    ),
+    ...ddbResolvers.reduce(
+      (acc, dr) => {
+        acc[pipelineFnNameDdb(dr)] = fnDefnDdb(dr);
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    ),
+    ...subscriptionResolvers.reduce(
+      (acc, sr) => {
+        acc[`PfnSubscription${capitalizeFirstLetter(sr)}`] = {
+          dataSource: "none",
+          code: `src/mapping-templates-js/Subscription.${sr}.js`,
+          kind: "PIPELINE",
+        };
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    ),
   },
 };
 
