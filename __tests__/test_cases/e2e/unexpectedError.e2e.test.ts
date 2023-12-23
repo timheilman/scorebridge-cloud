@@ -10,8 +10,7 @@ describe("visits to unexpected_error", () => {
       await anUnknownUserCallsUnexpectedError();
       throw new Error("failed");
     } catch (e) {
-       
-      expect(e.message).toContain(
+      expect((e as Record<"message", unknown>).message).toContain(
         "Not Authorized to access unexpectedError on type Mutation",
       );
     }
@@ -22,8 +21,7 @@ describe("visits to unexpected_error", () => {
       await aUserCallsUnexpectedError(idToken);
       throw new Error("failed");
     } catch (e) {
-       
-      expect(e.message).toContain(
+      expect((e as Record<"message", unknown>).message).toContain(
         "Not Authorized to access unexpectedError on type Mutation",
       );
     }

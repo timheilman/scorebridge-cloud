@@ -53,10 +53,12 @@ export const aLoggedInUser = async (email: string, password: string) => {
   );
 
   log("aLoggedInUser.signInSuccess", "debug", { email });
-
+  if (!auth.AuthenticationResult) {
+    throw new Error("Expected auth.AuthenticationResult to be defined.");
+  }
   return {
-    idToken: auth.AuthenticationResult.IdToken,
-    accessToken: auth.AuthenticationResult.AccessToken,
+    idToken: auth.AuthenticationResult.IdToken!,
+    accessToken: auth.AuthenticationResult.AccessToken!,
   };
 };
 
@@ -72,7 +74,7 @@ async function getAutomatedTestUserPassword(premadeTestAcctEmail: string) {
   const SecretId = `${requiredEnvVar(
     "STAGE",
   )}.automatedTestUserPassword.${premadeTestAcctEmail}`;
-  const result = await fetchSecret(SecretId);
+  const result = (await fetchSecret(SecretId))!;
   const password = (JSON.parse(result) as Record<"password", string>).password;
   return password;
 }

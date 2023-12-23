@@ -4,5 +4,5 @@ export default function requiredEnvVar(key: string): string {
       `Please set ${key} in env vars. (Did you export vars for your env to .env?)`,
     );
   }
-  return process.env[key];
+  return process.env[key]!;
 }

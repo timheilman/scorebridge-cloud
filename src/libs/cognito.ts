@@ -69,8 +69,9 @@ export const getNullableUser = async (email: string) => {
   try {
     return await getCognitoUser(email);
   } catch (problem) {
-     
-    if (problem.__type === "UserNotFoundException") {
+    if (
+      (problem as Record<"__type", unknown>).__type === "UserNotFoundException"
+    ) {
       return null;
     }
     throw problem;

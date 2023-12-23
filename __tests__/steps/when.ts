@@ -197,7 +197,7 @@ export const aUserCallsGetMyProfile = async (user: {
 
 export const aUserCallsEditMyProfile = async (
   user: { username: string; idToken: string },
-  input,
+  input: unknown,
 ) => {
   const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
     editMyProfile(newProfile: $input) {

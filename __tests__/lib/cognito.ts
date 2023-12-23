@@ -4,5 +4,9 @@ export function cognitoUserAttributeValue(
   cognitoUser: AdminGetUserCommandOutput,
   attributeKey: string,
 ) {
-  return cognitoUser.UserAttributes.find((a) => a.Name === attributeKey).Value;
+  if (!cognitoUser.UserAttributes) {
+    throw new Error("cognitoUser.UserAttributes is falsy");
+  }
+  return cognitoUser.UserAttributes.find((a) => a.Name === attributeKey)!
+    .Value!;
 }

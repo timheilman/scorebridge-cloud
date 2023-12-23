@@ -57,7 +57,7 @@ describe("When an unknown user adds a club via API key", () => {
     expect(cognitoUserAttributeValue(cognitoUser, "email")).toEqual(email);
     expect(cognitoUser.Username).toEqual(userId);
     expect(cognitoUser.UserStatus).toEqual(expectedUserStatus);
-    expect(cognitoUser.UserCreateDate.toJSON()).toMatch(timestampFormat);
+    expect(cognitoUser.UserCreateDate!.toJSON()).toMatch(timestampFormat);
   }
 
   it("The user and club should be saved in DynamoDB and Cognito", async () => {
@@ -96,8 +96,7 @@ describe("When an unknown user adds a club via API key", () => {
       await aUserCallsCreateClub(email, clubName, idToken);
       throw new Error("failed");
     } catch (e) {
-       
-      expect(e.message).toContain(
+      expect((e as Record<"message", unknown>).message).toContain(
         "Not Authorized to access createClub on type Mutation",
       );
     }
@@ -107,8 +106,7 @@ describe("When an unknown user adds a club via API key", () => {
       await anUnknownUserCallsDeleteClubAndAdmin(userId, clubId);
       throw new Error("failed");
     } catch (e) {
-       
-      expect(e.message).toContain(
+      expect((e as Record<"message", unknown>).message).toContain(
         "Not Authorized to access deleteClubAndAdmin on type Mutation",
       );
     }
@@ -135,12 +133,13 @@ describe("When an unknown user adds a club via API key", () => {
       await aUserCallsDeleteClubAndAdmin(userId, clubId, idToken);
       throw new Error("failed");
     } catch (e) {
-       
-      expect(e.message).toContain(
+      expect((e as Record<"message", unknown>).message).toContain(
         "Can only remove a club that one is an admin of",
       );
-       
-      expect(e.message).toContain("401: Invalid Club Id");
+
+      expect((e as Record<"message", unknown>).message).toContain(
+        "401: Invalid Club Id",
+      );
     }
     await verifyCreateUserBackendEffects("FORCE_CHANGE_PASSWORD");
   });
@@ -165,10 +164,13 @@ describe("When an unknown user adds a club via API key", () => {
       await aUserCallsDeleteClubAndAdmin("Some_other_UserID", clubId, idToken);
       throw new Error("failed");
     } catch (e) {
-       
-      expect(e.message).toContain("Can only remove one's self, not others");
-       
-      expect(e.message).toContain("401: Invalid User Id");
+      expect((e as Record<"message", unknown>).message).toContain(
+        "Can only remove one's self, not others",
+      );
+
+      expect((e as Record<"message", unknown>).message).toContain(
+        "401: Invalid User Id",
+      );
     }
     await verifyCreateUserBackendEffects("CONFIRMED");
     // cleanup:

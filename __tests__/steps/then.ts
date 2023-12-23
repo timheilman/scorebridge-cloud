@@ -32,8 +32,7 @@ export const userDoesNotExistInCognito = async (userId: string) => {
     await getUserCognito(userId);
     expect(true).toBe(false);
   } catch (e) {
-     
-    expect(e.name).toBe("UserNotFoundException");
+    expect((e as Record<"name", unknown>).name).toBe("UserNotFoundException");
   }
 };
 

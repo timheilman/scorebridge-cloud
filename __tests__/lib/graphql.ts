@@ -27,8 +27,8 @@ const graphQl = async (
   url: string,
   query: string,
   variables = {},
-  auth: string = null,
-  apiKey: string = null,
+  auth: string | null = null,
+  apiKey: string | null = null,
 ) => {
   const headers: Record<string, string> = {};
   if (auth) {
