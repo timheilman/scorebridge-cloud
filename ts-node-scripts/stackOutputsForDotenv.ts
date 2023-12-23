@@ -6,7 +6,7 @@ function camelToScreamingSnake(str: string): string {
   return str.replace(/([a-z])([A-Z])/g, "$1_$2").toUpperCase();
 }
 
-function findIndexes(array: string[], condition: (string) => boolean) {
+function findIndexes(array: string[], condition: (arg0: string) => boolean) {
   return array
     .map((element, index) => (condition(element) ? index : -1))
     .filter((index) => index !== -1);
@@ -32,7 +32,11 @@ function firstNonblankStartAfterPromptIndex(
     slsInfoLines,
     (l: string) => !!l.match(/^[^ ]/),
   );
-  return blankLineIndexes.find((n) => n >= startIndex);
+  const foundBlandLineIndex = blankLineIndexes.find((n) => n >= startIndex);
+  if (!foundBlandLineIndex) {
+    throw new Error("Expected a blank line in output but none found.");
+  }
+  return foundBlandLineIndex;
 }
 
 function linesBetweenPromptAndEmptyLine(slsInfoLines: string[]) {
