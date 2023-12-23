@@ -5,7 +5,7 @@ const req = (s: string) => {
   if (!process.env[s]) {
     throw new Error(`Expected ${s} to be set in the env already!`);
   }
-  return process.env[s];
+  return process.env[s]!;
 };
 
 console.log(
@@ -21,10 +21,13 @@ console.log(
       "SB_TEST_AWS_CLI_PROFILE",
       "COGNITO_USER_POOL_CLIENT_ID_WEB",
       "SES_SANDBOX_SQS_QUEUE_URL",
-    ].reduce((acc, v) => {
-      acc[v] = req(v);
-      return acc;
-    }, {}),
+    ].reduce(
+      (acc, v) => {
+        acc[v] = req(v);
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
     null,
     2,
   ),
