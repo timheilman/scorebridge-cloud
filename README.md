@@ -125,6 +125,12 @@ Notes from doing it. Problem: must verify "from" email address before cognito ca
     - select E2E testing
     - tests should pass
 
+## package.json and .nvmrc commentary
+
+The engines section of package.json locks the node version to 18.13.0 and the npm version to 9.7.1.
+This is only to maintain consistency with the webapp repo, whence derived these specific version
+locks.
+
 ## Project Origins
 
 ### Serverless - AWS Node.js Typescript

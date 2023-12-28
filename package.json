@@ -37,7 +37,8 @@
     "verifyEmail": "aws ses verify-email-identity --email-address --profile ${SB_TEST_AWS_CLI_PROFILE} $@"
   },
   "engines": {
-    "node": ">=14.15.0"
+    "node": "18.13.0",
+    "npm": "9.7.1"
   },
   "dependencies": {
     "@middy/core": "^3.4.0",
