@@ -7,8 +7,8 @@ export function request(
   ctx: Context<QueryListClubDevicesArgs>,
 ): DynamoDBQueryRequest {
   const clubId = ctx.arguments.input.clubId;
-  const nextToken = ctx.arguments.input.nextToken;
-  const limit = ctx.arguments.input.limit;
+  const nextToken = ctx.arguments.input.nextToken ?? undefined;
+  const limit = ctx.arguments.input.limit ?? 50;
   errorOnClubMultitenancyFailure(
     clubId,
     ctx,
@@ -34,14 +34,20 @@ export function request(
 }
 
 export const response = (ctx: Context<QueryListClubDevicesArgs>) => {
+  // I think this might be wrong, because the errors could occur at any
+  // part of the array
   if (ctx.error) {
     util.error(ctx.error.message, ctx.error.type);
   }
 
-  return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-    clubDevices: ctx.result.items,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-    nextToken: ctx.result.nextToken,
-  };
+  // SCOR-143 changing this from:
+  //   return {
+  //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+  //     clubDevices: ctx.result.items,
+  //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+  //     nextToken: ctx.result.nextToken,
+  //   };
+  // because the amplify v6 typescript type system needs the list to be named items
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return ctx.result;
 };

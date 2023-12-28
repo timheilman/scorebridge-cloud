@@ -14,6 +14,7 @@ type Query {
   listClubDevices(input: ListClubDevicesInput!): ListClubDevicesOutput!
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
+  # I think ClubDevice could technically be null here...
   getClubDevice(clubId: String!, clubDeviceId: String!): ClubDevice!
     @aws_cognito_user_pools(
       cognito_groups: ["adminClub", "adminSuper", "clubDevice"]
@@ -48,21 +49,21 @@ type Mutation {
 }
 
 type Subscription {
-  createdClubDevice(clubId: String!): ClubDevice
+  onCreateClubDevice(clubId: String!): ClubDevice
     @aws_subscribe(mutations: ["createClubDevice"])
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
-  deletedClubDevice(clubId: String!): ClubDevice
+  onDeleteClubDevice(clubId: String!): ClubDevice
     @aws_subscribe(mutations: ["deleteClubDevice"])
     @aws_cognito_user_pools(cognito_groups: ["adminClub", "adminSuper"])
 
-  updatedClubDevice(clubId: String!, clubDeviceId: String): ClubDevice
+  onUpdateClubDevice(clubId: String!, clubDeviceId: String): ClubDevice
     @aws_subscribe(mutations: ["updateClubDevice"])
     @aws_cognito_user_pools(
       cognito_groups: ["adminClub", "adminSuper", "clubDevice"]
     )
 
-  updatedClub(id: String!): Club
+  onUpdateClub(id: String!): Club
     @aws_subscribe(mutations: ["updateClub"])
     @aws_cognito_user_pools(
       cognito_groups: ["adminClub", "adminSuper", "clubDevice"]
@@ -75,7 +76,7 @@ input ListClubDevicesInput {
 }
 
 type ListClubDevicesOutput {
-  clubDevices: [ClubDevice]!
+  items: [ClubDevice]!
   nextToken: String
 }
 
