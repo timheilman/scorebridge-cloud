@@ -15,6 +15,8 @@ plugins:
 ignorePatterns:
   - "jest.config.js"
   - "src/mapping-templates-js"
+  - "scorebridge-ts-submodule/react"
+  - "scorebridge-ts-submodule/tsSubmoduleLog.ts"
 rules:
   "sort-imports": "off"
   "simple-import-sort/imports": "error"
