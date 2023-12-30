@@ -1,8 +1,4 @@
 import {
-  AdminCreateUserCommandOutput,
-  AdminGetUserCommandOutput,
-} from "@aws-sdk/client-cognito-identity-provider";
-import {
   PutItemCommand,
   UpdateItemCommand,
   UpdateItemCommandOutput,
@@ -89,11 +85,11 @@ export async function ddbCreateUser(userId: string, email: string) {
 
 async function readdClub(
   input: CreateClubInput,
-  user: AdminGetUserCommandOutput,
+  user: { Username: string; UserAttributes: { Name: string; Value: string }[] },
 ) {
   const clubId = user.UserAttributes.find(
     (at) => at.Name === "custom:tenantId",
-  ).Value;
+  )!.Value;
   const promises: Promise<unknown>[] = [];
   promises.push(
     lcd(updateClubName(clubId, input.newClubName), "updateClubName", {
@@ -113,7 +109,11 @@ async function readdClub(
 }
 
 async function handleFoundCognitoUser(
-  user: AdminGetUserCommandOutput,
+  user: {
+    Username: string;
+    UserStatus: string;
+    UserAttributes: { Name: string; Value: string }[];
+  },
   input: CreateClubInput,
 ) {
   if (user.UserStatus === "FORCE_CHANGE_PASSWORD") {
@@ -160,29 +160,29 @@ const almostMain: AppSyncResolverHandler<
 > = async (
   event: AppSyncResolverEvent<MutationCreateClubArgs>,
 ): Promise<CreateClubResponse> => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-  const recaptchaSecret = JSON.parse(
-    (
-      await secretsManagerClient().send(
-        new GetSecretValueCommand({
-          SecretId: `${requiredEnvVar("STAGE")}.recaptcha2Secret`,
-        }),
-      )
-    ).SecretString,
-  ).secretKey;
+  const input = {
+    SecretId: `${requiredEnvVar("STAGE")}.recaptcha2Secret`,
+  };
+  const getSecretValueCommand = new GetSecretValueCommand(input);
+  const getSecretValueCommandOutput = await secretsManagerClient().send(
+    getSecretValueCommand,
+  );
+
+  const recaptchaSecret =
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    JSON.parse(getSecretValueCommandOutput.SecretString!).secretKey as string;
   const response = await axios.post(
     `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${event.arguments.input.recaptchaToken}`,
   );
   log("recaptchaV2Widget.validationResponse", "debug", { response });
 
-  // Check response status and send back to the client-side
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (response.data?.success) {
     const user = await lcd(
       getNullableUser(event.arguments.input.newAdminEmail),
       "getNullableUser",
       { newAdminEmail: event.arguments.input.newAdminEmail },
-    )!; // again I do not understand why this is needed
+    );
     if (user) {
       return await handleFoundCognitoUser(user, event.arguments.input);
     } else {

@@ -1,7 +1,6 @@
 import {
   ListUsersCommand,
   ListUsersCommandInput,
-  UserType,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { deleteItemFromSimpleIdTable } from "@libs/ddb";
 
@@ -16,21 +15,40 @@ async function cognitoListUsers(paginationToken?: string) {
     input.PaginationToken = paginationToken;
   }
 
-  return cognitoClient().send(new ListUsersCommand(input));
+  const listUsersCommandOutput = await cognitoClient().send(
+    new ListUsersCommand(input),
+  );
+  if (!listUsersCommandOutput.Users) {
+    return { Users: [], PaginationToken: undefined };
+  }
+  return {
+    Users: listUsersCommandOutput.Users.map((u) => ({
+      Username: u.Username!,
+      Attributes: u.Attributes!.map((a) => ({
+        Name: a.Name!,
+        Value: a.Value!,
+      })),
+    })),
+    PaginationToken: listUsersCommandOutput.PaginationToken,
+  };
 }
 
-export function userAttr(user: UserType, attrName: string) {
+export function userAttr(
+  user: { Attributes: { Name: string; Value: string }[] },
+  attrName: string,
+) {
   return user.Attributes.find((a) => a.Name === attrName)?.Value;
 }
 
-async function deleteUser(user: UserType) {
+async function deleteUser(user: {
+  Username: string;
+  Attributes: { Name: string; Value: string }[];
+}) {
   const promises: Promise<unknown>[] = [];
-  if (userAttr(user, "tenantId")) {
+  const tenantId = userAttr(user, "tenantId");
+  if (tenantId) {
     promises.push(
-      deleteItemFromSimpleIdTable(
-        requiredEnvVar("CLUBS_TABLE"),
-        userAttr(user, "tenantId"),
-      ),
+      deleteItemFromSimpleIdTable(requiredEnvVar("CLUBS_TABLE"), tenantId),
     );
   }
   promises.push(
@@ -41,13 +59,19 @@ async function deleteUser(user: UserType) {
 }
 
 async function handleUsersList(
-  users: UserType[],
-  predicate: (user: UserType) => boolean,
+  users: { Username: string; Attributes: { Name: string; Value: string }[] }[],
+  predicate: (user: {
+    Attributes: { Name: string; Value: string }[];
+  }) => boolean,
 ) {
   return Promise.all(users.filter(predicate).map((user) => deleteUser(user)));
 }
 
-export async function deleteAccounts(predicate: (user: UserType) => boolean) {
+export async function deleteAccounts(
+  predicate: (user: {
+    Attributes: { Name: string; Value: string }[];
+  }) => boolean,
+) {
   let response = await cognitoListUsers();
   const promises: Promise<unknown>[] = [];
   promises.push(handleUsersList(response.Users, predicate));

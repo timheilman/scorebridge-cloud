@@ -20,15 +20,15 @@ const almostMain: AppSyncResolverHandler<
 > = async (
   event: AppSyncResolverEvent<MutationDeleteClubDeviceArgs>,
 ): Promise<ClubDevice> => {
-  const { clubDeviceId } = event.arguments.input;
+  const { clubDeviceId, clubId } = event.arguments.input;
   const results = await Promise.all([
     cognitoDestroyUser(clubDeviceId),
-    deleteItemFromTable(
-      requiredEnvVar("CLUB_DEVICES_TABLE"),
-      event.arguments.input,
-    ),
+    deleteItemFromTable(requiredEnvVar("CLUB_DEVICES_TABLE"), {
+      clubId,
+      clubDeviceId,
+    }),
   ]);
   log("deleteItemFromTable", "info", { result: results[1] });
-  return unmarshall(results[1].Attributes) as ClubDevice;
+  return unmarshall(results[1].Attributes!) as ClubDevice;
 };
 export const main = middyWithErrorHandling(almostMain);

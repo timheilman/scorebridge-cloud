@@ -74,10 +74,18 @@ export async function cognitoCreateUser(
 }
 export const getNullableUser = async (email: string) => {
   try {
-    return await getCognitoUser(email);
+    const user = await getCognitoUser(email);
+    const verifiedAttributes = user.UserAttributes!.map((attr) => {
+      return { Name: attr.Name!, Value: attr.Value! };
+    });
+    return {
+      Username: user.Username!,
+      UserStatus: user.UserStatus!,
+      UserAttributes: verifiedAttributes,
+    };
   } catch (problem) {
     if (
-      (problem as Record<"__type", unknown>).__type === "UserNotFoundException"
+      (problem as Record<"__type", unknown>)?.__type === "UserNotFoundException"
     ) {
       return null;
     }

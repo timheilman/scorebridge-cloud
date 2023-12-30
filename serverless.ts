@@ -1,4 +1,3 @@
-// import hello from '@functions/hello';
 import allFunctions from "@functions/all";
 import type { AWS } from "@serverless/typescript";
 

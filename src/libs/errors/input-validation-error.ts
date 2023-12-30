@@ -1,6 +1,5 @@
 export class InputValidationError extends Error {
-  constructor(message) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  constructor(message: string) {
     super(message);
     this.name = this.constructor.name;
 
