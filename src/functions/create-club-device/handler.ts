@@ -1,11 +1,4 @@
-import {
-  AdminCreateUserCommandOutput,
-  AdminGetUserCommandOutput,
-} from "@aws-sdk/client-cognito-identity-provider";
-import {
-  PutItemCommandOutput,
-  UpdateItemCommand,
-} from "@aws-sdk/client-dynamodb";
+import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import {
   cognitoAddUserToGroup,
@@ -76,7 +69,10 @@ export async function ddbCreateClubDevice(
     { createDdbCommand },
   );
   log("unmarshallAttrs", "info", { result });
-  return unmarshall((result as PutItemCommandOutput).Attributes) as ClubDevice;
+  if (!result?.Attributes) {
+    throw new Error("ddbCreateClubDevice failed");
+  }
+  return unmarshall(result.Attributes) as ClubDevice;
 }
 
 async function handleNoSuchCognitoUser({
@@ -85,13 +81,12 @@ async function handleNoSuchCognitoUser({
   deviceName,
 }: CreateClubDeviceInput) {
   // everything else needs the userId, so await its creation
-  const { User } = (await lcd(
+  const clubDeviceId = await lcd(
     cognitoCreateUser(newEmail(regToken), "SUPPRESS"),
     "cognitoCreateUser",
     { clubId, regTokenPublic: regTokenPublicPart(regToken), deviceName },
-  )) as AdminCreateUserCommandOutput; // I do not understand why this cast is needed
-  const clubDeviceId = User.Username;
-  log("User", "debug", { User });
+  )!; // I do not understand why this cast is needed
+  log("User", "debug", { clubDeviceId });
   // the ddbClub creation and remaining userId-dependent promises can be awaited in parallel
   const responses = await Promise.all([
     lcd(
@@ -112,7 +107,7 @@ async function handleNoSuchCognitoUser({
     ),
   ]);
 
-  return responses[3] as ClubDevice;
+  return responses[3]!;
 }
 
 const almostMain: AppSyncResolverHandler<
@@ -122,11 +117,11 @@ const almostMain: AppSyncResolverHandler<
   event: AppSyncResolverEvent<MutationCreateClubDeviceArgs>,
 ): Promise<ClubDevice> => {
   const input = event.arguments.input;
-  const user = (await lcd(
+  const user = await lcd(
     getNullableUser(newEmail(input.regToken)),
     "getNullableUser.success",
     { input },
-  )) as AdminGetUserCommandOutput; // again I do not understand why this is needed
+  )!; // again I do not understand why this is needed
   if (user) {
     throw new ClubDeviceAlreadyExistsError(
       `A tablet has already been onboarded with that registration token.`,

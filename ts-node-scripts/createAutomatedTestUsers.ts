@@ -1,7 +1,4 @@
-import {
-  AdminCreateUserCommandOutput,
-  AdminGetUserCommand,
-} from "@aws-sdk/client-cognito-identity-provider";
+import { AdminGetUserCommand } from "@aws-sdk/client-cognito-identity-provider";
 import {
   CreateSecretCommand,
   ResourceExistsException,
@@ -23,7 +20,7 @@ import { logCompletionDecoratorFactory } from "../scorebridge-ts-submodule/logCo
 import {
   ddbCreateClub,
   ddbCreateUser,
-} from "../src/functions/./create-club/handler";
+} from "../src/functions/create-club/handler";
 import requiredEnvVar from "../src/libs/requiredEnvVar";
 import { secretsManagerClient } from "../src/libs/secretsManager";
 
@@ -89,28 +86,43 @@ async function createAutomatedTestUsers(): Promise<void> {
     clubId1,
     "Club 01 for automated testing",
   );
+  // const lcd = <T>(p: Promise<T>, catSuffix: string, ...other: unknown[]) => {
+  //   return logCompletionDecorator(
+  //     log,
+  //     true,
+  //     p,
+  //     catSuffix,
+  //     "info",
+  //     "error",
+  //     other,
+  //   );
+  // };
   const settledCogUserCreateResults = await Promise.allSettled([
     lcd(cognitoCreateUser(emailAdminSuper, "SUPPRESS"), `cognitoCreateUser`, {
       emailAdminSuper,
-    }) as Promise<AdminCreateUserCommandOutput>,
+    }),
     lcd(cognitoCreateUser(emailAdminClub00, "SUPPRESS"), `cognitoCreateUser`, {
       emailAdminClub00,
-    }) as Promise<AdminCreateUserCommandOutput>,
+    }),
     lcd(cognitoCreateUser(emailAdminClub01, "SUPPRESS"), `cognitoCreateUser`, {
       emailAdminClub01,
-    }) as Promise<AdminCreateUserCommandOutput>,
+    }),
   ]);
   const [userIdAdminSuper, userIdAdminClub0, userIdAdminClub1] =
     await Promise.all(
-      settledCogUserCreateResults.map((settled, index) => {
+      settledCogUserCreateResults.map(async (settled, index) => {
         if (settled.status === "fulfilled") {
-          return Promise.resolve(settled.value.User.Username);
+          return Promise.resolve(settled.value);
         }
-        return cognitoClient()
-          .send(
-            new AdminGetUserCommand({ UserPoolId, Username: emails[index] }),
-          )
-          .then((r) => r.Username);
+        const r = await cognitoClient().send(
+          new AdminGetUserCommand({ UserPoolId, Username: emails[index] }),
+        );
+        if (!r.Username) {
+          throw new Error(
+            `re-fetched cognitoCreateUser(${emails[index]}).User.Username is undefined`,
+          );
+        }
+        return r.Username;
       }),
     );
 

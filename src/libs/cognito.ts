@@ -49,7 +49,7 @@ export async function cognitoUpdateUserTenantId(
 export async function cognitoCreateUser(
   email: string,
   invitationEmailAction: "SUPPRESS" | "RESEND" | undefined,
-) {
+): Promise<string> {
   // Because there is a quota on the number of emails we may send using cognito, but
   // it is far beyond anything expected in production, we suppress emails when testing
   const emailAction = invitationEmailAction
@@ -63,7 +63,14 @@ export async function cognitoCreateUser(
   };
 
   const createUserCommand = new AdminCreateUserCommand(createUserParams);
-  return cognitoClient().send(createUserCommand);
+  const result = await cognitoClient().send(createUserCommand);
+  if (!result.User) {
+    throw new Error("No user returned from cognito");
+  }
+  if (!result.User.Username) {
+    throw new Error("No user.Username returned from cognito");
+  }
+  return result.User.Username;
 }
 export const getNullableUser = async (email: string) => {
   try {

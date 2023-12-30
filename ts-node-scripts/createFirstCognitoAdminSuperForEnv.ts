@@ -11,8 +11,7 @@ dotenvConfig();
 async function createFirstCognitoAdminSuperForEnv(
   email: string,
 ): Promise<void> {
-  const createUserResult = await cognitoCreateUser(email, undefined);
-  const userId = createUserResult.User.Username;
+  const userId = await cognitoCreateUser(email, undefined);
   await Promise.all([
     cognitoAddUserToGroup(userId, "adminSuper"),
     ddbCreateUser(userId, email),

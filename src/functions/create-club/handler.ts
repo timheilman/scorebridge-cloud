@@ -105,7 +105,7 @@ async function readdClub(
     promises.push(
       lcd(reinviteUser(input.newAdminEmail), "reinviteUser", {
         newAdminEmail: input.newAdminEmail,
-      }) as Promise<AdminCreateUserCommandOutput>,
+      }),
     );
   }
   await Promise.all(promises);
@@ -135,15 +135,14 @@ async function handleNoSuchCognitoUser({
   const ddbCreateClubPromise = ddbCreateClub(clubId, newClubName);
 
   // everything else needs the userId, so await its creation
-  const createdUser = (await lcd(
+  const userId = await lcd(
     cognitoCreateUser(
       newAdminEmail,
       suppressInvitationEmail ? "SUPPRESS" : undefined,
     ),
     "cognitoCreateUser",
     { newAdminEmail, suppressInvitationEmail },
-  )) as AdminCreateUserCommandOutput; // I do not understand why this cast is needed
-  const userId = createdUser.User.Username;
+  )!; // I do not understand why this cast is needed
   // the ddbClub creation and remaining userId-dependent promises can be awaited in parallel
   await Promise.all([
     lcd(cognitoUpdateUserTenantId(userId, clubId), "cognitoUpdateUserTenantId"),
@@ -179,11 +178,11 @@ const almostMain: AppSyncResolverHandler<
   // Check response status and send back to the client-side
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (response.data?.success) {
-    const user = (await lcd(
+    const user = await lcd(
       getNullableUser(event.arguments.input.newAdminEmail),
       "getNullableUser",
       { newAdminEmail: event.arguments.input.newAdminEmail },
-    )) as AdminGetUserCommandOutput; // again I do not understand why this is needed
+    )!; // again I do not understand why this is needed
     if (user) {
       return await handleFoundCognitoUser(user, event.arguments.input);
     } else {

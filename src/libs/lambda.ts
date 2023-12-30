@@ -9,7 +9,7 @@ export const middyJson = (handler: Handler) =>
 
 function errorMiddleware() {
   return {
-    onError: (request: { error: Error; response: unknown }) => {
+    onError: (request: { error: Error | null; response: unknown }) => {
       log("errorMiddleware.onError", "debug", { request });
       log("errorMiddleware.onError.instanceof", "debug", {
         result: request.error instanceof Error,
