@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 
 import { logFn } from "../../src/libs/logging";
+import requiredEnvVar from "../../src/libs/requiredEnvVar";
 
 const log = logFn("__tests__.lib.graphql.");
 
@@ -24,18 +25,15 @@ errors: ${JSON.stringify(errors, null, 2)}
 };
 
 const graphQl = async (
-  url: string,
   query: string,
   variables = {},
   auth: string | null = null,
-  apiKey: string | null = null,
 ) => {
   const headers: Record<string, string> = {};
   if (auth) {
     headers.Authorization = auth;
-  }
-  if (apiKey) {
-    headers["x-api-key"] = apiKey;
+  } else {
+    headers["x-api-key"] = requiredEnvVar("CREATE_CLUB_API_KEY");
   }
 
   try {
@@ -43,7 +41,7 @@ const graphQl = async (
     const resp: AxiosResponse<
       Record<"data" | "errors", Record<string, unknown>>
     > = await axios.post(
-      url,
+      requiredEnvVar("API_URL"),
       {
         query,
         variables: JSON.stringify(variables),
