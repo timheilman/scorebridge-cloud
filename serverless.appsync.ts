@@ -50,10 +50,10 @@ const lambdaResolvers = [
 ];
 
 const subscriptionResolvers = [
-  "createdClubDevice",
-  "updatedClubDevice",
-  "deletedClubDevice",
-  "updatedClub",
+  "onCreateClubDevice",
+  "onUpdateClubDevice",
+  "onDeleteClubDevice",
+  "onUpdateClub",
 ];
 
 // Derived:
