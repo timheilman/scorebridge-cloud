@@ -21,7 +21,8 @@ function convertToCypressTaskVar(s: string) {
 );
 
 ["COGNITO_USER_POOL_ID", "COGNITO_USER_POOL_CLIENT_ID_WEB"].forEach(
-  (cypressTaskDependentVar) => convertToCypressTaskVar(cypressTaskDependentVar),
+  (cypressTaskDependentVar) =>
+    console.log(convertToCypressTaskVar(cypressTaskDependentVar)),
 );
 // cannot automatically test captcha in prod
 if (process.env.STAGE !== "prod") {
