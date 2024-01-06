@@ -20,7 +20,8 @@
     "scorebridge-ts-submodule",
     "serverless.ts",
     "serverless.*.ts",
-    "ts-node-scripts/*.ts"
+    "ts-node-scripts/*.ts",
+    "appsync.d.ts"
   ],
   "exclude": [
     "node_modules/**/*",
